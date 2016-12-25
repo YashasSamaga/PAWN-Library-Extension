@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <None Include="StandardLibraryExtension.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="source">
+      <UniqueIdentifier>{33afa918-5083-4d99-b3f4-118fb625f1e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib">
+      <UniqueIdentifier>{0e3c3eea-8702-425f-94ef-521b91db229b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\sdk">
+      <UniqueIdentifier>{cce21a8e-e6c4-4b1f-9ceb-9d423076d079}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\sdk\amx">
+      <UniqueIdentifier>{ae216ec3-676f-45a2-8303-e217dab48f95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\natives">
+      <UniqueIdentifier>{bfb94712-fb56-42cf-8284-8ec145796c4e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="lib\sdk\amxplugin.cpp">
+      <Filter>lib\sdk</Filter>
+    </ClCompile>
+    <ClCompile Include="source\main.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\interface.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\natives\string.cpp">
+      <Filter>source\natives</Filter>
+    </ClCompile>
+    <ClCompile Include="source\natives\math.cpp">
+      <Filter>source\natives</Filter>
+    </ClCompile>
+    <ClCompile Include="source\natives\ctype.cpp">
+      <Filter>source\natives</Filter>
+    </ClCompile>
+    <ClCompile Include="source\natives\time.cpp">
+      <Filter>source\natives</Filter>
+    </ClCompile>
+    <ClCompile Include="source\natives\algorithm.cpp">
+      <Filter>source\natives</Filter>
+    </ClCompile>
+    <ClCompile Include="source\natives\isc.cpp">
+      <Filter>source\natives</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="lib\sdk\plugincommon.h">
+      <Filter>lib\sdk</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\sdk\amx\amx.h">
+      <Filter>lib\sdk\amx</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\sdk\amx\sclinux.h">
+      <Filter>lib\sdk\amx</Filter>
+    </ClInclude>
+    <ClInclude Include="source\main.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="source\interface.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="source\natives\string.h">
+      <Filter>source\natives</Filter>
+    </ClInclude>
+    <ClInclude Include="source\natives\math.h">
+      <Filter>source\natives</Filter>
+    </ClInclude>
+    <ClInclude Include="source\natives\ctype.h">
+      <Filter>source\natives</Filter>
+    </ClInclude>
+    <ClInclude Include="source\natives\time.h">
+      <Filter>source\natives</Filter>
+    </ClInclude>
+    <ClInclude Include="source\natives\algorithm.h">
+      <Filter>source\natives</Filter>
+    </ClInclude>
+    <ClInclude Include="source\natives\isc.h">
+      <Filter>source\natives</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
