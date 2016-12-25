@@ -32,7 +32,7 @@ public OnScriptInit(scriptKey, scriptIdentifier[])
 	new b = GetTickCount();
 	for(new i = 0; i < 100000; i++)
 	{
-    	//test(1337, "abcdefg", "ABCD");
+		//test(1337, "abcdefg", "ABCD");
 		CallRemoteFunction("RandomPublic", "iss", 1337, "abcdefg", "ABCD");
 	}
 	new c = GetTickCount();
@@ -44,20 +44,17 @@ public OnScriptInit(scriptKey, scriptIdentifier[])
 	GetExternalVariableInfo(evid, sk, id);
 	if(sk != 0) print("[TEST] GetExternalVariableInfo failed.");
 	if(id != 0) print("[TEST] GetExternalVariableInfo failed.");
-	printf("%d %d", sk ,id);
 
-	new result =123;
+	new result = 123;
 	GetExternalVariable(evid, result);
 	if(result != 1027) print("[TEST] GetExternalVariable failed.");
 
-printf("id %d re!!!s %d" , id, result);
 	SetExternalVariable(evid, 1021);
 	GetExternalVariable(evid, result);
 	if(result != 1021) print("[TEST] GetExternalVariable failed.");
-	printf("id %d re!!XXX!s %d" , id, result);
 
 }
 public OnScriptExit(scriptKey, scriptIdentifier[])
 {
-    printf("[FILTERSCRIPT-MAIN] OnScriptExit >> ScriptKey: %d ScriptIdentifier: %s", scriptKey, scriptIdentifier);
+	printf("[FILTERSCRIPT-MAIN] OnScriptExit >> ScriptKey: %d ScriptIdentifier: %s", scriptKey, scriptIdentifier);
 }
