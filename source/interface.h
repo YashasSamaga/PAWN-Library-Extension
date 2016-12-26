@@ -45,7 +45,7 @@ class Interface
 public:
 	AMX * amx; //pointer to AMX instance
 
-	unsigned int ScriptKey; //every AMX instance is assigned a unique id	
+	int ScriptKey; //every AMX instance is assigned a unique id	
 	char ScriptIdentifier[SCRIPT_IDENTIFIER_SIZE]; //identifier given in the script
 
 	time_t time_loaded; //time when the instance was created
