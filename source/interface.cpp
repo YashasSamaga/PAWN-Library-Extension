@@ -10,12 +10,13 @@ interface.cpp
 
 *************************************************************************************************************/
 #include "main.h"
+#include "natives\time.h"
 #include "interface.h"
 
 #include <algorithm>
 #include <vector>
 /************************************************************************************************************/
-std::vector <Interface *> InterfaceList;
+vector <Interface *> InterfaceList;
 
 Interface::Interface(AMX * amx, unsigned int ScriptKey) : amx(amx), ScriptKey(ScriptKey)
 {
@@ -140,5 +141,31 @@ namespace Natives
 			}
 		}
 		return static_cast<cell>(count);
+	}
+	//native GetScriptStartupTime(scriptKey, _time_t[time_t]);
+	cell AMX_NATIVE_CALL GetScriptStartupTime(AMX* amx, cell* params)
+	{
+		unsigned int scriptKey = static_cast<unsigned int>(params[1]);
+
+		if (scriptKey < 0 || scriptKey >= InterfaceList.size()) return 0;
+		if (InterfaceList[scriptKey] == nullptr) return 0;
+
+		cell* time_dest_addr = NULL;
+		amx_GetAddr(amx, params[1], &time_dest_addr);
+
+		struct tm * time_dest;
+		time_dest = gmtime(&InterfaceList[scriptKey]->time_loaded);
+
+		time_dest_addr[second] = time_dest->tm_sec;
+		time_dest_addr[minute] = time_dest->tm_min;
+		time_dest_addr[hour] = time_dest->tm_hour;
+		time_dest_addr[day] = time_dest->tm_mday;
+		time_dest_addr[month] = time_dest->tm_mon;
+		time_dest_addr[year] = time_dest->tm_year + 1900;
+		time_dest_addr[wday] = time_dest->tm_wday;
+		time_dest_addr[yday] = time_dest->tm_yday;
+		time_dest_addr[isdst] = time_dest->tm_isdst;
+
+		return static_cast<cell>(InterfaceList[scriptKey]->time_loaded);
 	}
 }
