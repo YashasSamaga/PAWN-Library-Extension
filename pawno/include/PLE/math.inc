@@ -1,8 +1,8 @@
 /*****************************************************************************************************************
-Standard Library Extension
+PAWN Library Extension
 
-
-string.inc
+Math library
+math.inc
 ******************************************************************************************************************/
 #if defined _PLE_MATH_INC
 	#endinput
@@ -18,6 +18,19 @@ string.inc
 #define INFINITY    0x7F800000
 #define EULER 		2.718281
 #define PI    		3.141592
+
+enum (*=2)
+{
+    MATH_ERRNO = 1,
+    MATH_ERREXCEPT
+}
+
+stock public const FE_DIVBYZERO = 0;
+stock public const FE_INEXACT = 0;
+stock public const FE_INVALID = 0;
+stock public const FE_OVERFLOW = 0;
+stock public const FE_UNDERFLOW = 0;
+stock public const FE_ALL_EXCEPT = 0;
 
 native Float:sin(Float:value) = floatsin;
 native Float:cos(Float:value) = floatcos;
@@ -92,4 +105,5 @@ native Float:fma(Float:mul1, Float:mul2, Float:add);
 //islessequal not implemented
 //islessgreater not implemented
 //isunordered not implemented
+native math_errhandling();
 /*****************************************************************************************************************/
