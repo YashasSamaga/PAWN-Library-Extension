@@ -7,6 +7,7 @@ collection of C++ libaries for PAWN.
 
 main.cpp
 
+//WIP TODO public constants setting 
 *************************************************************************************************************/
 #include "main.h"
 
@@ -17,8 +18,11 @@ main.cpp
 #include "natives\time.h"
 #include "natives\algorithm.h"
 #include "natives\isc.h"
+#include "natives\file.h"
+#include "natives\errno.h"
 
 #include <algorithm>
+#include <fenv.h>
 #include <vector>
 
 #pragma warning(disable : 4996)
@@ -116,6 +120,7 @@ AMX_NATIVE_INFO NativeFunctionsTable[] =
 	{ "strtrim", Natives::string_strtrim},
 	{ "strtolower", Natives::string_strtolower },
 	{ "strtoupper", Natives::string_strtoupper },
+	{ "strerror", Natives::string_strerror },
 
 	{ "isalnum", Natives::ctype_isalnum },
 	{ "isalpha", Natives::ctype_isalpha },
@@ -150,6 +155,7 @@ AMX_NATIVE_INFO NativeFunctionsTable[] =
 	{ "fmax", Natives::math_fmax },
 	{ "fma", Natives::math_fma },
 	{ "cbrt", Natives::math_cbrt },
+	{ "math_errhandling", Natives::math_math_errhandling },
 
 	{ "now", Natives::time_now },
 	{ "createtime", Natives::time_createtime },
@@ -169,6 +175,35 @@ AMX_NATIVE_INFO NativeFunctionsTable[] =
 	{ "GetExternalVariableInfo", Natives::isc_GetExternalVariableInfo },
 	{ "GetExternalVariable", Natives::isc_GetExternalVariable },
 	{ "SetExternalVariable", Natives::isc_SetExternalVariable },
+
+	{ "file_fexists", Natives::file_fexists },
+	{ "file_GetFileLocation", Natives::file_GetFileLocation },
+	{ "file_GetFileMode", Natives::file_GetFileMode },
+	{ "file_remove", Natives::file_remove },
+	{ "file_rename", Natives::file_rename },
+	{ "file_tmpfile", Natives::file_tmpfile },
+	{ "file_tmpname", Natives::file_tmpname },
+	{ "file_fclose", Natives::file_fclose },
+	{ "file_fflush", Natives::file_fflush },
+	{ "file_fopen", Natives::file_fopen },
+	{ "file_fgetc", Natives::file_fgetc },
+	{ "file_fgets", Natives::file_fgets },
+	{ "file_fputc", Natives::file_fputc },
+	{ "file_fputs", Natives::file_fputs },
+	{ "file_ungetc", Natives::file_ungetc },
+	{ "file_fread", Natives::file_fread },
+	{ "file_fwrite", Natives::file_fwrite },
+	{ "file_fgetpos", Natives::file_fgetpos },
+	{ "file_fsetpos", Natives::file_fsetpos },
+	{ "file_ftell", Natives::file_ftell },
+	{ "file_rewind", Natives::file_rewind },
+	{ "file_fseek", Natives::file_fseek },
+	{ "file_clearerr", Natives::file_clearerr },
+	{ "file_feof", Natives::file_feof },
+	{ "file_ferror", Natives::file_ferror },
+
+	{ "errno", Natives::errno_errno},
+	{ "clearerrno", Natives::errno_clearerrno },
 	{ 0, 0 }
 };
 /************************************************************************************************************/
@@ -185,6 +220,61 @@ PLUGIN_EXPORT int PLUGIN_CALL AmxLoad(AMX *amx)
 	else
 		*amx_interface = new Interface(amx, std::distance(InterfaceList.begin(), amx_interface)); //unused script key found, we will assign that key to this AMX instance
 
+	struct pubvar_entry
+	{
+		char name[32];
+		cell value;
+	};
+	struct pubvar_entry entries[] =
+	{
+		{ "SEEK_SET", SEEK_SET },
+		{ "SEEK_CUR", SEEK_CUR },
+		{ "SEEK_END", SEEK_END },
+		{ "BUFSIZ", BUFSIZ },
+		{ "FILENAME_MAX", FILENAME_MAX },
+		{ "FOPEN_MAX", FOPEN_MAX },
+		{ "L_tmpnam", L_tmpnam },
+		{ "TMP_MAX", TMP_MAX },
+
+		{ "FE_DIVBYZERO", FE_DIVBYZERO },
+		{ "FE_INEXACT", FE_INEXACT },
+		{ "FE_INVALID", FE_INVALID },
+		{ "FE_OVERFLOW", FE_OVERFLOW },
+		{ "FE_UNDERFLOW", FE_UNDERFLOW },
+		{ "FE_ALL_EXCEPT", FE_ALL_EXCEPT },
+		{ 0, 0},
+	};
+	
+	char cur_pubvar[32];
+	cell pubvar_addr;
+	int numPubVars;
+	amx_NumPubVars(amx, &numPubVars);
+	
+	for (int i = 0; entries[i].name[0] != 0; i++)
+	{
+		int first = 0, last, mid, result;
+		last = numPubVars - 1;
+		
+		while (first <= last)
+		{
+			mid = (first + last) / 2;
+
+			amx_GetPubVar(amx, mid, cur_pubvar, &pubvar_addr);
+			result = strcmp(cur_pubvar, entries[i].name);
+
+			if (result > 0)
+				last = mid - 1;
+			else if (result < 0)
+				first = mid + 1;
+			else
+			{
+				cell *pubvar_phyaddr;
+				amx_GetAddr(amx, pubvar_addr, &pubvar_phyaddr);
+				*pubvar_phyaddr = entries[i].value;
+				break;
+			}
+		}
+	}
 	return amx_Register(amx, NativeFunctionsTable, -1);
 }
 PLUGIN_EXPORT int PLUGIN_CALL AmxUnload(AMX *amx)
