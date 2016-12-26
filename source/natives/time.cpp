@@ -14,20 +14,9 @@ time.cpp
 
 #include <ctime>
 /************************************************************************************************************/
-enum
-{
-	second = 0,
-	minute,
-	hour,
-	day,
-	month,
-	year,
-	wday, 
-	yday,
-	isdst
-};
 namespace Natives
 {
+	//native now(_time_t[time_t]);
 	cell AMX_NATIVE_CALL time_now(AMX* amx, cell* params)
 	{
 		cell* time_dest_addr = NULL;
@@ -51,6 +40,7 @@ namespace Natives
 
 		return static_cast<cell>(rawtime);
 	}
+	//native createtime(ts, _time_t[]);
 	cell AMX_NATIVE_CALL time_createtime(AMX* amx, cell* params)
 	{
 		time_t rawtime = static_cast<time_t>(params[1]);
@@ -73,6 +63,7 @@ namespace Natives
 
 		return params[1];
 	}
+	//native gettimestamp(_time_t[]);
 	cell AMX_NATIVE_CALL time_gettimestamp(AMX* amx, cell* params)
 	{
 		cell* time_src_addr = NULL;
@@ -91,6 +82,7 @@ namespace Natives
 
 		return static_cast<cell>(mktime(&time_src) - _timezone);
 	}
+	//native difftime(_time_t1[], _time_t2[]);
 	cell AMX_NATIVE_CALL time_difftime(AMX* amx, cell* params)
 	{
 		cell* time_src_addr1 = NULL;
@@ -124,6 +116,7 @@ namespace Natives
 
 		return static_cast<cell>(difftime(mktime(&time_src1), mktime(&time_src2)));
 	}
+	//native asctime(_time_t[], result[], size_res = sizeof(result));
 	cell AMX_NATIVE_CALL time_asctime(AMX* amx, cell* params)
 	{
 		cell* time_src_addr = NULL;
@@ -148,6 +141,7 @@ namespace Natives
 
 		return true;
 	}
+	//native strftime(_time_t[], format[], result[], size_res = sizeof(result));
 	cell AMX_NATIVE_CALL time_strftime(AMX* amx, cell* params)
 	{
 		cell* time_src_addr = NULL;
