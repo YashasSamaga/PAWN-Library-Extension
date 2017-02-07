@@ -11,14 +11,15 @@ list.h
 *************************************************************************************************************/
 #pragma once
 
-#include "..\main.h"
+#include "main.h"
 
 #include <vector>
+#include <list>
 #include <memory>
 /************************************************************************************************************/
 class SLE_list;
-extern vector<unique_ptr<SLE_list>> active_lists;
-extern vector<unsigned int> unused_list_ids;
+extern std::vector<std::unique_ptr<SLE_list>> active_lists;
+extern std::vector<unsigned int> unused_list_ids;
 
 enum
 {
@@ -36,30 +37,30 @@ enum
 class SLE_list
 {
 public:
-	unique_ptr<list<cell>> container;
+	std::unique_ptr<std::list<cell>> container;
 
 	//Empty List Constructor
 	SLE_list(AMX * amx, int templateid) : amx(amx), templateid(templateid)
 	{
-		container = unique_ptr<list<cell>> (new std::list<cell>());
+		container = std::unique_ptr<std::list<cell>> (new std::list<cell>());
 	}
 
 	//List Copy Constructor
-	SLE_list(AMX * amx, int templateid, list<cell> * lst) : amx(amx), templateid(templateid)
+	SLE_list(AMX * amx, int templateid, std::list<cell> * lst) : amx(amx), templateid(templateid)
 	{
-		container = unique_ptr<list<cell>>(new std::list<cell>(*lst));
+		container = std::unique_ptr<std::list<cell>>(new std::list<cell>(*lst));
 	}
 
 	//List Array Copy Constructor
 	SLE_list(AMX * amx, int templateid, cell *addr, size_t n) : amx(amx), templateid(templateid)
 	{
-		container = unique_ptr<list<cell>>(new std::list<cell>(addr, addr + n));
+		container = std::unique_ptr<std::list<cell>>(new std::list<cell>(addr, addr + n));
 	}
 
 	//List Fill Constructor
 	SLE_list(AMX * amx, int templateid, size_t n, cell val) : amx(amx), templateid(templateid)
 	{
-		container = unique_ptr<list<cell>>(new std::list<cell>(n, val));
+		container = std::unique_ptr<std::list<cell>>(new std::list<cell>(n, val));
 	}
 
 	AMX * amx;

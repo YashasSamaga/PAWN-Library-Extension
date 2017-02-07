@@ -9,22 +9,22 @@ STL Lists for PAWN
 list.cpp
 
 *************************************************************************************************************/
-#include "..\main.h"
+#include "main.h"
 #include "list.h"
 
 #include <list>
 /************************************************************************************************************/
-vector<unique_ptr<SLE_list>> active_lists;
-vector<unsigned int> unused_list_ids;
+std::vector<std::unique_ptr<SLE_list>> active_lists;
+std::vector<unsigned int> unused_list_ids;
 unsigned int list_maxid = 0;
 
-vector <ForeachList *> active_foreach_list_loops;
+/*vector <ForeachList *> active_foreach_list_loops;
 vector <unsigned int> unused_foreach_list_ids;
 unsigned int foreach_list_loop_maxid;
 
 vector <ListIterator *> active_list_iterators;
 vector <unsigned int> unused_list_iterator_ids;
-unsigned int itr_maxid = 0;
+unsigned int itr_maxid = 0;*/
 /************************************************************************************************************/
 inline bool IsValidListID(int listid)
 {
@@ -51,13 +51,13 @@ cell AMX_NATIVE_CALL SLE_list_Create(AMX* amx, cell* params)
 	else
 	{
 		id = list_maxid = active_lists.size();
-		active_lists.push_back(unique_ptr<SLE_list>());
+		active_lists.push_back(std::unique_ptr<SLE_list>());
 	}
 	switch (params[1])
 	{
 		case INIT_LIST_EMPTY:
 		{
-			active_lists[id] = unique_ptr<SLE_list>(new SLE_list(amx, params[2]));
+			active_lists[id] = std::unique_ptr<SLE_list>(new SLE_list(amx, params[2]));
 			break;
 		}
 		case INIT_LIST_COPY:
@@ -66,19 +66,19 @@ cell AMX_NATIVE_CALL SLE_list_Create(AMX* amx, cell* params)
 			if (sourcelist < 0 || sourcelist > list_maxid) return INVALID_LIST_ID;
 			if (!(bool)active_lists[sourcelist]) return INVALID_LIST_ID;
 
-			active_lists[id] = unique_ptr<SLE_list>(new SLE_list(amx, params[2], active_lists[sourcelist]->container.get()));
+			active_lists[id] = std::unique_ptr<SLE_list>(new SLE_list(amx, params[2], active_lists[sourcelist]->container.get()));
 			break;
 		}
 		case INIT_LIST_ARRAY_COPY:
 		{
 			cell* addr = NULL;
 			amx_GetAddr(amx, params[3], &addr);
-			active_lists[id] = unique_ptr<SLE_list>(new SLE_list(amx, params[2], addr, static_cast<size_t>(params[4])));
+			active_lists[id] = std::unique_ptr<SLE_list>(new SLE_list(amx, params[2], addr, static_cast<size_t>(params[4])));
 			break;
 		}
 		case INIT_LIST_FILL:
 		{
-			active_lists[id] = unique_ptr<SLE_list>(new SLE_list(amx, static_cast<int>(params[2]), static_cast<size_t>(params[3]), params[4]));
+			active_lists[id] = std::unique_ptr<SLE_list>(new SLE_list(amx, static_cast<int>(params[2]), static_cast<size_t>(params[3]), params[4]));
 			break;
 		}
 	}

@@ -9,13 +9,11 @@ errno macro
 errno.cpp
 
 *************************************************************************************************************/
-#include "..\main.h"
+#include "main.h"
 #include "errno.h"
 
 #include <cerrno>
 /************************************************************************************************************/
-
-//Work in progress to make an implementation independent errno system
 namespace Natives
 {
 	//native errno();

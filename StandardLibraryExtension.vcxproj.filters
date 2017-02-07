@@ -48,6 +48,27 @@
     <ClCompile Include="source\natives\isc.cpp">
       <Filter>source\natives</Filter>
     </ClCompile>
+    <ClCompile Include="source\natives\file.cpp">
+      <Filter>source\natives</Filter>
+    </ClCompile>
+    <ClCompile Include="source\natives\errno.cpp">
+      <Filter>source\natives</Filter>
+    </ClCompile>
+    <ClCompile Include="source\natives\list.cpp">
+      <Filter>source\natives</Filter>
+    </ClCompile>
+    <ClCompile Include="source\natives\functional.cpp">
+      <Filter>source\natives</Filter>
+    </ClCompile>
+    <ClCompile Include="source\natives\complex.cpp">
+      <Filter>source\natives</Filter>
+    </ClCompile>
+    <ClCompile Include="source\natives\numeric.cpp">
+      <Filter>source\natives</Filter>
+    </ClCompile>
+    <ClCompile Include="source\natives\bitset.cpp">
+      <Filter>source\natives</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="lib\sdk\plugincommon.h">
@@ -81,6 +102,27 @@
       <Filter>source\natives</Filter>
     </ClInclude>
     <ClInclude Include="source\natives\isc.h">
+      <Filter>source\natives</Filter>
+    </ClInclude>
+    <ClInclude Include="source\natives\file.h">
+      <Filter>source\natives</Filter>
+    </ClInclude>
+    <ClInclude Include="source\natives\errno.h">
+      <Filter>source\natives</Filter>
+    </ClInclude>
+    <ClInclude Include="source\natives\list.h">
+      <Filter>source\natives</Filter>
+    </ClInclude>
+    <ClInclude Include="source\natives\functional.h">
+      <Filter>source\natives</Filter>
+    </ClInclude>
+    <ClInclude Include="source\natives\complex.h">
+      <Filter>source\natives</Filter>
+    </ClInclude>
+    <ClInclude Include="source\natives\numeric.h">
+      <Filter>source\natives</Filter>
+    </ClInclude>
+    <ClInclude Include="source\natives\bitset.h">
       <Filter>source\natives</Filter>
     </ClInclude>
   </ItemGroup>

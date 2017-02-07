@@ -10,53 +10,51 @@ interface.cpp
 
 *************************************************************************************************************/
 #include "main.h"
-#include "natives\time.h"
+#include "natives/time.h"
 #include "interface.h"
 
 #include <algorithm>
 #include <vector>
 /************************************************************************************************************/
-vector <Interface *> InterfaceList;
+std::vector <Interface *> InterfaceList;
 
-Interface::Interface(AMX * amx, unsigned int ScriptKey) : amx(amx), ScriptKey(ScriptKey)
+Interface::Interface(AMX * amx, int ScriptKey) : amx(amx), ScriptKey(ScriptKey)
 {
 	strcpy(this->ScriptIdentifier, UNSUPPORTED_SCRIPT_IDENTIFIER);
 	this->state = INTERFACE_STATES::LOADED;	
 	this->type = SCRIPT_TYPES::SCRIPT_UNSUPPORTED;
 
 	//public OnScriptInit(scriptKey, scriptIdentifier[])
-	int amx_error = amx_FindPublic(amx, "OnScriptInit", &this->cbidx_OnScriptInit);
-	if (amx_error != AMX_ERR_NONE)
+	if (amx_FindPublic(amx, "OnScriptInit", &this->cbidx_OnScriptInit) != AMX_ERR_NONE)
 		this->cbidx_OnScriptInit = CALLBACK_ERROR::CALLBACK_INVALID;
 
 	//public OnScriptExit(scriptKey, scriptIdentifier[])
-	amx_error = amx_FindPublic(amx, "OnScriptExit", &this->cbidx_OnScriptExit);
-	if (amx_error != AMX_ERR_NONE)
+	if (amx_FindPublic(amx, "OnScriptExit", &this->cbidx_OnScriptExit) != AMX_ERR_NONE)
 		this->cbidx_OnScriptExit = CALLBACK_ERROR::CALLBACK_INVALID;
 
 	time(&(this->time_loaded));
 }
 
 //OnScriptInit is called in every script (except the newly initilized) when a script is loaded
-void Interface::Trigger_OnScriptInit(unsigned int scriptKey, char * scriptIdentifier)
+void Interface::Trigger_OnScriptInit(int scriptKey, char * scriptIdentifier)
 {
 	if (this->cbidx_OnScriptInit == CALLBACK_ERROR::CALLBACK_INVALID) return;
 
 	cell addr;
 	amx_PushString(amx, &addr, NULL, scriptIdentifier, NULL, NULL);
-	amx_Push(amx, scriptKey);
+	amx_Push(amx, static_cast<unsigned int>(scriptKey));
 
 	amx_Exec(this->amx, NULL, this->cbidx_OnScriptInit);
 	amx_Release(amx, addr);
 }
 //OnScriptExit is called in every script (except the unloaded script) when a script is unloaded
-void Interface::Trigger_OnScriptExit(unsigned int scriptKey, char * scriptIdentifier)
+void Interface::Trigger_OnScriptExit(int scriptKey, char * scriptIdentifier)
 {
 	if (this->cbidx_OnScriptExit == CALLBACK_ERROR::CALLBACK_INVALID) return;
 
 	cell addr;
 	amx_PushString(amx, &addr, NULL, scriptIdentifier, NULL, NULL);
-	amx_Push(amx, scriptKey);
+	amx_Push(amx, static_cast<unsigned int>(scriptKey));
 
 	amx_Exec(this->amx, NULL, this->cbidx_OnScriptExit);
 	amx_Release(amx, addr);	
@@ -80,20 +78,20 @@ namespace Natives
 	//native IsValidScript(scriptKey);
 	cell AMX_NATIVE_CALL IsValidScript(AMX* amx, cell* params)
 	{
-		unsigned int scriptKey = static_cast<unsigned int>(params[1]);
+		const int scriptKey = params[1];
 
-		if (scriptKey < 0 || scriptKey >= InterfaceList.size()) return static_cast<cell>(false);
-		return static_cast<cell>(InterfaceList[scriptKey] != nullptr);
+		if (scriptKey < 0 || static_cast<size_t>(scriptKey) >= InterfaceList.size()) return false;
+		return (InterfaceList[scriptKey] != nullptr);
 	}
 	//native GetScriptType(scriptKey);
 	cell AMX_NATIVE_CALL GetScriptType(AMX* amx, cell* params)
 	{
-		unsigned int scriptKey = static_cast<unsigned int>(params[1]);
+		const int scriptKey = params[1];
 
-		if (scriptKey < 0 || scriptKey >= InterfaceList.size()) return static_cast<cell>(SCRIPT_TYPES::INVALID);
-		if (InterfaceList[scriptKey] == nullptr) return static_cast<cell>(SCRIPT_TYPES::INVALID);
+		if (scriptKey < 0 || static_cast<size_t>(scriptKey) >= InterfaceList.size()) return SCRIPT_TYPES::INVALID;
+		if (InterfaceList[scriptKey] == nullptr) return SCRIPT_TYPES::INVALID;
 
-		return static_cast<cell>(InterfaceList[scriptKey]->GetScriptType());
+		return InterfaceList[scriptKey]->GetScriptType();
 	}
 	//native GetScriptPoolSize();
 	cell AMX_NATIVE_CALL GetScriptPoolSize(AMX* amx, cell* params)
@@ -103,16 +101,16 @@ namespace Natives
 	//native GetScriptIdentifierFromKey(scriptKey, dest[], len = sizeof(dest));
 	cell AMX_NATIVE_CALL GetScriptIdentifierFromKey(AMX* amx, cell* params)
 	{
-		unsigned int scriptKey = static_cast<unsigned int>(params[1]);
+		const int scriptKey = params[1];
 
-		if (scriptKey < 0 || scriptKey >= InterfaceList.size()) return static_cast<cell>(false);
-		if (InterfaceList[scriptKey] == nullptr) return static_cast<cell>(false);
+		if (scriptKey < 0 || static_cast<size_t>(scriptKey) >= InterfaceList.size()) return false;
+		if (InterfaceList[scriptKey] == nullptr) return false;
 
 		cell* addr = NULL;
 
 		amx_GetAddr(amx, params[2], &addr);
-		amx_SetString(addr, InterfaceList[scriptKey]->ScriptIdentifier, 0, 0, params[3]);
-		return static_cast<cell>(true);
+		amx_SetString(addr, InterfaceList[scriptKey]->ScriptIdentifier, 0, 0, static_cast<size_t>(params[3]));
+		return true;
 	}
 	//native GetScriptKeyFromIdentifier(const identifier[], scriptID[], len = sizeof(scriptID));
 	cell AMX_NATIVE_CALL GetScriptKeyFromIdentifier(AMX* amx, cell* params)
@@ -145,9 +143,9 @@ namespace Natives
 	//native GetScriptStartupTime(scriptKey, _time_t[time_t]);
 	cell AMX_NATIVE_CALL GetScriptStartupTime(AMX* amx, cell* params)
 	{
-		unsigned int scriptKey = static_cast<unsigned int>(params[1]);
+		const int scriptKey = params[1];
 
-		if (scriptKey < 0 || scriptKey >= InterfaceList.size()) return 0;
+		if (scriptKey < 0 || static_cast<size_t>(scriptKey) >= InterfaceList.size()) return 0;
 		if (InterfaceList[scriptKey] == nullptr) return 0;
 
 		cell* time_dest_addr = NULL;

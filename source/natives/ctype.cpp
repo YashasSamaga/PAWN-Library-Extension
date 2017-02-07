@@ -9,60 +9,72 @@ Character types
 ctype.cpp
 
 *************************************************************************************************************/
-#include "..\main.h"
+#include "main.h"
 #include "ctype.h"
 
-#include <ctype.h>
+#include <cctype>
 /************************************************************************************************************/
 namespace Natives
 {
+	//native isalnum(c);
 	cell AMX_NATIVE_CALL ctype_isalnum(AMX* amx, cell* params)
 	{
-		return isalnum(params[1]);
+		return std::isalnum(params[1]);
 	}
+	//native isalpha(c);
 	cell AMX_NATIVE_CALL ctype_isalpha(AMX* amx, cell* params)
 	{
-		return isalpha(params[2]);
+		return std::isalpha(params[2]);
 	}
+	//native isblank(c);
 	cell AMX_NATIVE_CALL ctype_isblank(AMX* amx, cell* params)
 	{
-		return isblank(params[2]);
+		return std::isblank(params[2]);
 	}
+	//native iscntrl(c);
 	cell AMX_NATIVE_CALL ctype_iscntrl(AMX* amx, cell* params)
 	{
-		return iscntrl(params[2]);
+		return std::iscntrl(params[2]);
 	}
+	//native isdigit(c);
 	cell AMX_NATIVE_CALL ctype_isdigit(AMX* amx, cell* params)
 	{
-		return isdigit(params[2]);
+		return std::isdigit(params[2]);
 	}
+	//native isgraph(c);
 	cell AMX_NATIVE_CALL ctype_isgraph(AMX* amx, cell* params)
 	{
 		return isgraph(params[2]);
 	}
+	//native islower(c);
 	cell AMX_NATIVE_CALL ctype_islower(AMX* amx, cell* params)
 	{
-		return islower(params[2]);
+		return std::islower(params[2]);
 	}
+	//native isprint(c);
 	cell AMX_NATIVE_CALL ctype_isprint(AMX* amx, cell* params)
 	{
-		return isprint(params[2]);
+		return std::isprint(params[2]);
 	}
+	//native ispunct(c);
 	cell AMX_NATIVE_CALL ctype_ispunct(AMX* amx, cell* params)
 	{
-		return ispunct(params[2]);
+		return std::ispunct(params[2]);
 	}
+	//native isspace(c);
 	cell AMX_NATIVE_CALL ctype_isspace(AMX* amx, cell* params)
 	{
-		return isspace(params[2]);
+		return std::isspace(params[2]);
 	}
+	//native isupper(c);
 	cell AMX_NATIVE_CALL ctype_isupper(AMX* amx, cell* params)
 	{
-		return isupper(params[2]);
+		return std::isupper(params[2]);
 	}
+	//native isxdigit(c);
 	cell AMX_NATIVE_CALL ctype_isxdigit(AMX* amx, cell* params)
 	{
-		return isxdigit(params[2]);
+		return std::isxdigit(params[2]);
 	}
 
 	//tolower & toupper implemented in PAWN 'core' library

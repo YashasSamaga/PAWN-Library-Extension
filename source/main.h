@@ -11,10 +11,11 @@ main.h
 #pragma once
 #pragma warning(disable : 4996)
 
-#include "..\lib\sdk\amx\amx.h"
-#include "..\lib\sdk\plugincommon.h"
+#include "lib/sdk/amx/amx.h"
+#include "lib/sdk/plugincommon.h"
 /***********************************************************************************************/
-#define PLUGIN_INCLUDE_KEY 0x3A7B8C
+#define PLE_MAGIC_KEY 0x3A7B8C
+#define PLE_PLUGIN_VERSION_KEY 0xAB000001
 
 #define PLUGIN_MAJOR_VERSION 1
 #define PLUGIN_MINOR_VERSION 0
@@ -22,3 +23,10 @@ main.h
 /***********************************************************************************************/
 typedef void(*logprintf_t)(char *, ...);
 extern logprintf_t logprintf;
+
+#define warn_if(x,...) if(x) logprintf(__VA_ARGS__), 0; 
+#define error_if(x,...) if(x) return logprintf(__VA_ARGS__), 0; 
+
+#define check_params(n) (params[0] != n*sizeof(cell))
+
+#define MAX_FUNC_NAME 32

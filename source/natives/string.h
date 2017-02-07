@@ -11,7 +11,7 @@ string.h
 *************************************************************************************************************/
 #pragma once
 
-#include "..\main.h"
+#include "main.h"
 /************************************************************************************************************/
 namespace Natives
 {
@@ -36,4 +36,6 @@ namespace Natives
 	cell AMX_NATIVE_CALL string_strtrim(AMX* amx, cell* params);
 	cell AMX_NATIVE_CALL string_strtolower(AMX* amx, cell* params);
 	cell AMX_NATIVE_CALL string_strtoupper(AMX* amx, cell* params);
+
+	cell AMX_NATIVE_CALL string_strerror(AMX* amx, cell* params);
 }

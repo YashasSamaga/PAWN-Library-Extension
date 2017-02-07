@@ -11,7 +11,7 @@ Files can be shared across different scripts.
 file.cpp
 
 *************************************************************************************************************/
-#include "..\main.h"
+#include "main.h"
 #include "file.h"
 
 #include <cstring>
@@ -45,7 +45,7 @@ public:
 	}	
 };
 
-vector <unique_ptr<PLE_File>> FileList;
+std::vector <std::unique_ptr<PLE_File>> FileList;
 
 namespace Natives
 {
@@ -119,12 +119,12 @@ namespace Natives
 		if (fileitr == FileList.end())
 		{
 			fileid = static_cast<int>(static_cast<int>(FileList.size()));
-			FileList.push_back(unique_ptr<PLE_File>(new PLE_File(pFile, fileid, "", "")));
+			FileList.push_back(std::unique_ptr<PLE_File>(new PLE_File(pFile, fileid, "", "")));
 		}
 		else
 		{
 			fileid = static_cast<int>(std::distance(FileList.begin(), fileitr));
-			*fileitr = unique_ptr<PLE_File>(new PLE_File(pFile, fileid, "", ""));
+			*fileitr = std::unique_ptr<PLE_File>(new PLE_File(pFile, fileid, "", ""));
 		}		
 		return fileid;
 	}
@@ -143,25 +143,25 @@ namespace Natives
 	cell AMX_NATIVE_CALL file_fclose(AMX* amx, cell* params)
 	{
 		const int fileid = params[1];
-		if (fileid < 0 || fileid >= static_cast<int>(FileList.size())) return pleEOF;
-		if(!(bool)FileList[fileid]) return pleEOF;
+		if (fileid < 0 || fileid >= static_cast<int>(FileList.size())) return EOF;
+		if(!(bool)FileList[fileid]) return EOF;
 
 		if (!fclose(FileList[fileid]->pFile))
 		{
 			FileList[fileid].reset();
 			return 0;
 		}
-		return pleEOF;
+		return EOF;
 	}
 	//native file_fflush(File:fileid);
 	cell AMX_NATIVE_CALL file_fflush(AMX* amx, cell* params)
 	{
 		const int fileid = params[1];
-		if (fileid < 0 || fileid >= static_cast<int>(FileList.size())) return pleEOF;
-		if(!(bool)FileList[fileid]) return pleEOF;
+		if (fileid < 0 || fileid >= static_cast<int>(FileList.size())) return EOF;
+		if(!(bool)FileList[fileid]) return EOF;
 
 		if (fflush(FileList[fileid]->pFile) == 0) return 0;
-		return pleEOF;
+		return EOF;
 	}
 	//native File:file_fopen(const filename[], const mode[]);
 	cell AMX_NATIVE_CALL file_fopen(AMX* amx, cell* params)
@@ -183,12 +183,12 @@ namespace Natives
 		if (fileitr == FileList.end())
 		{
 			fileid = static_cast<int>(static_cast<int>(FileList.size()));
-			FileList.push_back(unique_ptr<PLE_File>(new PLE_File(pFile, fileid, fname, fmode)));
+			FileList.push_back(std::unique_ptr<PLE_File>(new PLE_File(pFile, fileid, fname, fmode)));
 		}
 		else
 		{
 			fileid = static_cast<int>(std::distance(FileList.begin(), fileitr));
-			*fileitr = unique_ptr<PLE_File>(new PLE_File(pFile, fileid, fname, fmode));			
+			*fileitr = std::unique_ptr<PLE_File>(new PLE_File(pFile, fileid, fname, fmode));
 		}
 		return fileid;		
 	}
@@ -223,18 +223,18 @@ namespace Natives
 	cell AMX_NATIVE_CALL file_fputc(AMX* amx, cell* params)
 	{
 		const int fileid = params[1];
-		if (fileid < 0 || fileid >= static_cast<int>(FileList.size())) return pleEOF;
-		if(!(bool)FileList[fileid]) return pleEOF;
+		if (fileid < 0 || fileid >= static_cast<int>(FileList.size())) return EOF;
+		if(!(bool)FileList[fileid]) return EOF;
 
-		if (fputc(params[2], FileList[fileid]->pFile) == EOF) return pleEOF;
+		if (fputc(params[2], FileList[fileid]->pFile) == EOF) return EOF;
 		return params[2];
 	}
 	//native file_fputs(File:fileid, const source[]);
 	cell AMX_NATIVE_CALL file_fputs(AMX* amx, cell* params)
 	{
 		const int fileid = params[1];
-		if (fileid < 0 || fileid >= static_cast<int>(FileList.size())) return pleEOF;
-		if(!(bool)FileList[fileid]) return pleEOF;
+		if (fileid < 0 || fileid >= static_cast<int>(FileList.size())) return EOF;
+		if(!(bool)FileList[fileid]) return EOF;
 
 		int len;
 		cell *addr_fname = NULL;
@@ -243,21 +243,18 @@ namespace Natives
 		len++;
 		char* buffer = new char[len];
 		amx_GetString(buffer, addr_fname, 0, len);
-
-		cell retval = fputs(buffer, FileList[fileid]->pFile);
 		delete[] buffer;
-
-		if (retval == EOF) return pleEOF;		
-		return retval;
+	
+		return fputs(buffer, FileList[fileid]->pFile);
 	}
 	//native file_ungetc(File:fileid, chr);
 	cell AMX_NATIVE_CALL file_ungetc(AMX* amx, cell* params)
 	{
 		const int fileid = params[1];
-		if (fileid < 0 || fileid >= static_cast<int>(FileList.size())) return pleEOF;
-		if(!(bool)FileList[fileid]) return pleEOF;
+		if (fileid < 0 || fileid >= static_cast<int>(FileList.size())) return EOF;
+		if(!(bool)FileList[fileid]) return EOF;
 
-		if (ungetc(params[2], FileList[fileid]->pFile) == EOF) return pleEOF;
+		if (ungetc(params[2], FileList[fileid]->pFile) == EOF) return EOF;
 		return params[2];
 	}
 	//native file_fread(File:fileid, dest[], dest_size = sizeof(dest));
@@ -288,8 +285,8 @@ namespace Natives
 	cell AMX_NATIVE_CALL file_fgetpos(AMX* amx, cell* params)
 	{
 		const int fileid = params[1];
-		if (fileid < 0 || fileid >= static_cast<int>(FileList.size())) return pleEOF;
-		if(!(bool)FileList[fileid]) return pleEOF;
+		if (fileid < 0 || fileid >= static_cast<int>(FileList.size())) return EOF;
+		if(!(bool)FileList[fileid]) return EOF;
 
 		cell* pos_addr;
 		amx_GetAddr(amx, params[2], &pos_addr);
@@ -304,8 +301,8 @@ namespace Natives
 	cell AMX_NATIVE_CALL file_fsetpos(AMX* amx, cell* params)
 	{
 		const int fileid = params[1];
-		if (fileid < 0 || fileid >= static_cast<int>(FileList.size())) return pleEOF;
-		if(!(bool)FileList[fileid]) return pleEOF;
+		if (fileid < 0 || fileid >= static_cast<int>(FileList.size())) return EOF;
+		if(!(bool)FileList[fileid]) return EOF;
 
 		fpos_t pos = static_cast<long long>(params[2]);
 		cell retval = fsetpos(FileList[fileid]->pFile, &pos);
@@ -334,8 +331,8 @@ namespace Natives
 	cell AMX_NATIVE_CALL file_fseek(AMX* amx, cell* params)
 	{
 		const int fileid = params[1];
-		if (fileid < 0 || fileid >= static_cast<int>(FileList.size())) return pleEOF;
-		if(!(bool)FileList[fileid]) return pleEOF;
+		if (fileid < 0 || fileid >= static_cast<int>(FileList.size())) return EOF;
+		if(!(bool)FileList[fileid]) return EOF;
  
 		cell retval = fseek(FileList[fileid]->pFile, static_cast<long>(params[2]), static_cast<long>(params[3]));
 		return retval;

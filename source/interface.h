@@ -37,8 +37,7 @@ enum CALLBACK_ERROR
 enum INTERFACE_STATES
 {
 	LOADED,
-	PLE_INITILIZED_S1, //other scripts haven't been informed about the initilization
-	PLE_INITILIZED_S2 //other scripts have been informed about the initilization
+	PLE_INITILIZED,
 };
 class Interface
 {
@@ -50,15 +49,16 @@ public:
 
 	time_t time_loaded; //time when the instance was created
 
-	Interface(AMX * amx, unsigned int ScriptKey);
-	void Trigger_OnScriptInit(unsigned int scriptKey, char * scriptIdentifier);
-	void Trigger_OnScriptExit(unsigned int scriptKey, char * scriptIdentifier);
+	Interface(AMX * amx, int ScriptKey);
+	void Trigger_OnScriptInit(int scriptKey, char * scriptIdentifier);
+	void Trigger_OnScriptExit(int scriptKey, char * scriptIdentifier);
 
 	unsigned int GetInterfaceState() { return this->state; }
-	void SetInterfaceState(unsigned int state) { this->state = state; }
+	void SetInterfaceState(unsigned int _state) { this->state = _state; }
 
 	unsigned int GetScriptType() { return this->type; }
-	void SetScriptType(unsigned int type) { this->type = type; }
+	void SetScriptType(unsigned int _type) { this->type = _type; }
+
 private:
 	unsigned int state;
 	unsigned int type;

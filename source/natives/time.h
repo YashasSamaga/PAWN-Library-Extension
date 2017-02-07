@@ -11,8 +11,21 @@ time.h
 *************************************************************************************************************/
 #pragma once
 
-#include "..\main.h"
+#include "main.h"
 /************************************************************************************************************/
+enum
+{
+	second = 0,
+	minute,
+	hour,
+	day,
+	month,
+	year,
+	wday,
+	yday,
+	isdst
+};
+
 namespace Natives
 {
 	cell AMX_NATIVE_CALL time_now(AMX* amx, cell* params);

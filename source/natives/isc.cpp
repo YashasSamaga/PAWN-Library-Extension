@@ -9,66 +9,138 @@ Interscript communication (ISC)
 isc.cpp
 
 *************************************************************************************************************/
-#include "..\main.h"
-#include "..\interface.h"
+#include "main.h"
+#include "interface.h"
 
 #include "isc.h"
 
 #include <stdlib.h>
 /************************************************************************************************************/
-typedef struct externalFunctionID 
-{
-	unsigned short scriptKey : 8;
-	unsigned short funcidx : 16;
-	unsigned short reserved : 8;
-
-	externalFunctionID(int scriptKey, int funcidx) : scriptKey(scriptKey), funcidx(funcidx), reserved(VALIDITY_EFID_RESBITS) { }
-	externalFunctionID(int efid)
-	{
-		scriptKey = (0xFF000000 & efid) >> 24;
-		funcidx = (0xFFFF00 & efid) >> 8;
-		reserved = (0xFF & efid);
-	}
-	operator int() 
-	{
-		return (scriptKey << 24) + (funcidx << 8) + reserved;
-	}
-	int operator=(int efid)
-	{
-		scriptKey = (0xFF000000 & efid) >> 24;
-		funcidx = (0xFFFF00 & efid) >> 8;
-		reserved = (0xFF & efid);
-		return *this;
-	}
-}externalFunctionID;
-typedef struct externalVariableID
-{
-	unsigned short scriptKey : 8;
-	unsigned short varidx : 16;
-	unsigned short reserved : 8;
-
-	externalVariableID(int scriptKey, int varidx) : scriptKey(scriptKey), varidx(varidx), reserved(VALIDITY_EVID_RESBITS) { }
-	externalVariableID(int evid)
-	{
-		scriptKey = (0xFF000000 & evid) >> 24;
-		varidx = (0xFFFF00 & evid) >> 8;
-		reserved = (0xFF & evid);
-	}
-	operator int()
-	{
-		return (scriptKey << 24) + (varidx << 8) + reserved;
-	}
-	int operator=(int evid)
-	{
-		scriptKey = (0xFF000000 & evid) >> 24;
-		varidx = (0xFFFF00 & evid) >> 8;
-		reserved = (0xFF & evid);
-		return *this;
-	}
-}externalVariableID;
-
 namespace Natives
 {
+	enum
+	{
+		AMX_HDR_SIZE,
+		AMX_HDR_MAGIC,
+		AMX_HDR_FILE_VERSION,
+		AMX_HDR_AMX_VERSION,
+		AMX_HDR_FLAGS,
+		AMX_HDR_DEFSIZE,
+		AMX_HDR_COD,
+		AMX_HDR_DAT,
+		AMX_HDR_HEA,
+		AMX_HDR_STP,
+		AMX_HDR_CIP,
+		AMX_HDR_PUBLICS,
+		AMX_HDR_NATIVES,
+		AMX_HDR_LIBRARIES,
+		AMX_HDR_PUBVARS,
+		AMX_HDR_TAGS,
+		AMX_HDR_NAMETABLE
+	};
+
+	cell AMX_NATIVE_CALL isc_GetAMXHeader(AMX * amx, cell *params)
+	{
+		const unsigned int scriptKey = params[1];
+
+		if (scriptKey < 0 || scriptKey >= InterfaceList.size()) return 0;
+		if (InterfaceList[scriptKey] == nullptr) return 0;
+
+		cell* dest_hdr = NULL;
+		amx_GetAddr(amx, params[2], &dest_hdr);
+
+		AMX_HEADER * src_hdr = (AMX_HEADER *)InterfaceList[scriptKey]->amx->base;
+
+		dest_hdr[AMX_HDR_SIZE] = src_hdr->size;
+		dest_hdr[AMX_HDR_MAGIC] = src_hdr->magic;
+		dest_hdr[AMX_HDR_FILE_VERSION] = src_hdr->file_version;
+		dest_hdr[AMX_HDR_AMX_VERSION] = src_hdr->amx_version;
+		dest_hdr[AMX_HDR_FLAGS] = src_hdr->flags;
+		dest_hdr[AMX_HDR_DEFSIZE] = src_hdr->defsize;
+		dest_hdr[AMX_HDR_COD] = src_hdr->cod;
+		dest_hdr[AMX_HDR_DAT] = src_hdr->dat;
+		dest_hdr[AMX_HDR_HEA] = src_hdr->hea;
+		dest_hdr[AMX_HDR_STP] = src_hdr->stp;
+		dest_hdr[AMX_HDR_CIP] = src_hdr->cip;
+		dest_hdr[AMX_HDR_PUBLICS] = src_hdr->publics;
+		dest_hdr[AMX_HDR_NATIVES] = src_hdr->natives;
+		dest_hdr[AMX_HDR_LIBRARIES] = src_hdr->libraries;
+		dest_hdr[AMX_HDR_PUBVARS] = src_hdr->pubvars;
+		dest_hdr[AMX_HDR_TAGS] = src_hdr->tags;
+		dest_hdr[AMX_HDR_NAMETABLE] = src_hdr->nametable;
+
+		return 1;
+	}
+	cell AMX_NATIVE_CALL isc_ReadAMXMemory(AMX * amx, cell *params)
+	{
+		const unsigned int scriptKey = params[1];
+
+		if (scriptKey < 0 || scriptKey >= InterfaceList.size()) return 0;
+		if (InterfaceList[scriptKey] == nullptr) return 0;
+
+		cell* read_addr = NULL;
+		amx_GetAddr(InterfaceList[scriptKey]->amx, params[2], &read_addr);
+
+		cell* dest_addr = NULL;
+		amx_GetAddr(amx, params[3], &dest_addr);
+
+		*dest_addr = *read_addr;
+
+		return 1;
+	}
+	cell AMX_NATIVE_CALL isc_WriteAMXMemory(AMX * amx, cell *params)
+	{
+		const unsigned int scriptKey = params[1];
+
+		if (scriptKey < 0 || scriptKey >= InterfaceList.size()) return 0;
+		if (InterfaceList[scriptKey] == nullptr) return 0;
+
+		cell* dest_addr = NULL;
+		amx_GetAddr(InterfaceList[scriptKey]->amx, params[2], &dest_addr);
+
+		*dest_addr = params[3];
+
+		return 1;
+	}
+	cell AMX_NATIVE_CALL isc_ReadAMXMemoryArray(AMX * amx, cell *params)
+	{
+		const unsigned int scriptKey = params[1];
+
+		if (scriptKey < 0 || scriptKey >= InterfaceList.size()) return 0;
+		if (InterfaceList[scriptKey] == nullptr) return 0;
+
+		cell* read_addr = NULL;
+		amx_GetAddr(InterfaceList[scriptKey]->amx, params[2], &read_addr);
+
+		cell* dest_addr = NULL;
+		amx_GetAddr(amx, params[3], &dest_addr);
+
+		int numcells = params[4];
+		while (numcells-- > 0)
+			*dest_addr++ = *read_addr++;		
+
+		return 1;
+	}
+	cell AMX_NATIVE_CALL isc_WriteAMXMemoryArray(AMX * amx, cell *params)
+	{
+		const unsigned int scriptKey = params[1];
+
+		if (scriptKey < 0 || scriptKey >= InterfaceList.size()) return 0;
+		if (InterfaceList[scriptKey] == nullptr) return 0;
+
+		cell* dest_addr = NULL;
+		amx_GetAddr(InterfaceList[scriptKey]->amx, params[2], &dest_addr);
+
+		cell* src_addr = NULL;
+		amx_GetAddr(amx, params[3], &src_addr);
+
+		int numcells = params[4];
+		while (numcells-- > 0)
+			*dest_addr++ = *src_addr++;
+
+		return 1;
+	}
+
 	cell AMX_NATIVE_CALL isc_GetExternalFunctionID(AMX* amx, cell* params)
 	{
 		const unsigned int scriptKey = params[1];
@@ -85,8 +157,8 @@ namespace Natives
 		int funcidx, amx_error = amx_FindPublic(InterfaceList[scriptKey]->amx, name, &funcidx);		
 		if (amx_error == AMX_ERR_NONE)
 		{
-			externalFunctionID id(scriptKey, funcidx);
-			return static_cast<int>(id);
+			externalFunctionID id(static_cast<uint8_t>(scriptKey), static_cast<uint16_t>(funcidx));
+			return id;
 		}
 		return INVALID_EXT_FID;
 	}
@@ -122,7 +194,7 @@ namespace Natives
 					while (format[len])
 					{
 						if (format[len] == ']' || size_count == 6) break;
-						size[size_count++] = format[len++];
+						size[size_count++] = static_cast<uint8_t>(format[len++]);
 					}
 					if (format[len] != ']' || size_count == 0)
 					{
@@ -181,9 +253,9 @@ namespace Natives
 		}
 		if(param_count) logprintf("[WARNING] PAWN Library Extension >> number of specifiers give to CallExternalFunction does not agree with the number of paramters. (Difference: %d)", param_count);
 
-		cell *ret_addr;
-		amx_GetAddr(target_amx, params[2], &ret_addr);
-		amx_Exec(target_amx, ret_addr, id.funcidx);
+		cell *retval;
+		amx_GetAddr(target_amx, params[2], &retval);
+		amx_Exec(target_amx, retval, id.funcidx);
 		amx_Release(target_amx, release_addr);
 		return true;
 	}
@@ -233,8 +305,8 @@ namespace Natives
 				first = mid + 1;
 			else
 			{
-				externalVariableID id(scriptKey, mid);
-				return static_cast<int>(id);
+				externalVariableID id(static_cast<uint8_t>(scriptKey), static_cast<uint16_t>(mid));
+				return id;
 			}
 		}
 		return INVALID_EXT_VID;

@@ -9,7 +9,7 @@ String library
 string.cpp
 
 *************************************************************************************************************/
-#include "..\main.h"
+#include "main.h"
 #include "string.h"
 
 #include <cstring>
@@ -17,6 +17,7 @@ string.cpp
 /************************************************************************************************************/
 namespace Natives
 {
+	//native memmove(destination[], const source[], numbytes);
 	cell AMX_NATIVE_CALL string_memmove(AMX* amx, cell* params)
 	{
 		cell* dest = NULL;
@@ -29,6 +30,7 @@ namespace Natives
 		memmove(dest, source, numbytes*4);
 		return 0;
 	}
+	//native strcpy(destination[], const source[], size_dest = sizeof(destination));
 	cell AMX_NATIVE_CALL string_strcpy(AMX* amx, cell* params)
 	{
 		cell* dest = NULL;
@@ -44,6 +46,7 @@ namespace Natives
 		*dest = '\0';	
 		return 0;
 	}
+	//native strncpy(destination[], const source[], num, size_dest = sizeof(destination), size_src = sizeof(source));
 	cell AMX_NATIVE_CALL string_strncpy(AMX* amx, cell* params)
 	{
 		cell* dest = NULL;
@@ -61,7 +64,7 @@ namespace Natives
 		*dest = '\0';
 		return 0;
 	}
-
+	//native strncat(destination[], const source[], num, size_dest = sizeof(destination));
 	cell AMX_NATIVE_CALL string_strncat(AMX* amx, cell* params)
 	{
 		cell* dest = NULL;
@@ -83,7 +86,7 @@ namespace Natives
 		*dest = '\0';
 		return 0;
 	}
-
+	//native strncmp(const str1[], const str2[], num);
 	cell AMX_NATIVE_CALL string_strncmp(AMX* amx, cell* params)
 	{
 		cell* str1 = NULL;
@@ -99,7 +102,7 @@ namespace Natives
 
 		return 0;
 	}
-
+	//native memchr(const source[], value, num);
 	cell AMX_NATIVE_CALL string_memchr(AMX* amx, cell* params)
 	{
 		cell *str = NULL, *start = NULL;
@@ -115,6 +118,7 @@ namespace Natives
 
 		return -1;
 	}
+	//native strchr(const source[], value, idx = 0);
 	cell AMX_NATIVE_CALL string_strchr(AMX* amx, cell* params)
 	{
 		cell *str = NULL, *start = NULL;
@@ -129,6 +133,7 @@ namespace Natives
 
 		return -1;
 	}
+	//native strrchr(const source[], value, size_src = sizeof(source));
 	cell AMX_NATIVE_CALL string_strrchr(AMX* amx, cell* params)
 	{
 		cell *start = NULL, *last_found = NULL;
@@ -146,6 +151,7 @@ namespace Natives
 
 		return last_found - start - 1;
 	}
+	//native strcspn(const str1[], const str2[]);
 	cell AMX_NATIVE_CALL string_strcspn(AMX* amx, cell* params)
 	{
 		cell *str1 = NULL;
@@ -166,6 +172,7 @@ namespace Natives
 		}			
 		return -1;
 	}
+	//native strpbrk(const str1[], const str2[]);
 	cell AMX_NATIVE_CALL string_strpbrk(AMX* amx, cell* params)
 	{
 		cell *str1 = NULL;
@@ -173,7 +180,7 @@ namespace Natives
 		amx_GetAddr(amx, params[1], &str1);
 		amx_GetAddr(amx, params[2], &str2);
 
-		cell *start1 = str1;
+		//cell *start1 = str1;
 		cell *start2 = str2;
 
 		while (*str1)
@@ -186,7 +193,7 @@ namespace Natives
 		}
 		return -1;
 	}
-
+	//native strspn(const str1[], const str2[]);
 	cell AMX_NATIVE_CALL string_strspn(AMX* amx, cell* params)
 	{
 		cell *str1 = NULL;
@@ -210,7 +217,7 @@ namespace Natives
 		}
 		return str1 - start1;
 	}
-
+	//native strtok(const source[], destination[], &idx, delimiter[], size_dest = sizeof(destination));
 	cell AMX_NATIVE_CALL string_strtok(AMX* amx, cell* params)
 	{
 		cell *str1 = NULL, *start1 = NULL, *str2 = NULL, *str3 = NULL, *start3 = NULL, *idx = NULL;
@@ -220,7 +227,6 @@ namespace Natives
 		amx_GetAddr(amx, params[3], &idx);
 		amx_GetAddr(amx, params[4], &start3);
 
-		cell delim = params[4];
 		int size_dest = params[5];
 
 		str1 = start1 + *idx;
@@ -262,6 +268,7 @@ namespace Natives
 		*idx += (str1 - start1);
 		return *idx;
 	}
+	//native memset(destination[], value, num);
 	cell AMX_NATIVE_CALL string_memset(AMX* amx, cell* params)
 	{
 		cell *str = NULL;
@@ -275,7 +282,7 @@ namespace Natives
 
 		return -1;
 	}
-
+	//native bool:strreplace(source[], const search[], const replace[], size_src = sizeof(source));
 	cell AMX_NATIVE_CALL string_strreplace(AMX* amx, cell* params)
 	{
 		cell *source = NULL, *search = NULL, *replace = NULL, len;
@@ -316,6 +323,7 @@ namespace Natives
 		amx_SetString(source, ssource.c_str(), 0, 0, params[4]);
 		return replaced;
 	}
+	//native strtrim(source[]); //returns the length of the new string
 	cell AMX_NATIVE_CALL string_strtrim(AMX* amx, cell* params)
 	{
 		cell *start = NULL, *str = NULL, len;
@@ -341,6 +349,7 @@ namespace Natives
 		*(str - shift) = '\0';
 		return end - start;
 	}
+	//native strtolower(source[]); //returns length of the string
 	cell AMX_NATIVE_CALL string_strtolower(AMX* amx, cell* params)
 	{
 		cell *str = NULL, *start = NULL;		
@@ -356,6 +365,7 @@ namespace Natives
 
 		return str - start;
 	}
+	//native strtoupper(source[]); //returns length of the string
 	cell AMX_NATIVE_CALL string_strtoupper(AMX* amx, cell* params)
 	{
 		cell *str = NULL, *start = NULL;
@@ -370,5 +380,14 @@ namespace Natives
 		}
 
 		return str - start;
+	}
+	//native strerror(errorid, errormsg[], size_errormsg = sizeof(errormsg));
+	cell AMX_NATIVE_CALL string_strerror(AMX* amx, cell* params)
+	{
+		cell *str = NULL;
+
+		amx_GetAddr(amx, params[2], &str);
+		amx_SetString(str, strerror(params[1]), 0, 0, params[3]);
+		return true;
 	}
 }

@@ -90,6 +90,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;STANDARDLIBRARYEXTENSION_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>E:\SAMP\Plugins\StandardLibraryExtension\Plugin\StandardLibraryExtension;E:\SAMP\Plugins\StandardLibraryExtension\Plugin\StandardLibraryExtension\source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -112,7 +113,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
@@ -120,6 +121,10 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;STANDARDLIBRARYEXTENSION_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
+      <AdditionalIncludeDirectories>E:\SAMP\Plugins\StandardLibraryExtension\Plugin\StandardLibraryExtension;E:\SAMP\Plugins\StandardLibraryExtension\Plugin\StandardLibraryExtension\source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -154,9 +159,16 @@
     <ClCompile Include="source\interface.cpp" />
     <ClCompile Include="source\main.cpp" />
     <ClCompile Include="source\natives\algorithm.cpp" />
+    <ClCompile Include="source\natives\bitset.cpp" />
+    <ClCompile Include="source\natives\complex.cpp" />
     <ClCompile Include="source\natives\ctype.cpp" />
+    <ClCompile Include="source\natives\errno.cpp" />
+    <ClCompile Include="source\natives\file.cpp" />
+    <ClCompile Include="source\natives\functional.cpp" />
     <ClCompile Include="source\natives\isc.cpp" />
+    <ClCompile Include="source\natives\list.cpp" />
     <ClCompile Include="source\natives\math.cpp" />
+    <ClCompile Include="source\natives\numeric.cpp" />
     <ClCompile Include="source\natives\string.cpp" />
     <ClCompile Include="source\natives\time.cpp" />
   </ItemGroup>
@@ -167,9 +179,16 @@
     <ClInclude Include="source\interface.h" />
     <ClInclude Include="source\main.h" />
     <ClInclude Include="source\natives\algorithm.h" />
+    <ClInclude Include="source\natives\bitset.h" />
+    <ClInclude Include="source\natives\complex.h" />
     <ClInclude Include="source\natives\ctype.h" />
+    <ClInclude Include="source\natives\errno.h" />
+    <ClInclude Include="source\natives\file.h" />
+    <ClInclude Include="source\natives\functional.h" />
     <ClInclude Include="source\natives\isc.h" />
+    <ClInclude Include="source\natives\list.h" />
     <ClInclude Include="source\natives\math.h" />
+    <ClInclude Include="source\natives\numeric.h" />
     <ClInclude Include="source\natives\string.h" />
     <ClInclude Include="source\natives\time.h" />
   </ItemGroup>

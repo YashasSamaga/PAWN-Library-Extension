@@ -11,7 +11,7 @@ math.h
 *************************************************************************************************************/
 #pragma once
 
-#include "..\main.h"
+#include "main.h"
 /************************************************************************************************************/
 namespace Natives
 {
@@ -34,4 +34,6 @@ namespace Natives
 	cell AMX_NATIVE_CALL math_fmin(AMX* amx, cell* params);
 	cell AMX_NATIVE_CALL math_fmax(AMX* amx, cell* params);
 	cell AMX_NATIVE_CALL math_fma(AMX* amx, cell* params);
+
+	cell AMX_NATIVE_CALL math_math_errhandling(AMX* amx, cell* params);
 }

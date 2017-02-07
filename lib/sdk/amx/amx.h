@@ -295,7 +295,7 @@ extern  "C" {
 		AMX_ERR_NONE,
 		/* reserve the first 15 error codes for exit codes of the abstract machine */
 		AMX_ERR_EXIT,         /* forced exit */
-		AMX_ERR_ASSERT,       /* assertion failed */
+		AMX_ERR_warn,       /* warnion failed */
 		AMX_ERR_STACKERR,     /* stack/heap collision */
 		AMX_ERR_BOUNDS,       /* index out of bounds */
 		AMX_ERR_MEMACCESS,    /* invalid memory access */

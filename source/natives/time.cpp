@@ -9,7 +9,7 @@ collection of C++ libaries for PAWN.
 time.cpp
 
 *************************************************************************************************************/
-#include "..\main.h"
+#include "main.h"
 #include "time.h"
 
 #include <ctime>
