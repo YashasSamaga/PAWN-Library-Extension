@@ -39,7 +39,7 @@ namespace Natives
 		while (start != end)
 		{
 			*start = init;
-			init = ExecuteFunctionCC1O2(amx, &fid, init);
+			init = ExecuteFunctionCC1O2O3(amx, &fid, init);
 			start++;
 		}
 		return true;
@@ -61,7 +61,7 @@ namespace Natives
 		cell *pos = start;
 		while (pos != end) 
 		{
-			init = ExecuteFunctionCC1C2(amx, &fid, init, *pos);
+			init = ExecuteFunctionCC1C2O3O4(amx, &fid, init, *pos);
 			pos++;
 		}
 		return init;
@@ -94,7 +94,7 @@ namespace Natives
 		cell *pos1 = start1, *pos2 = start2;
 		while (pos1 != end1)
 		{
-			init = ExecuteFunctionCC1C2(amx, &fid1, init, ExecuteFunctionCC1C2(amx, &fid2, *pos1, *pos2));
+			init = ExecuteFunctionCC1C2O3O4(amx, &fid1, init, ExecuteFunctionCC1C2O3O4(amx, &fid2, *pos1, *pos2));
 			++pos1;
 			++pos2;
 		}
@@ -115,7 +115,7 @@ namespace Natives
 		amx_GetAddr(amx, params[4], &func);
 		functionID fid(func);
 
-		return std::adjacent_difference(start1, end1, start2, [&amx, &fid](cell a, cell b) { return ExecuteFunctionCC1C2(amx, &fid, a, b); }) - start2;
+		return std::adjacent_difference(start1, end1, start2, [&amx, &fid](cell a, cell b) { return ExecuteFunctionCC1C2O3O4(amx, &fid, a, b); }) - start2;
 	}
 	//native partial_sum(range[], numcells, dest[], {_, func_bool2, func_cell2}:func[FTSIZE] = fixed_functions::plus);
 	cell AMX_NATIVE_CALL numeric_partial_sum(AMX *amx, cell params[])
@@ -140,7 +140,7 @@ namespace Natives
 		cell *pos1 = start1, *pos2 = start2;
 		while (++pos1 != end1)
 		{
-			sum = ExecuteFunctionCC1C2(amx, &fid, sum, *pos1);
+			sum = ExecuteFunctionCC1C2O3O4(amx, &fid, sum, *pos1);
 			*++pos2 = sum;
 		}
 		return ++pos2 - start2;

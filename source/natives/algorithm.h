@@ -99,5 +99,4 @@ namespace Natives
 	cell AMX_NATIVE_CALL algo_lexicographical_compare(AMX* amx, cell* params);
 	cell AMX_NATIVE_CALL algo_prev_permutation(AMX* amx, cell* params);
 	cell AMX_NATIVE_CALL algo_next_permutation(AMX* amx, cell* params);
-
 }

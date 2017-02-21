@@ -17,6 +17,22 @@ functional.h
 #include <functional>
 #include <vector>
 /************************************************************************************************************/
+/* originally foundin sscanf plugin code */
+#define USENAMETABLE(hdr) \
+					((hdr)->defsize==sizeof(AMX_FUNCSTUBNT))
+
+#define NUMENTRIES(hdr,field,nextfield) \
+					(unsigned)(((hdr)->nextfield - (hdr)->field) / (hdr)->defsize)
+
+#define GETENTRY(hdr,table,index) \
+					(AMX_FUNCSTUB *)((unsigned char*)(hdr) + (unsigned)(hdr)->table + (unsigned)index*(hdr)->defsize)
+
+#define GETENTRYNAME(hdr,entry) \
+					(USENAMETABLE(hdr) ? \
+						(char *)((unsigned char*)(hdr) + (unsigned)((AMX_FUNCSTUBNT*)(entry))->nameofs) : \
+				((AMX_FUNCSTUB*)(entry))->name)
+/* end */
+
 #define FTSIZE 4
 
 enum
@@ -74,13 +90,14 @@ typedef struct functionID
 	uint16_t flags;
 	uint8_t type;
 
-	cell *params;
+	cell params[3];
 
 	functionID(uint8_t type, uint16_t flags, uint8_t argc, uint32_t address) : type(type), flags(flags), argc(argc), address(address) { }
 	functionID(cell *func)
 	{
 		address = func[1];
-		params = &func[2];
+		params[0] = func[2];
+		params[1] = func[3];
 
 		argc = static_cast<uint8_t>((0xFF000000 & func[0]) >> 24);
 		flags = static_cast<uint16_t>((0x00FFFF00 & func[0]) >> 8);
@@ -118,9 +135,9 @@ typedef struct functionID
 	}
 }functionID;
 
-extern cell ExecuteFunctionCC1C2(AMX *amx, functionID *fid, cell cparam1, cell cparam2);
+extern cell ExecuteFunctionCC1C2O3O4(AMX *amx, functionID *fid, cell cparam1, cell cparam2);
 extern cell ExecuteFunctionCO1O2(AMX *amx, functionID *fid);
-extern cell ExecuteFunctionCC1O2(AMX *amx, functionID *fid, cell cparam);
+extern cell ExecuteFunctionCC1O2O3(AMX *amx, functionID *fid, cell cparam);
 
 extern std::vector <std::function<cell(cell)>> unary_functions;
 extern std::vector <std::function<cell(cell, cell)>> binary_functions;

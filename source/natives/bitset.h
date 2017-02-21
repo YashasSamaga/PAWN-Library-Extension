@@ -26,6 +26,10 @@ namespace Natives
 	cell AMX_NATIVE_CALL bitset_reset(AMX *amx, cell params[]);
 	cell AMX_NATIVE_CALL bitset_flip(AMX *amx, cell params[]);
 
+	cell AMX_NATIVE_CALL bitset_set_all(AMX *amx, cell params[]);
+	cell AMX_NATIVE_CALL bitset_reset_all(AMX *amx, cell params[]);
+	cell AMX_NATIVE_CALL bitset_flip_all(AMX *amx, cell params[]);
+
 	cell AMX_NATIVE_CALL bitset_tostring(AMX *amx, cell params[]);
 
 	cell AMX_NATIVE_CALL bitset_and(AMX *amx, cell params[]);
