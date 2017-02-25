@@ -16,24 +16,62 @@ functional.cpp
 #include <functional>
 #include <vector>
 /************************************************************************************************************/
-__forceinline cell ExecuteFunctionCO1O2(AMX *amx, functionID *fid)
+static std::vector <std::function<cell(cell)>> unary_functions =
+{
+	[](cell x) {return -x; },	//negate
+	[](cell x) {return !x; },	//logical_not
+	[](cell x) {return ~x; },	//bit_not
+	[](cell x) {return x + 1; }, //increment
+	[](cell x) {return x - 1; }, //decrement
+
+	[](cell x) {float n = -amx_ctof(x);  return amx_ftoc(n); },		//negatef
+	[](cell x) {float n = amx_ctof(x) + 1;  return amx_ftoc(n); },	//incrementf
+	[](cell x) {float n = amx_ctof(x) - 1;  return amx_ftoc(n); }	//decrementf
+};
+static std::vector <std::function<cell(cell, cell)>> binary_functions =
+{
+	[](cell a, cell b) { return a + b;  }, //plus
+	[](cell a, cell b) { return a - b;  }, //minus
+	[](cell a, cell b) { return a * b;  }, //multiplies
+	[](cell a, cell b) { return a / b;  }, //divides
+	[](cell a, cell b) { return a % b;  }, //modulus
+	[](cell a, cell b) { return a == b; }, //equal_to
+	[](cell a, cell b) { return a != b; }, //not_equal_to
+	[](cell a, cell b) { return a > b;	}, //greater
+	[](cell a, cell b) { return a < b;  }, //less
+	[](cell a, cell b) { return a >= b; }, //greater_equal
+	[](cell a, cell b) { return a <= b; }, //less_equal
+	[](cell a, cell b) { return a && b; }, //logical_and
+	[](cell a, cell b) { return a || b; }, //logical_or
+	[](cell a, cell b) { return a & b;  }, //bit_and
+	[](cell a, cell b) { return a | b;  }, //bit_or
+	[](cell a, cell b) { return a ^ b;  }, //bit_xor
+	[](cell a, cell b) { float n = amx_ctof(a) + amx_ctof(b);  return amx_ftoc(n); }, //plusf
+	[](cell a, cell b) { float n = amx_ctof(a) - amx_ctof(b);  return amx_ftoc(n); }, //minusf
+	[](cell a, cell b) { float n = amx_ctof(a) * amx_ctof(b);  return amx_ftoc(n); }, //multipliesf
+	[](cell a, cell b) { float n = amx_ctof(a) / amx_ctof(b);  return amx_ftoc(n); }  //dividesf
+};
+/************************************************************************************************************/
+cell ExecuteFunctionCO1O2O3(AMX *amx, functionID *fid)
 {
 	cell retval = 0;
 	switch (fid->type)
 	{
 	case FUNCTION_ID_TYPE_NATIVE:
 	{
-		cell params[3];
+		cell params[4];
 		params[0] = fid->argc * BYTES_PER_CELL;
 		switch (fid->argc)
 		{
+		case 3:
+			params[3] = fid->params[2];
+			//FALLTHROUGH
 		case 2:
 			params[2] = fid->params[1];
 			//FALLTHROUGH
 		case 1:
 			params[1] = fid->params[0];
 		}
-
 		cell(*func)(AMX *amx, cell params[]) = (cell(*)(AMX *amx, cell params[]))(fid->address);
 		retval = func(amx, params);
 		break;
@@ -42,8 +80,12 @@ __forceinline cell ExecuteFunctionCO1O2(AMX *amx, functionID *fid)
 	{
 		switch (fid->argc)
 		{
+		case 3:
+			amx_Push(amx, fid->params[2]);
+			//FALLTHROUGH
 		case 2:
 			amx_Push(amx, fid->params[1]);
+			//FALLTHROUGH
 		case 1:
 			amx_Push(amx, fid->params[0]);
 		}
@@ -67,19 +109,45 @@ __forceinline cell ExecuteFunctionCO1O2(AMX *amx, functionID *fid)
 	if (fid->IsFlagSet(FUNCTION_FLAG_NOT)) return !retval;
 	return retval;
 }
-__forceinline cell ExecuteFunctionCC1O2O3(AMX *amx, functionID *fid, cell cparam)
+cell ExecuteFunctionCC1O2O3O4(AMX *amx, functionID *fid, cell cparam)
 {
 	cell retval = 0;
 	switch (fid->type)
 	{
 	case FUNCTION_ID_TYPE_NATIVE:
 	{
-		cell params[4];
+		cell params[5];
 		switch (fid->argc)
 		{
-		case 1:
-			params[0] = 1 * BYTES_PER_CELL;
-			params[1] = cparam;
+		case 4:
+			params[0] = 4 * BYTES_PER_CELL;
+			params[1] = fid->params[0];
+			params[2] = fid->params[1];
+			params[3] = fid->params[2];
+			params[4] = cparam;
+			break;
+		case 3:
+			params[0] = 3 * BYTES_PER_CELL;
+			if (fid->IsFlagSet(FUNCTION_FLAG_BIND1))
+			{
+				params[1] = fid->params[0];
+				if (fid->IsFlagSet(FUNCTION_FLAG_BIND2))
+				{
+					params[2] = fid->params[1];
+					params[3] = cparam;
+				}
+				else //BIND3 must be set
+				{
+					params[2] = cparam;
+					params[3] = fid->params[2];
+				}
+			}
+			else
+			{
+				params[1] = cparam;
+				params[2] = fid->params[1];
+				params[3] = fid->params[2];
+			}
 			break;
 		case 2:
 			params[0] = 2 * BYTES_PER_CELL;
@@ -94,14 +162,11 @@ __forceinline cell ExecuteFunctionCC1O2O3(AMX *amx, functionID *fid, cell cparam
 				params[2] = fid->params[1];
 			}
 			break;
-		case 3:
-			params[0] = 3 * BYTES_PER_CELL;
-			params[1] = fid->params[0];
-			params[2] = fid->params[1];
-			params[3] = cparam;
-			break;
+		case 1:
+			params[0] = 1 * BYTES_PER_CELL;
+			params[1] = cparam;
+			break;		
 		}
-
 		cell(*func)(AMX *amx, cell params[]) = (cell(*)(AMX *amx, cell params[]))(fid->address);
 		retval = func(amx, params);
 		break;
@@ -110,9 +175,34 @@ __forceinline cell ExecuteFunctionCC1O2O3(AMX *amx, functionID *fid, cell cparam
 	{
 		switch (fid->argc)
 		{
-		case 1:
+		case 4:
 			amx_Push(amx, cparam);
+			amx_Push(amx, fid->params[2]);
+			amx_Push(amx, fid->params[1]);
+			amx_Push(amx, fid->params[0]);
 			break;
+		case 3:
+			if (fid->IsFlagSet(FUNCTION_FLAG_BIND3))
+			{
+				amx_Push(amx, fid->params[2]);
+				if (fid->IsFlagSet(FUNCTION_FLAG_BIND2))
+				{
+					amx_Push(amx, fid->params[1]);
+					amx_Push(amx, cparam);
+				}
+				else //BIND1 must be set
+				{
+					amx_Push(amx, cparam);
+					amx_Push(amx, fid->params[0]);
+				}
+			}
+			else
+			{
+				amx_Push(amx, cparam);
+				amx_Push(amx, fid->params[1]);
+				amx_Push(amx, fid->params[0]);
+			}
+			break;	
 		case 2:
 			if (fid->IsFlagSet(FUNCTION_FLAG_BIND1))
 			{
@@ -125,11 +215,9 @@ __forceinline cell ExecuteFunctionCC1O2O3(AMX *amx, functionID *fid, cell cparam
 				amx_Push(amx, cparam);
 			}
 			break;
-		case 3:
-			amx_Push(amx, fid->params[0]);
-			amx_Push(amx, fid->params[1]);
+		case 1:
 			amx_Push(amx, cparam);
-			break;
+			break;			
 		}
 		amx_Exec(amx, &retval, fid->address);
 		break;
@@ -154,42 +242,76 @@ __forceinline cell ExecuteFunctionCC1O2O3(AMX *amx, functionID *fid, cell cparam
 	if (fid->IsFlagSet(FUNCTION_FLAG_NOT)) return !retval;
 	return retval;
 }
-__forceinline cell ExecuteFunctionCC1C2O3O4(AMX *amx, functionID *fid, cell cparam1, cell cparam2)
+cell ExecuteFunctionCC1C2O3O4O5(AMX *amx, functionID *fid, cell cparam1, cell cparam2)
 {
 	cell retval = 0;
 	switch (fid->type)
 	{
 	case FUNCTION_ID_TYPE_NATIVE:
 	{
-		cell(*func)(AMX *amx, cell params[]) = (cell(*)(AMX *amx, cell params[]))(fid->address);
-
-		cell params[5];
-		params[0] = fid->argc * BYTES_PER_CELL;
+		cell params[6];		
 		switch (fid->argc)
 		{
-		case 4:
+		case 5:
+			params[0] = 5 * BYTES_PER_CELL;
 			params[1] = fid->params[0];
 			params[2] = fid->params[1];
-			params[3] = cparam1;
-			params[4] = cparam2;
+			params[3] = fid->params[2];
+			params[4] = cparam1;
+			params[5] = cparam2;
 			break;
-		case 3:
+		case 4:
+			params[0] = 4 * BYTES_PER_CELL;
 			if (fid->IsFlagSet(FUNCTION_FLAG_BIND1))
 			{
 				params[1] = fid->params[0];
-				params[2] = cparam1;
+				if (fid->IsFlagSet(FUNCTION_FLAG_BIND2))
+				{
+					params[2] = fid->params[1];
+					params[3] = cparam1;
+				}
+				else
+				{
+					params[2] = cparam1;
+					params[3] = fid->params[2];					
+				}
 			}
-			else //BIND2 must be set
+			else
 			{
 				params[1] = cparam1;
 				params[2] = fid->params[1];
+				params[3] = fid->params[2];
 			}
-			params[3] = cparam2;
+			params[4] = cparam2;
+			break;
+		case 3:
+			params[0] = 3 * BYTES_PER_CELL;
+			if (fid->IsFlagSet(FUNCTION_FLAG_BIND1))
+			{
+				params[1] = fid->params[0];
+				params[2] = cparam1;	
+				params[3] = cparam2;
+			}
+			else if (fid->IsFlagSet(FUNCTION_FLAG_BIND2))
+			{
+				params[1] = cparam1;				
+				params[2] = fid->params[1];
+				params[3] = cparam2;
+			}
+			else
+			{
+				params[1] = cparam1;
+				params[2] = cparam2;
+				params[3] = fid->params[2];
+			}			
+			break;
 		case 2:
+			params[0] = 2 * BYTES_PER_CELL;
 			params[1] = cparam1;
 			params[2] = cparam2;
 			break;
 		}
+		cell(*func)(AMX *amx, cell params[]) = (cell(*)(AMX *amx, cell params[]))(fid->address);
 		retval = func(amx, params);
 		break;
 	}
@@ -197,27 +319,59 @@ __forceinline cell ExecuteFunctionCC1C2O3O4(AMX *amx, functionID *fid, cell cpar
 	{
 		switch (fid->argc)
 		{
-		case 4:
-			amx_Push(amx, fid->params[0]);
-			amx_Push(amx, fid->params[1]);
-			amx_Push(amx, cparam1);
+		case 5:
 			amx_Push(amx, cparam2);
+			amx_Push(amx, cparam1);
+			amx_Push(amx, fid->params[2]);
+			amx_Push(amx, fid->params[1]);
+			amx_Push(amx, fid->params[0]);
 			break;
-		case 3:
-			if (fid->IsFlagSet(FUNCTION_FLAG_BIND1))
+		case 4:
+			amx_Push(amx, cparam2);
+			if (fid->IsFlagSet(FUNCTION_FLAG_BIND3))
 			{
-				amx_Push(amx, fid->params[0]);
-				amx_Push(amx, cparam1);
+				amx_Push(amx, fid->params[2]);
+				if (fid->IsFlagSet(FUNCTION_FLAG_BIND2))
+				{
+					amx_Push(amx, fid->params[1]);
+					amx_Push(amx, cparam1);
+				}
+				else
+				{
+					amx_Push(amx, cparam1);
+					amx_Push(amx, fid->params[0]);
+				}
 			}
-			else //BIND2 must be set
+			else
 			{
 				amx_Push(amx, cparam1);
 				amx_Push(amx, fid->params[1]);
+				amx_Push(amx, fid->params[0]);
 			}
-			amx_Push(amx, cparam2);
+			break;
+		case 3:
+			if (fid->IsFlagSet(FUNCTION_FLAG_BIND3))
+			{
+				amx_Push(amx, fid->params[2]);
+				amx_Push(amx, cparam2);
+				amx_Push(amx, cparam1);
+			}
+			else if (fid->IsFlagSet(FUNCTION_FLAG_BIND2))
+			{
+				amx_Push(amx, cparam2);
+				amx_Push(amx, fid->params[1]);
+				amx_Push(amx, cparam1);
+			}
+			else
+			{
+				amx_Push(amx, cparam2);
+				amx_Push(amx, cparam1);
+				amx_Push(amx, fid->params[0]);
+			}
+			break;
 		case 2:
-			amx_Push(amx, cparam1);
 			amx_Push(amx, cparam2);
+			amx_Push(amx, cparam1);
 			break;
 		}
 		amx_Exec(amx, &retval, fid->address);
@@ -232,71 +386,61 @@ __forceinline cell ExecuteFunctionCC1C2O3O4(AMX *amx, functionID *fid, cell cpar
 	if (fid->IsFlagSet(FUNCTION_FLAG_NOT)) return !retval;
 	return retval;
 }
-
-std::vector <std::function<cell(cell)>> unary_functions =
-{
-	[](cell x) {return -x; },	//negate
-	[](cell x) {return !x; },	//logical_not
-	[](cell x) {return ~x; },	//bit_not
-	[](cell x) {return x + 1; }, //increment
-	[](cell x) {return x - 1; }, //decrement
-
-	[](cell x) {float n = -amx_ctof(x);  return amx_ftoc(n); },		//negatef
-	[](cell x) {float n = amx_ctof(x) + 1;  return amx_ftoc(n); },	//incrementf
-	[](cell x) {float n = amx_ctof(x) - 1;  return amx_ftoc(n); }	//decrementf
-};
-std::vector <std::function<cell(cell, cell)>> binary_functions =
-{
-	[](cell a, cell b) { return a + b;  }, //plus
-	[](cell a, cell b) { return a - b;  }, //minus
-	[](cell a, cell b) { return a * b;  }, //multiplies
-	[](cell a, cell b) { return a / b;  }, //divides
-	[](cell a, cell b) { return a % b;  }, //modulus
-	[](cell a, cell b) { return a == b; }, //equal_to
-	[](cell a, cell b) { return a != b; }, //not_equal_to
-	[](cell a, cell b) { return a > b;	}, //greater
-	[](cell a, cell b) { return a < b;  }, //less
-	[](cell a, cell b) { return a >= b; }, //greater_equal
-	[](cell a, cell b) { return a <= b; }, //less_equal
-	[](cell a, cell b) { return a && b; }, //logical_and
-	[](cell a, cell b) { return a || b; }, //logical_or
-	[](cell a, cell b) { return a & b;  }, //bit_and
-	[](cell a, cell b) { return a | b;  }, //bit_or
-	[](cell a, cell b) { return a ^ b;  }, //bit_xor
-	[](cell a, cell b) { float n = amx_ctof(a) + amx_ctof(b);  return amx_ftoc(n); }, //plusf
-	[](cell a, cell b) { float n = amx_ctof(a) - amx_ctof(b);  return amx_ftoc(n); }, //minusf
-	[](cell a, cell b) { float n = amx_ctof(a) * amx_ctof(b);  return amx_ftoc(n); }, //multipliesf
-	[](cell a, cell b) { float n = amx_ctof(a) / amx_ctof(b);  return amx_ftoc(n); }  //dividesf
-};
-
+/************************************************************************************************************/
 namespace Natives
-{
-	//native i@_make_function(func[FTSIZE], const fname[], type, argc, flags);
+{	
+	//native invoke_fn(func[FTSIZE], ...);
+	cell AMX_NATIVE_CALL functional_invoke_fn(AMX* amx, cell* params)
+	{
+		/*error_if(!check_params_min(1), "[PLE] functional>> invoke_fn: expected at least 1 parameters but found %d parameters.", get_params_count());
+		cell* func = NULL;
+		amx_GetAddr(amx, params[3], &func);
+		functionID fid(func);
+		error_if((get_params_count() - 1) != fid.argc, "[PLE] functional>> invoke_fn: expected at least 1 parameters but found %d parameters.", get_params_count());
+		cell argc = get_params_count();
+		for(int i = 2; i <= argc; i++)
+		*/
+		//TODO //WIP
+		return true;
+	}
+	//native argArray(arr[]);
+	cell AMX_NATIVE_CALL functional_argArray(AMX* amx, cell* params)
+	{
+		return params[1];
+	}
+	//native argReference(&var);
+	cell AMX_NATIVE_CALL functional_argReference(AMX* amx, cell* params)
+	{
+		return params[1];
+	}
+	//native i@_make_function(func[FTSIZE], const fname[], argc, type, flags);
 	cell AMX_NATIVE_CALL functional_make_function(AMX* amx, cell* params)
 	{
+		error_if(!check_params(5), "[PLE] functional>> make_function: expected 5 parameters but found %d parameters.", get_params_count());
 		cell *dest_addr = NULL;
 		amx_GetAddr(amx, params[1], &dest_addr);
-
 		cell *name_addr = NULL;
 		amx_GetAddr(amx, params[2], &name_addr);
+
+		cell argc = params[3];
+		error_if(argc > 31, "[PLE] functional>> make_function: 'argc' (%d) must be less than 32", argc);
 
 		char name[MAX_FUNC_NAME];
 		amx_GetString(name, name_addr, 0, sizeof(name));
 
-		switch (params[3])
+		switch (params[4])
 		{
 			case FUNCTION_ID_TYPE_PUBLIC:
 			{
 				int funcidx = 0;
 				if (amx_FindPublic(amx, name, &funcidx) == AMX_ERR_NONE)
 				{
-					functionID id(FUNCTION_ID_TYPE_PUBLIC, static_cast<uint16_t>(params[5]), static_cast<uint8_t>(params[4]), static_cast<uint32_t>(funcidx));
+					functionID id(FUNCTION_ID_TYPE_PUBLIC, argc, static_cast<uint16_t>(params[5]), static_cast<uint32_t>(funcidx));
 					dest_addr[0] = id.getFirst();
 					dest_addr[1] = id.getSecond();
 					return true;
 				}
 				break;
-
 			}
 			case FUNCTION_ID_TYPE_NATIVE:
 			{
@@ -309,14 +453,17 @@ namespace Natives
 					func = GETENTRY(hdr, natives, idx);
 					if (!strcmp(name, GETENTRYNAME(hdr, func)))
 					{
-						functionID id(FUNCTION_ID_TYPE_NATIVE, static_cast<uint16_t>(params[5]), static_cast<uint8_t>(params[4]), static_cast<uint32_t>(func->address));
+						functionID id(FUNCTION_ID_TYPE_NATIVE, argc, static_cast<uint16_t>(params[5]), static_cast<uint32_t>(func->address));
 						dest_addr[0] = id.getFirst();
 						dest_addr[1] = id.getSecond();
 						return true;
 					}
 				}
+				break;
 			}
-		break;
+			default:
+				error_if(true, "[PLE] functional>> make_function: unknown function type");
+			break;
 		}
 		return false;
 	}

@@ -14,19 +14,15 @@ ctype.inc
 	#include <PLE/config>
 #endif
 /*****************************************************************************************************************/
-#if !defined ctype
-	#define ctype:: ctype_
-#endif
-
-native ctype::isalnum(c);
-native ctype::isalpha(c);
-native ctype::isblank(c);
-native ctype::iscntrl(c);
-native ctype::isdigit(c);
-native ctype::isgraph(c);
-native ctype::islower(c);
-native ctype::isprint(c);
-native ctype::ispunct(c);
-native ctype::isspace(c);
-native ctype::isupper(c);
-native ctype::isxdigit(c);
+native isalnum(c);
+native isalpha(c);
+native isblank(c);
+native iscntrl(c);
+native isdigit(c);
+native isgraph(c);
+native islower(c);
+native isprint(c);
+native ispunct(c);
+native isspace(c);
+native isupper(c);
+native isxdigit(c);

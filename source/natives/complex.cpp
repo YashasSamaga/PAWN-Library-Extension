@@ -19,7 +19,7 @@ namespace Natives
 	//native Float:cabs(num[complext_t]);
 	cell AMX_NATIVE_CALL complex_cabs(AMX* amx, cell* params)
 	{
-		error_if(!check_params(1), "[PLE] complex>> complex::abs: expected 1 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(1), "[PLE] complex>> complex::abs: expected 1 parameters but found %d parameters.", get_params_count());
 
 		cell *complex_addr = NULL;
 		amx_GetAddr(amx, params[1], &complex_addr);
@@ -29,7 +29,7 @@ namespace Natives
 	//native Float:carg(num[complext_t]);
 	cell AMX_NATIVE_CALL complex_carg(AMX* amx, cell* params)
 	{
-		error_if(!check_params(1), "[PLE] complex>> complex::arg: expected 1 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(1), "[PLE] complex>> complex::arg: expected 1 parameters but found %d parameters.", get_params_count());
 
 		cell *complex_addr = NULL;
 		amx_GetAddr(amx, params[1], &complex_addr);
@@ -39,7 +39,7 @@ namespace Natives
 	//native Float:cnorm(num[complext_t]);
 	cell AMX_NATIVE_CALL complex_cnorm(AMX* amx, cell* params)
 	{
-		error_if(!check_params(1), "[PLE] complex>> complex::norm: expected 1 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(1), "[PLE] complex>> complex::norm: expected 1 parameters but found %d parameters.", get_params_count());
 
 		cell *complex_addr = NULL;
 		amx_GetAddr(amx, params[1], &complex_addr);
@@ -49,7 +49,7 @@ namespace Natives
 	//native conj(num[complex_t]);
 	cell AMX_NATIVE_CALL complex_cconj(AMX* amx, cell* params)
 	{
-		error_if(!check_params(1), "[PLE] complex>> complex::conj: expected 1 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(1), "[PLE] complex>> complex::conj: expected 1 parameters but found %d parameters.", get_params_count());
 
 		cell *complex_addr = NULL;
 		amx_GetAddr(amx, params[1], &complex_addr);
@@ -61,7 +61,7 @@ namespace Natives
 	//native polar(Float:modulus, Float:arg, result[complex_t]);
 	cell AMX_NATIVE_CALL complex_cpolar(AMX* amx, cell* params)
 	{
-		error_if(!check_params(3), "[PLE] complex>> complex::polar: expected 3 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(3), "[PLE] complex>> complex::polar: expected 3 parameters but found %d parameters.", get_params_count());
 
 		error_if(amx_ctof(params[1]) < 0, "[PLE] complex>> complex::polar: 'modulus' parameter below zero");
 		error_if(std::isnan(amx_ctof(params[1])), "[PLE] complex>> complex::polar: 'modulus' parameter is NaN");
@@ -81,7 +81,7 @@ namespace Natives
 	//native ccos(num[complex_t], result[complex_t]);
 	cell AMX_NATIVE_CALL complex_ccos(AMX* amx, cell* params)
 	{
-		error_if(!check_params(2), "[PLE] complex>> complex::cos: expected 2 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(2), "[PLE] complex>> complex::cos: expected 2 parameters but found %d parameters.", get_params_count());
 
 		cell *complex_addr_src = NULL;
 		amx_GetAddr(amx, params[1], &complex_addr_src);
@@ -101,7 +101,7 @@ namespace Natives
 	//native csin(num[complex_t], result[complex_t]);
 	cell AMX_NATIVE_CALL complex_csin(AMX* amx, cell* params)
 	{
-		error_if(!check_params(2), "[PLE] complex>> complex::sin: expected 2 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(2), "[PLE] complex>> complex::sin: expected 2 parameters but found %d parameters.", get_params_count());
 
 		cell *complex_addr_src = NULL;
 		amx_GetAddr(amx, params[1], &complex_addr_src);
@@ -121,7 +121,7 @@ namespace Natives
 	//native ctan(num[complex_t], result[complex_t]);
 	cell AMX_NATIVE_CALL complex_ctan(AMX* amx, cell* params)
 	{
-		error_if(!check_params(2), "[PLE] complex>> complex::tan: expected 2 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(2), "[PLE] complex>> complex::tan: expected 2 parameters but found %d parameters.", get_params_count());
 
 		cell *complex_addr_src = NULL;
 		amx_GetAddr(amx, params[1], &complex_addr_src);
@@ -141,7 +141,7 @@ namespace Natives
 	//native cacos(num[complex_t], result[complex_t]);
 	cell AMX_NATIVE_CALL complex_cacos(AMX* amx, cell* params)
 	{
-		error_if(!check_params(2), "[PLE] complex>> complex::acos: expected 2 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(2), "[PLE] complex>> complex::acos: expected 2 parameters but found %d parameters.", get_params_count());
 
 		cell *complex_addr_src = NULL;
 		amx_GetAddr(amx, params[1], &complex_addr_src);
@@ -161,7 +161,7 @@ namespace Natives
 	//native casin(num[complex_t], result[complex_t]);
 	cell AMX_NATIVE_CALL complex_casin(AMX* amx, cell* params)
 	{
-		error_if(!check_params(2), "[PLE] complex>> complex::asin: expected 2 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(2), "[PLE] complex>> complex::asin: expected 2 parameters but found %d parameters.", get_params_count());
 
 		cell *complex_addr_src = NULL;
 		amx_GetAddr(amx, params[1], &complex_addr_src);
@@ -181,7 +181,7 @@ namespace Natives
 	//native catan(num[complex_t], result[complex_t]);
 	cell AMX_NATIVE_CALL complex_catan(AMX* amx, cell* params)
 	{
-		error_if(!check_params(2), "[PLE] complex>> complex::atan: expected 2 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(2), "[PLE] complex>> complex::atan: expected 2 parameters but found %d parameters.", get_params_count());
 
 		cell *complex_addr_src = NULL;
 		amx_GetAddr(amx, params[1], &complex_addr_src);
@@ -203,7 +203,7 @@ namespace Natives
 	//native cexp(num[complex_t], result[complex_t]);
 	cell AMX_NATIVE_CALL complex_cexp(AMX* amx, cell* params)
 	{
-		error_if(!check_params(2), "[PLE] complex>> complex::exp: expected 2 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(2), "[PLE] complex>> complex::exp: expected 2 parameters but found %d parameters.", get_params_count());
 
 		cell *complex_addr_src = NULL;
 		amx_GetAddr(amx, params[1], &complex_addr_src);
@@ -223,7 +223,7 @@ namespace Natives
 	//native clog(num[complex_t], result[complex_t]);
 	cell AMX_NATIVE_CALL complex_clog(AMX* amx, cell* params)
 	{
-		error_if(!check_params(2), "[PLE] complex>> complex::log: expected 2 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(2), "[PLE] complex>> complex::log: expected 2 parameters but found %d parameters.", get_params_count());
 
 		cell *complex_addr_src = NULL;
 		amx_GetAddr(amx, params[1], &complex_addr_src);
@@ -243,7 +243,7 @@ namespace Natives
 	//native clog10(num[complex_t], result[complex_t]);
 	cell AMX_NATIVE_CALL complex_clog10(AMX* amx, cell* params)
 	{
-		error_if(!check_params(2), "[PLE] complex>> complex::log10: expected 2 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(2), "[PLE] complex>> complex::log10: expected 2 parameters but found %d parameters.", get_params_count());
 
 		cell *complex_addr_src = NULL;
 		amx_GetAddr(amx, params[1], &complex_addr_src);
@@ -263,7 +263,7 @@ namespace Natives
 	//native cpow(num[complex_t], pow[complex_t], result[complex_t]);
 	cell AMX_NATIVE_CALL complex_cpow(AMX* amx, cell* params)
 	{
-		error_if(!check_params(3), "[PLE] complex>> complex::pow: expected 3 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(3), "[PLE] complex>> complex::pow: expected 3 parameters but found %d parameters.", get_params_count());
 
 		cell *complex_addr_num = NULL;
 		amx_GetAddr(amx, params[1], &complex_addr_num);
@@ -287,7 +287,7 @@ namespace Natives
 	//native csqrt(num[complex_t], result[complex_t]);
 	cell AMX_NATIVE_CALL complex_csqrt(AMX* amx, cell* params)
 	{
-		error_if(!check_params(2), "[PLE] complex>> complex::sqrt: expected 2 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(2), "[PLE] complex>> complex::sqrt: expected 2 parameters but found %d parameters.", get_params_count());
 
 		cell *complex_addr_src = NULL;
 		amx_GetAddr(amx, params[1], &complex_addr_src);
@@ -308,7 +308,7 @@ namespace Natives
 	//native cnegate(num[complex_t]);
 	cell AMX_NATIVE_CALL complex_cnegate(AMX* amx, cell* params)
 	{
-		error_if(!check_params(1), "[PLE] complex>> complex::negate: expected 1 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(1), "[PLE] complex>> complex::negate: expected 1 parameters but found %d parameters.", get_params_count());
 
 		cell *complex_addr_num = NULL;
 		amx_GetAddr(amx, params[1], &complex_addr_num);
@@ -323,7 +323,7 @@ namespace Natives
 	//native cadd(num1[complex_t], num2[complex_t], result[complex_t]);
 	cell AMX_NATIVE_CALL complex_cadd(AMX* amx, cell* params)
 	{
-		error_if(!check_params(3), "[PLE] complex>> complex::add: expected 3 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(3), "[PLE] complex>> complex::add: expected 3 parameters but found %d parameters.", get_params_count());
 
 		cell *complex_addr_num1 = NULL;
 		amx_GetAddr(amx, params[1], &complex_addr_num1);
@@ -344,7 +344,7 @@ namespace Natives
 	//native csub(num1[complex_t], num2[complex_t], result[complex_t]);
 	cell AMX_NATIVE_CALL complex_csub(AMX* amx, cell* params)
 	{
-		error_if(!check_params(3), "[PLE] complex>> complex::sub: expected 3 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(3), "[PLE] complex>> complex::sub: expected 3 parameters but found %d parameters.", get_params_count());
 
 		cell *complex_addr_num1 = NULL;
 		amx_GetAddr(amx, params[1], &complex_addr_num1);
@@ -365,7 +365,7 @@ namespace Natives
 	//native cmul(num1[complex_t], num2[complex_t], result[complex_t]);
 	cell AMX_NATIVE_CALL complex_cmul(AMX* amx, cell* params)
 	{
-		error_if(!check_params(3), "[PLE] complex>> complex::mul: expected 3 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(3), "[PLE] complex>> complex::mul: expected 3 parameters but found %d parameters.", get_params_count());
 
 		cell *complex_addr_num1 = NULL;
 		amx_GetAddr(amx, params[1], &complex_addr_num1);
@@ -386,7 +386,7 @@ namespace Natives
 	//native cdiv(num1[complex_t], num2[complex_t], result[complex_t]);
 	cell AMX_NATIVE_CALL complex_cdiv(AMX* amx, cell* params)
 	{
-		error_if(!check_params(3), "[PLE] complex>> complex::div: expected 3 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(3), "[PLE] complex>> complex::div: expected 3 parameters but found %d parameters.", get_params_count());
 
 		cell *complex_addr_num1 = NULL;
 		amx_GetAddr(amx, params[1], &complex_addr_num1);
@@ -413,7 +413,7 @@ namespace Natives
 	//native bool:cequal(num1[complex_t], num2[complex_t]);
 	cell AMX_NATIVE_CALL complex_cequal(AMX* amx, cell* params)
 	{
-		error_if(!check_params(2), "[PLE] complex>> complex::equal: expected 2 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(2), "[PLE] complex>> complex::equal: expected 2 parameters but found %d parameters.", get_params_count());
 
 		cell *complex_addr_num1 = NULL;
 		amx_GetAddr(amx, params[1], &complex_addr_num1);

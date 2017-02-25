@@ -14,14 +14,12 @@ complex.inc
 	#include <PLE/config>
 #endif
 /*****************************************************************************************************************/
-#if !defined complex
-	#define complex:: c
-#endif
+#define complex:: c
 
 enum complex_t
 {
-	real,
-	imag
+	Float:real,
+	Float:imag
 }
 
 native Float:complex::abs(num[complex_t]);

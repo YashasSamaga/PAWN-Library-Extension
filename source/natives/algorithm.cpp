@@ -19,13 +19,17 @@ algorithm.cpp
 #include <algorithm>
 #include <functional>
 #include <vector>
+#include <random>
 /************************************************************************************************************/
+std::random_device algo_random_device;
+std::mt19937 algo_mt19937(algo_random_device());
+
 namespace Natives
 {
 	//native bool:ibsearch(key, array[], &idx, size = sizeof(array));
 	cell AMX_NATIVE_CALL algo_ibsearch(AMX* amx, cell* params)
 	{
-		error_if(!check_params(4), "[PLE] algorithm>> ibsearch: expected 4 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(4), "[PLE] algorithm>> ibsearch: expected 4 parameters but found %d parameters.", get_params_count());
 
 		cell key = params[1];
 
@@ -58,7 +62,7 @@ namespace Natives
 	//native bool:fbsearch(Float:key, Float:array[], &idx, Float:error = 0.01, size = sizeof(array));
 	cell AMX_NATIVE_CALL algo_fbsearch(AMX* amx, cell* params)
 	{
-		error_if(!check_params(5), "[PLE] algorithm>> fbsearch: expected 5 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(5), "[PLE] algorithm>> fbsearch: expected 5 parameters but found %d parameters.", get_params_count());
 
 		float key = amx_ctof(params[1]);
 
@@ -97,7 +101,7 @@ namespace Natives
 	//native bool:sbsearch(search[], source[][], &idx, size_major = sizeof(source), size_minor = sizeof(source[]));
 	cell AMX_NATIVE_CALL algo_sbsearch(AMX* amx, cell* params)
 	{
-		error_if(!check_params(5), "[PLE] algorithm>> sbsearch: expected 5 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(5), "[PLE] algorithm>> sbsearch: expected 5 parameters but found %d parameters.", get_params_count());
 
 		cell* search_str = NULL;
 		amx_GetAddr(amx, params[1], &search_str);
@@ -141,7 +145,7 @@ namespace Natives
 	//native bool:all_of(range[], numcells, {func_bool1, func_cell1, _}:func[FTSIZE]);
 	cell AMX_NATIVE_CALL algo_all_of(AMX* amx, cell* params)
 	{
-		error_if(!check_params(3), "[PLE] algorithm>> all_of: expected 3 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(3), "[PLE] algorithm>> all_of: expected 3 parameters but found %d parameters.", get_params_count());
 
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
@@ -156,7 +160,7 @@ namespace Natives
 
 		while (start != end)
 		{
-			if (!ExecuteFunctionCC1O2O3(amx, &fid, *start)) return false;
+			if (!ExecuteFunctionCC1O2O3O4(amx, &fid, *start)) return false;
 			start++;
 		}
 		return true;
@@ -164,7 +168,7 @@ namespace Natives
 	//native bool:any_of(range[], numcells, {func_bool1, func_cell1, _}:func[FTSIZE]);
 	cell AMX_NATIVE_CALL algo_any_of(AMX* amx, cell* params)
 	{
-		error_if(!check_params(3), "[PLE] algorithm>> any_of: expected 3 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(3), "[PLE] algorithm>> any_of: expected 3 parameters but found %d parameters.", get_params_count());
 
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
@@ -179,7 +183,7 @@ namespace Natives
 
 		while (start != end)
 		{
-			if (ExecuteFunctionCC1O2O3(amx, &fid, *start)) return true;
+			if (ExecuteFunctionCC1O2O3O4(amx, &fid, *start)) return true;
 			start++;
 		}
 		return false;
@@ -187,7 +191,7 @@ namespace Natives
 	//native bool:none_of(range[], numcells, {func_bool1, func_cell1, _}:func[FTSIZE]);
 	cell AMX_NATIVE_CALL algo_none_of(AMX* amx, cell* params)
 	{
-		error_if(!check_params(3), "[PLE] algorithm>> none_of: expected 3 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(3), "[PLE] algorithm>> none_of: expected 3 parameters but found %d parameters.", get_params_count());
 
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
@@ -202,7 +206,7 @@ namespace Natives
 
 		while (start != end)
 		{
-			if (ExecuteFunctionCC1O2O3(amx, &fid, *start)) return false;
+			if (ExecuteFunctionCC1O2O3O4(amx, &fid, *start)) return false;
 			start++;
 		}
 		return true;
@@ -210,7 +214,7 @@ namespace Natives
 	//native noret:for_each(range[], numcells, func[FTSIZE]);
 	cell AMX_NATIVE_CALL algo_for_each(AMX* amx, cell* params)
 	{
-		error_if(!check_params(3), "[PLE] algorithm>> for_each: expected 3 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(3), "[PLE] algorithm>> for_each: expected 3 parameters but found %d parameters.", get_params_count());
 
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
@@ -225,7 +229,7 @@ namespace Natives
 
 		while (start != end)
 		{
-			ExecuteFunctionCC1O2O3(amx, &fid, *start);
+			ExecuteFunctionCC1O2O3O4(amx, &fid, *start);
 			start++;
 		}
 		return true;
@@ -233,7 +237,7 @@ namespace Natives
 	//native find(range[], numcells, search_value);
 	cell AMX_NATIVE_CALL algo_find(AMX* amx, cell* params)
 	{
-		error_if(!check_params(3), "[PLE] algorithm>> find: expected 3 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(3), "[PLE] algorithm>> find: expected 3 parameters but found %d parameters.", get_params_count());
 
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
@@ -254,7 +258,7 @@ namespace Natives
 	//native find_if(range[], numcells, {func_bool1, func_cell1, _}:func[FTSIZE]);
 	cell AMX_NATIVE_CALL algo_find_if(AMX* amx, cell* params)
 	{
-		error_if(!check_params(3), "[PLE] algorithm>> find_if: expected 3 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(3), "[PLE] algorithm>> find_if: expected 3 parameters but found %d parameters.", get_params_count());
 
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
@@ -270,7 +274,7 @@ namespace Natives
 		cell *pos = start;
 		while (pos != end)
 		{
-			if (ExecuteFunctionCC1O2O3(amx, &fid, *pos)) return pos - start;
+			if (ExecuteFunctionCC1O2O3O4(amx, &fid, *pos)) return pos - start;
 			pos++;
 		}
 		return params[2];
@@ -278,7 +282,7 @@ namespace Natives
 	//native find_if_not(range[], numcells, {func_bool1, func_cell1, _}:func[FTSIZE]);
 	cell AMX_NATIVE_CALL algo_find_if_not(AMX* amx, cell* params)
 	{
-		error_if(!check_params(3), "[PLE] algorithm>> find_if_not: expected 3 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(3), "[PLE] algorithm>> find_if_not: expected 3 parameters but found %d parameters.", get_params_count());
 
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
@@ -294,7 +298,7 @@ namespace Natives
 		cell *pos = start;
 		while (pos != end)
 		{
-			if (!ExecuteFunctionCC1O2O3(amx, &fid, *pos)) return pos - start;
+			if (!ExecuteFunctionCC1O2O3O4(amx, &fid, *pos)) return pos - start;
 			pos++;
 		}
 		return false;
@@ -302,7 +306,7 @@ namespace Natives
 	//native find_end(range1[], numcells1, range2[], numcells2, {func_bool2, func_cell2, _}:func[FTSIZE] = fixed_functions::equal_to);
 	cell AMX_NATIVE_CALL algo_find_end(AMX* amx, cell* params)
 	{
-		error_if(!check_params(5), "[PLE] algorithm>> find_end: expected 5 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(5), "[PLE] algorithm>> find_end: expected 5 parameters but found %d parameters.", get_params_count());
 
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
@@ -325,7 +329,7 @@ namespace Natives
 		while (pos1 != end1)
 		{
 			cell *it1 = pos1, *it2 = start2;
-			while (ExecuteFunctionCC1C2O3O4(amx, &fid, *it1, *it2))
+			while (ExecuteFunctionCC1C2O3O4O5(amx, &fid, *it1, *it2))
 			{
 				it1++;
 				it2++;
@@ -343,7 +347,7 @@ namespace Natives
 	//native find_first_of(range1[], numcells1, range2[], numcells2, {func_bool2, func_cell2, _}:func[FTSIZE]) = fixed_functions::equal_to;
 	cell AMX_NATIVE_CALL algo_find_first_of(AMX* amx, cell* params)
 	{
-		error_if(!check_params(5), "[PLE] algorithm>> find_first_of: expected 5 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(5), "[PLE] algorithm>> find_first_of: expected 5 parameters but found %d parameters.", get_params_count());
 
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
@@ -367,7 +371,7 @@ namespace Natives
 		{
 			for (cell* it = start2; it != end2; ++it)
 			{
-				if (ExecuteFunctionCC1C2O3O4(amx, &fid, *it, *pos))
+				if (ExecuteFunctionCC1C2O3O4O5(amx, &fid, *it, *pos))
 					return pos - start1;
 			}
 			pos++;
@@ -377,7 +381,7 @@ namespace Natives
 	//native adjacent_find(range[], numcells, {func_bool2, func_cell2, _}:func[FTSIZE] = fixed_functions::equal_to);
 	cell AMX_NATIVE_CALL algo_adjacent_find(AMX* amx, cell* params)
 	{
-		error_if(!check_params(3), "[PLE] algorithm>> adjacent_find: expected 3 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(3), "[PLE] algorithm>> adjacent_find: expected 3 parameters but found %d parameters.", get_params_count());
 
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
@@ -395,7 +399,7 @@ namespace Natives
 			cell *next = pos + 1;
 			while (next != end)
 			{
-				if (ExecuteFunctionCC1C2O3O4(amx, &fid, *pos, *next))
+				if (ExecuteFunctionCC1C2O3O4O5(amx, &fid, *pos, *next))
 					return pos - start;
 				++pos;
 				++next;
@@ -406,7 +410,7 @@ namespace Natives
 	//native count(range[], numcells, value);
 	cell AMX_NATIVE_CALL algo_count(AMX* amx, cell* params)
 	{
-		error_if(!check_params(3), "[PLE] algorithm>> count: expected 3 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(3), "[PLE] algorithm>> count: expected 3 parameters but found %d parameters.", get_params_count());
 
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
@@ -424,7 +428,7 @@ namespace Natives
 	//native count_if(range[], numcells, { func_bool1, func_cell1, _ }:func[FTSIZE]);
 	cell AMX_NATIVE_CALL algo_count_if(AMX* amx, cell* params)
 	{
-		error_if(!check_params(3), "[PLE] algorithm>> count_if: expected 3 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(3), "[PLE] algorithm>> count_if: expected 3 parameters but found %d parameters.", get_params_count());
 
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
@@ -439,7 +443,7 @@ namespace Natives
 		int count = 0;
 		while (start != end)
 		{
-			if (ExecuteFunctionCC1O2O3(amx, &fid, *start)) count++;
+			if (ExecuteFunctionCC1O2O3O4(amx, &fid, *start)) count++;
 			start++;
 		}
 		return count;
@@ -447,7 +451,7 @@ namespace Natives
 	//native mismatch(range1[], numcells1, range2[], {func_bool2, func_cell2, _}:func[FTSIZE] = fixed_functions::equal_to);
 	cell AMX_NATIVE_CALL algo_mismatch(AMX* amx, cell* params)
 	{
-		error_if(!check_params(4), "[PLE] algorithm>> mismatch: expected 4 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(4), "[PLE] algorithm>> mismatch: expected 4 parameters but found %d parameters.", get_params_count());
 
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
@@ -463,7 +467,7 @@ namespace Natives
 		error_if(!fid.IsFunctionValid(2), "[PLE] algorithm>> mismatch: function object 'func' is not valid");
 
 		cell *pos1 = start1, *pos2 = start2;
-		while ((pos1 != end1) && ExecuteFunctionCC1C2O3O4(amx, &fid, *pos1, *pos2))
+		while ((pos1 != end1) && ExecuteFunctionCC1C2O3O4O5(amx, &fid, *pos1, *pos2))
 		{
 			++pos1;
 			++pos2;
@@ -473,7 +477,7 @@ namespace Natives
 	//native bool:equal(range1[], numcells1, range2[], {func_bool2, func_cell2, _}:func[FTSIZE] = fixed_functions::equal_to);
 	cell AMX_NATIVE_CALL algo_equal(AMX* amx, cell* params)
 	{
-		error_if(!check_params(4), "[PLE] algorithm>> equal: expected 4 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(4), "[PLE] algorithm>> equal: expected 4 parameters but found %d parameters.", get_params_count());
 
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
@@ -491,7 +495,7 @@ namespace Natives
 		cell *pos1 = start1, *pos2 = start2;
 		while (pos1 != end1)
 		{
-			if (!ExecuteFunctionCC1C2O3O4(amx, &fid, *pos1, *pos2)) return false;
+			if (!ExecuteFunctionCC1C2O3O4O5(amx, &fid, *pos1, *pos2)) return false;
 			++pos1;
 			++pos2;
 		}
@@ -500,7 +504,7 @@ namespace Natives
 	//native bool:is_permutation(range1[], numcells1, range2[], {func_bool2, func_cell2, _}:func[FTSIZE] = fixed_functions::equal_to);
 	cell AMX_NATIVE_CALL algo_is_permutation(AMX* amx, cell* params)
 	{
-		error_if(!check_params(4), "[PLE] algorithm>> is_permutation: expected 4 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(4), "[PLE] algorithm>> is_permutation: expected 4 parameters but found %d parameters.", get_params_count());
 
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
@@ -515,12 +519,12 @@ namespace Natives
 		functionID fid(func);
 		error_if(!fid.IsFunctionValid(2), "[PLE] algorithm>> is_permutation: function object 'func' is not valid");
 
-		return std::is_permutation(start1, end1, start2, [&amx, &fid](cell x, cell y) { return ExecuteFunctionCC1C2O3O4(amx, &fid, x, y); });
+		return std::is_permutation(start1, end1, start2, [&amx, &fid](cell x, cell y) { return ExecuteFunctionCC1C2O3O4O5(amx, &fid, x, y); });
 	}
 	//native search(range1[], numcells1, range2[], numcells2, {func_bool2, func_cell2, _}:func[FTSIZE] = fixed_functions::equal_to);
 	cell AMX_NATIVE_CALL algo_search(AMX* amx, cell* params)
 	{
-		error_if(!check_params(5), "[PLE] algorithm>> search: expected 5 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(5), "[PLE] algorithm>> search: expected 5 parameters but found %d parameters.", get_params_count());
 
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
@@ -537,12 +541,12 @@ namespace Natives
 		functionID fid(func);
 		error_if(!fid.IsFunctionValid(2), "[PLE] algorithm>> search: function object 'func' is not valid");
 
-		return std::search(start1, end1, start2, end2, [&amx, &fid](cell x, cell y) { return ExecuteFunctionCC1C2O3O4(amx, &fid, x, y); }) - start1;
+		return std::search(start1, end1, start2, end2, [&amx, &fid](cell x, cell y) { return ExecuteFunctionCC1C2O3O4O5(amx, &fid, x, y); }) - start1;
 	}
 	//native search_n(range[], numcells, n, value, {func_bool2, func_cell2, _}:func[FTSIZE] = fixed_functions::equal_to);
 	cell AMX_NATIVE_CALL algo_search_n(AMX* amx, cell* params)
 	{
-		error_if(!check_params(5), "[PLE] algorithm>> search_n: expected 5 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(5), "[PLE] algorithm>> search_n: expected 5 parameters but found %d parameters.", get_params_count());
 
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
@@ -559,13 +563,13 @@ namespace Natives
 		functionID fid(func);
 		error_if(!fid.IsFunctionValid(2), "[PLE] algorithm>> search_n: function object 'func' is not valid");
 
-		return std::search_n(start, end, n, val, [&amx, &fid](cell x, cell y) { return ExecuteFunctionCC1C2O3O4(amx, &fid, x, y); }) - start;
+		return std::search_n(start, end, n, val, [&amx, &fid](cell x, cell y) { return ExecuteFunctionCC1C2O3O4O5(amx, &fid, x, y); }) - start;
 	}
 
 	//native noret:copy(source[], numcells, dest[]);
 	cell AMX_NATIVE_CALL algo_copy(AMX* amx, cell* params)
 	{
-		error_if(!check_params(3), "[PLE] algorithm>> copy: expected 3 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(3), "[PLE] algorithm>> copy: expected 3 parameters but found %d parameters.", get_params_count());
 
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
@@ -581,7 +585,7 @@ namespace Natives
 	//native noret:copy_if(source[], numcells, dest[], {func_bool1, func_cell1, _}:func[FTSIZE]);
 	cell AMX_NATIVE_CALL algo_copy_if(AMX* amx, cell* params)
 	{
-		error_if(!check_params(4), "[PLE] algorithm>> copy_if: expected 4 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(4), "[PLE] algorithm>> copy_if: expected 4 parameters but found %d parameters.", get_params_count());
 
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
@@ -596,13 +600,13 @@ namespace Natives
 		functionID fid(func);
 		error_if(!fid.IsFunctionValid(1), "[PLE] algorithm>> copy_if: function object 'func' is not valid");
 
-		std::copy_if(start1, end1, start2, [&amx, &fid, &func](cell x) { return ExecuteFunctionCC1O2O3(amx, &fid, x);  });
+		std::copy_if(start1, end1, start2, [&amx, &fid, &func](cell x) { return ExecuteFunctionCC1O2O3O4(amx, &fid, x);  });
 		return true;
 	}
 	//native noret:copy_backward(source[], numcells, dest_end[]);
 	cell AMX_NATIVE_CALL algo_copy_backward(AMX* amx, cell* params)
 	{
-		error_if(!check_params(3), "[PLE] algorithm>> copy_backward: expected 3 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(3), "[PLE] algorithm>> copy_backward: expected 3 parameters but found %d parameters.", get_params_count());
 
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
@@ -619,7 +623,7 @@ namespace Natives
 	//native noret:swap(&val1, &val2);
 	cell AMX_NATIVE_CALL algo_swap(AMX* amx, cell* params)
 	{
-		error_if(!check_params(2), "[PLE] algorithm>> swap: expected 2 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(2), "[PLE] algorithm>> swap: expected 2 parameters but found %d parameters.", get_params_count());
 
 		cell* val1 = NULL;
 		amx_GetAddr(amx, params[1], &val1);
@@ -635,7 +639,7 @@ namespace Natives
 	//native noret:swap_ranges(range1[], numcells1, range2[]);
 	cell AMX_NATIVE_CALL algo_swap_ranges(AMX* amx, cell* params)
 	{
-		error_if(!check_params(3), "[PLE] algorithm>> swap_ranges: expected 3 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(3), "[PLE] algorithm>> swap_ranges: expected 3 parameters but found %d parameters.", get_params_count());
 
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
@@ -651,7 +655,7 @@ namespace Natives
 	//native noret:transform(range[], numcells, dest[], {func_bool1, func_cell1, _}:func[FTSIZE]);
 	cell AMX_NATIVE_CALL algo_transform(AMX* amx, cell* params)
 	{
-		error_if(!check_params(4), "[PLE] algorithm>> transform: expected 4 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(4), "[PLE] algorithm>> transform: expected 4 parameters but found %d parameters.", get_params_count());
 
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
@@ -669,7 +673,7 @@ namespace Natives
 		cell* pos1 = start1, *pos2 = start2;
 		while (pos1 != end1)
 		{
-			*pos2 = ExecuteFunctionCC1O2O3(amx, &fid, *pos1);
+			*pos2 = ExecuteFunctionCC1O2O3O4(amx, &fid, *pos1);
 			++pos2;
 			++pos1;
 		}
@@ -678,7 +682,7 @@ namespace Natives
 	//native noret:transform2(range1[], numcells1, range2[], dest[], {func_bool2, func_cell2, _}:func[FTSIZE]);
 	cell AMX_NATIVE_CALL algo_transform2(AMX* amx, cell* params)
 	{
-		error_if(!check_params(5), "[PLE] algorithm>> transform2: expected 5 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(5), "[PLE] algorithm>> transform2: expected 5 parameters but found %d parameters.", get_params_count());
 
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
@@ -699,7 +703,7 @@ namespace Natives
 		cell* pos1 = start1, *pos2 = start2, *pos3 = start3;
 		while (pos1 != end1)
 		{
-			*pos3 = ExecuteFunctionCC1C2O3O4(amx, &fid, *pos1, *pos2);
+			*pos3 = ExecuteFunctionCC1C2O3O4O5(amx, &fid, *pos1, *pos2);
 			++pos3;
 			++pos2;
 			++pos1;
@@ -709,7 +713,7 @@ namespace Natives
 	//native replace(range[], numcells, search_value, replace_value);
 	cell AMX_NATIVE_CALL algo_replace(AMX* amx, cell* params)
 	{
-		error_if(!check_params(4), "[PLE] algorithm>> replace: expected 4 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(4), "[PLE] algorithm>> replace: expected 4 parameters but found %d parameters.", get_params_count());
 
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
@@ -734,7 +738,7 @@ namespace Natives
 	//native replace_if(range[], numcells, {func_bool1, func_cell1, _}:func[FTSIZE], replace_value);
 	cell AMX_NATIVE_CALL algo_replace_if(AMX* amx, cell* params)
 	{
-		error_if(!check_params(4), "[PLE] algorithm>> replace_if: expected 4 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(4), "[PLE] algorithm>> replace_if: expected 4 parameters but found %d parameters.", get_params_count());
 
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
@@ -751,7 +755,7 @@ namespace Natives
 		int count = 0;
 		while (start != end)
 		{
-			if (ExecuteFunctionCC1O2O3(amx, &fid, *start))
+			if (ExecuteFunctionCC1O2O3O4(amx, &fid, *start))
 			{
 				*start = replace_value;
 				count++;
@@ -763,7 +767,7 @@ namespace Natives
 	//native replace_copy(range[], numcells, dest[], search_value, replace_value);
 	cell AMX_NATIVE_CALL algo_replace_copy(AMX* amx, cell* params)
 	{
-		error_if(!check_params(5), "[PLE] algorithm>> replace_copy: expected 5 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(5), "[PLE] algorithm>> replace_copy: expected 5 parameters but found %d parameters.", get_params_count());
 
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
@@ -795,7 +799,7 @@ namespace Natives
 	//native replace_copy_if(range[], numcells, dest[], {func_bool1, func_cell1, _}:func[FTSIZE], replace_value);
 	cell AMX_NATIVE_CALL algo_replace_copy_if(AMX* amx, cell* params)
 	{
-		error_if(!check_params(5), "[PLE] algorithm>> replace_copy_if: expected 5 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(5), "[PLE] algorithm>> replace_copy_if: expected 5 parameters but found %d parameters.", get_params_count());
 
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
@@ -816,7 +820,7 @@ namespace Natives
 		cell* pos1 = start1, *pos2 = start2;
 		while (pos1 != end1)
 		{
-			if (ExecuteFunctionCC1O2O3(amx, &fid, *pos1))
+			if (ExecuteFunctionCC1O2O3O4(amx, &fid, *pos1))
 			{
 				*pos2 = replace_value;
 				count++;
@@ -831,7 +835,7 @@ namespace Natives
 	//native notret:fill(range[], numcells, value);
 	cell AMX_NATIVE_CALL algo_fill(AMX* amx, cell* params)
 	{
-		error_if(!check_params(3), "[PLE] algorithm>> fill: expected 3 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(3), "[PLE] algorithm>> fill: expected 3 parameters but found %d parameters.", get_params_count());
 
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
@@ -851,7 +855,7 @@ namespace Natives
 	//native noret:generate(range[], numcells, {func_bool0, func_cell0, _}:func[FTSIZE]);
 	cell AMX_NATIVE_CALL algo_generate(AMX* amx, cell* params)
 	{
-		error_if(!check_params(3), "[PLE] algorithm>> generate: expected 3 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(3), "[PLE] algorithm>> generate: expected 3 parameters but found %d parameters.", get_params_count());
 
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
@@ -865,7 +869,7 @@ namespace Natives
 
 		while (start != end)
 		{
-			*start = ExecuteFunctionCO1O2(amx, &fid);
+			*start = ExecuteFunctionCO1O2O3(amx, &fid);
 			start++;
 		}
 		return true;
@@ -874,7 +878,7 @@ namespace Natives
 	//native remove(range[], numcells, value);
 	cell AMX_NATIVE_CALL algo_remove(AMX* amx, cell* params)
 	{
-		error_if(!check_params(3), "[PLE] algorithm>> remove: expected 3 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(3), "[PLE] algorithm>> remove: expected 3 parameters but found %d parameters.", get_params_count());
 
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
@@ -888,7 +892,7 @@ namespace Natives
 	//native remove_if(range[], numcells, {func_bool1, func_cell1, _}:func[FTSIZE]);
 	cell AMX_NATIVE_CALL algo_remove_if(AMX* amx, cell* params)
 	{
-		error_if(!check_params(3), "[PLE] algorithm>> remove_if: expected 3 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(3), "[PLE] algorithm>> remove_if: expected 3 parameters but found %d parameters.", get_params_count());
 
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
@@ -900,12 +904,12 @@ namespace Natives
 		functionID fid(func);
 		error_if(!fid.IsFunctionValid(1), "[PLE] algorithm>> remove_if: function object 'func' is not valid");
 
-		return std::remove_if(start, end, [&amx, &fid, &func](cell x) { return ExecuteFunctionCC1O2O3(amx, &fid, x); }) - start;
+		return std::remove_if(start, end, [&amx, &fid, &func](cell x) { return ExecuteFunctionCC1O2O3O4(amx, &fid, x); }) - start;
 	}
 	//native remove_copy(range[], numcells, dest[], value);
 	cell AMX_NATIVE_CALL algo_remove_copy(AMX* amx, cell* params)
 	{
-		error_if(!check_params(4), "[PLE] algorithm>> remove_copy: expected 4 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(4), "[PLE] algorithm>> remove_copy: expected 4 parameters but found %d parameters.", get_params_count());
 
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
@@ -932,7 +936,7 @@ namespace Natives
 	//native remove_copy_if(range[], numcells, dest[], {func_bool1, func_cell1, _}:func[FTSIZE]);
 	cell AMX_NATIVE_CALL algo_remove_copy_if(AMX* amx, cell* params)
 	{
-		error_if(!check_params(4), "[PLE] algorithm>> remove_copy_if: expected 4 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(4), "[PLE] algorithm>> remove_copy_if: expected 4 parameters but found %d parameters.", get_params_count());
 
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
@@ -950,7 +954,7 @@ namespace Natives
 		cell* pos1 = start1, *pos2 = start2;
 		while (pos1 != end1)
 		{
-			if (!ExecuteFunctionCC1O2O3(amx, &fid, *pos1))
+			if (!ExecuteFunctionCC1O2O3O4(amx, &fid, *pos1))
 			{
 				*pos2 = *pos1;
 				pos2++;
@@ -962,7 +966,7 @@ namespace Natives
 	//native unique(range[], numcells, {func_bool1, func_cell1, _}:func[FTSIZE] = fixed_functions::equal_to);
 	cell AMX_NATIVE_CALL algo_unique(AMX* amx, cell* params)
 	{
-		error_if(!check_params(3), "[PLE] algorithm>> unique: expected 3 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(3), "[PLE] algorithm>> unique: expected 3 parameters but found %d parameters.", get_params_count());
 
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
@@ -974,12 +978,12 @@ namespace Natives
 		functionID fid(func);
 		error_if(!fid.IsFunctionValid(2), "[PLE] algorithm>> unique: function object 'func' is not valid");
 
-		return std::unique(start, end, [&amx, &fid](cell x, cell y) { return ExecuteFunctionCC1C2O3O4(amx, &fid, x, y);  }) - start;
+		return std::unique(start, end, [&amx, &fid](cell x, cell y) { return ExecuteFunctionCC1C2O3O4O5(amx, &fid, x, y);  }) - start;
 	}
 	//native unique_copy(range[], numcells, dest[], {func_bool1, func_cell1, _}:func[FTSIZE] = fixed_functions::equal_to);
 	cell AMX_NATIVE_CALL algo_unique_copy(AMX* amx, cell* params)
 	{
-		error_if(!check_params(4), "[PLE] algorithm>> unique_copy: expected 4 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(4), "[PLE] algorithm>> unique_copy: expected 4 parameters but found %d parameters.", get_params_count());
 
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
@@ -1000,7 +1004,7 @@ namespace Natives
 		*pos2 = *start1;
 		while (++pos1 != end1)
 		{
-			if (!ExecuteFunctionCC1C2O3O4(amx, &fid, *pos2, *pos1))
+			if (!ExecuteFunctionCC1C2O3O4O5(amx, &fid, *pos2, *pos1))
 			{
 				pos2++;
 				*pos2 = *pos1;
@@ -1011,7 +1015,7 @@ namespace Natives
 	//native noret:reverse(range[], numcells);
 	cell AMX_NATIVE_CALL algo_reverse(AMX* amx, cell* params)
 	{
-		error_if(!check_params(2), "[PLE] algorithm>> reverse: expected 2 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(2), "[PLE] algorithm>> reverse: expected 2 parameters but found %d parameters.", get_params_count());
 
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
@@ -1030,7 +1034,7 @@ namespace Natives
 	//native noret:reverse_copy(range[], numcells, dest[]);
 	cell AMX_NATIVE_CALL algo_reverse_copy(AMX* amx, cell* params)
 	{
-		error_if(!check_params(3), "[PLE] algorithm>> reverse_copy: expected 3 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(3), "[PLE] algorithm>> reverse_copy: expected 3 parameters but found %d parameters.", get_params_count());
 
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
@@ -1052,7 +1056,7 @@ namespace Natives
 	//native noret:rotate(range[], middle, end);
 	cell AMX_NATIVE_CALL algo_rotate(AMX* amx, cell* params)
 	{
-		error_if(!check_params(3), "[PLE] algorithm>> rotate: expected 3 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(3), "[PLE] algorithm>> rotate: expected 3 parameters but found %d parameters.", get_params_count());
 
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
@@ -1069,7 +1073,7 @@ namespace Natives
 	//native noret:rotate_copy(range[], middle, end, dest[]);
 	cell AMX_NATIVE_CALL algo_rotate_copy(AMX* amx, cell* params)
 	{
-		error_if(!check_params(4), "[PLE] algorithm>> rotate_copy: expected 4 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(4), "[PLE] algorithm>> rotate_copy: expected 4 parameters but found %d parameters.", get_params_count());
 
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
@@ -1086,14 +1090,25 @@ namespace Natives
 		std::rotate_copy(start1, middle1, end1, start2);
 		return true;
 	}
-	//random_shuffle won't be implemented (removed from C++17)
-	//shuffle
-	//sample
+	//native noret:shuffle(range[], end);
+	cell AMX_NATIVE_CALL algo_shuffle(AMX* amx, cell* params)
+	{
+		error_if(!check_params(2), "[PLE] algorithm>> shuffle: expected 2 parameters but found %d parameters.", get_params_count());
+
+		cell* start = NULL;
+		amx_GetAddr(amx, params[1], &start);
+		cell* end = start + params[2];
+		error_if(end < start, "[PLE] algorithm>> shuffle: 'end' paramter (%d) below zero", params[2]);		
+
+		std::shuffle(start, end, algo_mt19937);
+		return true;
+	}
+	//sample not implemented
 
 	//native bool:is_partitioned(range[], numcells, {func_bool1, func_cell1, _}:func[FTSIZE]);
 	cell AMX_NATIVE_CALL algo_is_partitioned(AMX* amx, cell* params)
 	{
-		error_if(!check_params(3), "[PLE] algorithm>> is_partitioned: expected 3 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(3), "[PLE] algorithm>> is_partitioned: expected 3 parameters but found %d parameters.", get_params_count());
 
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
@@ -1105,12 +1120,12 @@ namespace Natives
 		functionID fid(func);
 		error_if(!fid.IsFunctionValid(1), "[PLE] algorithm>> is_partitioned: function object 'func' is not valid");
 
-		return std::is_partitioned(start, end, [&amx, &fid, &func](cell x) { return ExecuteFunctionCC1O2O3(amx, &fid, x); });
+		return std::is_partitioned(start, end, [&amx, &fid, &func](cell x) { return ExecuteFunctionCC1O2O3O4(amx, &fid, x); });
 	}
 	//native partition(range[], numcells, {func_bool1, func_cell1, _}:func[FTSIZE]);
 	cell AMX_NATIVE_CALL algo_partition(AMX* amx, cell* params)
 	{
-		error_if(!check_params(3), "[PLE] algorithm>> partition: expected 3 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(3), "[PLE] algorithm>> partition: expected 3 parameters but found %d parameters.", get_params_count());
 
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
@@ -1122,12 +1137,12 @@ namespace Natives
 		functionID fid(func);
 		error_if(!fid.IsFunctionValid(1), "[PLE] algorithm>> partition: function object 'func' is not valid");
 
-		return std::partition(start, end, [&amx, &fid, &func](cell x) { return ExecuteFunctionCC1O2O3(amx, &fid, x); }) - start;
+		return std::partition(start, end, [&amx, &fid, &func](cell x) { return ExecuteFunctionCC1O2O3O4(amx, &fid, x); }) - start;
 	}
 	//native stable_partition(range[], numcells, {func_bool1, func_cell1, _}:func[FTSIZE]);
 	cell AMX_NATIVE_CALL algo_stable_partition(AMX* amx, cell* params)
 	{
-		error_if(!check_params(3), "[PLE] algorithm>> stable_partition: expected 3 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(3), "[PLE] algorithm>> stable_partition: expected 3 parameters but found %d parameters.", get_params_count());
 
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
@@ -1139,12 +1154,12 @@ namespace Natives
 		functionID fid(func);
 		error_if(!fid.IsFunctionValid(1), "[PLE] algorithm>> stable_partition: function object 'func' is not valid");
 
-		return std::stable_partition(start, end, [&amx, &fid, &func](cell x) { return ExecuteFunctionCC1O2O3(amx, &fid, x); }) - start;
+		return std::stable_partition(start, end, [&amx, &fid, &func](cell x) { return ExecuteFunctionCC1O2O3O4(amx, &fid, x); }) - start;
 	}
 	//native noret:partition_copy(range[], numcells, dest1[], dest2[], {func_bool1, func_cell1, _}:func[FTSIZE]);
 	cell AMX_NATIVE_CALL algo_partition_copy(AMX* amx, cell* params)
 	{
-		error_if(!check_params(5), "[PLE] algorithm>> partition_copy: expected 5 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(5), "[PLE] algorithm>> partition_copy: expected 5 parameters but found %d parameters.", get_params_count());
 
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
@@ -1162,13 +1177,13 @@ namespace Natives
 		functionID fid(func);
 		error_if(!fid.IsFunctionValid(1), "[PLE] algorithm>> partition_copy: function object 'func' is not valid");
 
-		std::partition_copy(start1, end1, start2, start3, [&amx, &fid, &func](cell x) { return ExecuteFunctionCC1O2O3(amx, &fid, x); });
+		std::partition_copy(start1, end1, start2, start3, [&amx, &fid, &func](cell x) { return ExecuteFunctionCC1O2O3O4(amx, &fid, x); });
 		return true;
 	}
 	//native partition_point(range[], numcells, {func_bool1, func_cell1, _}:func[FTSIZE]);
 	cell AMX_NATIVE_CALL algo_partition_point(AMX* amx, cell* params)
 	{
-		error_if(!check_params(3), "[PLE] algorithm>> partition_point: expected 3 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(3), "[PLE] algorithm>> partition_point: expected 3 parameters but found %d parameters.", get_params_count());
 
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
@@ -1180,13 +1195,13 @@ namespace Natives
 		functionID fid(func);
 		error_if(!fid.IsFunctionValid(1), "[PLE] algorithm>> partition_point: function object 'func' is not valid");
 
-		return std::partition_point(start, end, [&amx, &fid, &func](cell x) { return ExecuteFunctionCC1O2O3(amx, &fid, x); }) - start;
+		return std::partition_point(start, end, [&amx, &fid, &func](cell x) { return ExecuteFunctionCC1O2O3O4(amx, &fid, x); }) - start;
 	}
 
 	//native noret:sort(range[], numcells, {func_bool2, func_cell2, _}:func[FTSIZE] = fixed_functions::less);
 	cell AMX_NATIVE_CALL algo_sort(AMX* amx, cell* params)
 	{
-		error_if(!check_params(3), "[PLE] algorithm>> sort: expected 3 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(3), "[PLE] algorithm>> sort: expected 3 parameters but found %d parameters.", get_params_count());
 
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
@@ -1198,13 +1213,13 @@ namespace Natives
 		functionID fid(func);
 		error_if(!fid.IsFunctionValid(2), "[PLE] algorithm>> sort: function object 'func' is not valid");
 
-		std::sort(start, end, [&amx, &fid](cell x, cell y) { return ExecuteFunctionCC1C2O3O4(amx, &fid, x, y); });
+		std::sort(start, end, [&amx, &fid](cell x, cell y) { return ExecuteFunctionCC1C2O3O4O5(amx, &fid, x, y); });
 		return true;
 	}
 	//native noret:sort(range[], middle, end, {func_bool2, func_cell2, _}:func[FTSIZE] = fixed_functions::less);
 	cell AMX_NATIVE_CALL algo_partial_sort(AMX* amx, cell* params)
 	{
-		error_if(!check_params(4), "[PLE] algorithm>> partial_sort: expected 4 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(4), "[PLE] algorithm>> partial_sort: expected 4 parameters but found %d parameters.", get_params_count());
 
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
@@ -1220,13 +1235,13 @@ namespace Natives
 		functionID fid(func);
 		error_if(!fid.IsFunctionValid(2), "[PLE] algorithm>> partial_sort: function object 'func' is not valid");
 
-		std::partial_sort(start, middle, end, [&amx, &fid](cell x, cell y) { return ExecuteFunctionCC1C2O3O4(amx, &fid, x, y); });
+		std::partial_sort(start, middle, end, [&amx, &fid](cell x, cell y) { return ExecuteFunctionCC1C2O3O4O5(amx, &fid, x, y); });
 		return true;
 	}
 	//native partial_sort_copy(range[], range_numcells, dest[], dest_numcells, {func_bool2, func_cell2, _}:func[FTSIZE] = fixed_functions::less);
 	cell AMX_NATIVE_CALL algo_partial_sort_copy(AMX* amx, cell* params)
 	{
-		error_if(!check_params(5), "[PLE] algorithm>> partial_sort_copy: expected 5 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(5), "[PLE] algorithm>> partial_sort_copy: expected 5 parameters but found %d parameters.", get_params_count());
 
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
@@ -1243,12 +1258,12 @@ namespace Natives
 		functionID fid(func);
 		error_if(!fid.IsFunctionValid(2), "[PLE] algorithm>> partial_sort_copy: function object 'func' is not valid");
 
-		return std::partial_sort_copy(start1, end1, start2, end2, [&amx, &fid](cell x, cell y) { return ExecuteFunctionCC1C2O3O4(amx, &fid, x, y); }) - start2;
+		return std::partial_sort_copy(start1, end1, start2, end2, [&amx, &fid](cell x, cell y) { return ExecuteFunctionCC1C2O3O4O5(amx, &fid, x, y); }) - start2;
 	}
 	//native bool:is_sorted(range[], numcells, {func_bool2, func_cell2, _}:func[FTSIZE] = fixed_functions::less);
 	cell AMX_NATIVE_CALL algo_is_sorted(AMX* amx, cell* params)
 	{
-		error_if(!check_params(3), "[PLE] algorithm>> is_sorted: expected 3 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(3), "[PLE] algorithm>> is_sorted: expected 3 parameters but found %d parameters.", get_params_count());
 
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
@@ -1260,12 +1275,12 @@ namespace Natives
 		functionID fid(func);
 		error_if(!fid.IsFunctionValid(2), "[PLE] algorithm>> is_sorted: function object 'func' is not valid");
 
-		return std::is_sorted(start, end, [&amx, &fid](cell x, cell y) { return ExecuteFunctionCC1C2O3O4(amx, &fid, x, y); });
+		return std::is_sorted(start, end, [&amx, &fid](cell x, cell y) { return ExecuteFunctionCC1C2O3O4O5(amx, &fid, x, y); });
 	}
 	//native noret:nth_element(range[], nth, end, {func_bool2, func_cell2, _}:func[FTSIZE] = fixed_functions::less);
 	cell AMX_NATIVE_CALL algo_nth_element(AMX* amx, cell* params)
 	{
-		error_if(!check_params(4), "[PLE] algorithm>> nth_element: expected 4 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(4), "[PLE] algorithm>> nth_element: expected 4 parameters but found %d parameters.", get_params_count());
 
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
@@ -1281,14 +1296,14 @@ namespace Natives
 		functionID fid(func);
 		error_if(!fid.IsFunctionValid(2), "[PLE] algorithm>> nth_element: function object 'func' is not valid");
 
-		std::nth_element(start, nth, end, [&amx, &fid](cell x, cell y) { return ExecuteFunctionCC1C2O3O4(amx, &fid, x, y); });
+		std::nth_element(start, nth, end, [&amx, &fid](cell x, cell y) { return ExecuteFunctionCC1C2O3O4O5(amx, &fid, x, y); });
 		return true;
 	}
 
 	//native lower_bound(range[], numcells, value, {func_bool2, func_cell2, _}:func[FTSIZE] = fixed_functions::less);
 	cell AMX_NATIVE_CALL algo_lower_bound(AMX* amx, cell* params)
 	{
-		error_if(!check_params(4), "[PLE] algorithm>> lower_bound: expected 4 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(4), "[PLE] algorithm>> lower_bound: expected 4 parameters but found %d parameters.", get_params_count());
 
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
@@ -1302,12 +1317,12 @@ namespace Natives
 		functionID fid(func);
 		error_if(!fid.IsFunctionValid(2), "[PLE] algorithm>> lower_bound: function object 'func' is not valid");
 
-		return std::lower_bound(start, end, val, [&amx, &fid](cell x, cell y) { return ExecuteFunctionCC1C2O3O4(amx, &fid, x, y); }) - start;
+		return std::lower_bound(start, end, val, [&amx, &fid](cell x, cell y) { return ExecuteFunctionCC1C2O3O4O5(amx, &fid, x, y); }) - start;
 	}
 	//native upper_bound(range[], numcells, value, {func_bool2, func_cell2, _}:func[FTSIZE] = fixed_functions::less);
 	cell AMX_NATIVE_CALL algo_upper_bound(AMX* amx, cell* params)
 	{
-		error_if(!check_params(4), "[PLE] algorithm>> upper_bound: expected 4 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(4), "[PLE] algorithm>> upper_bound: expected 4 parameters but found %d parameters.", get_params_count());
 
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
@@ -1321,12 +1336,12 @@ namespace Natives
 		functionID fid(func);
 		error_if(!fid.IsFunctionValid(2), "[PLE] algorithm>> upper_bound: function object 'func' is not valid");
 
-		return std::upper_bound(start, end, val, [&amx, &fid](cell x, cell y) { return ExecuteFunctionCC1C2O3O4(amx, &fid, x, y); }) - start;
+		return std::upper_bound(start, end, val, [&amx, &fid](cell x, cell y) { return ExecuteFunctionCC1C2O3O4O5(amx, &fid, x, y); }) - start;
 	}
 	//native noret:equal_range(range[], numcells, value, &smallest, &largest, {func_bool2, func_cell2, _}:func[FTSIZE] = fixed_functions::less);
 	cell AMX_NATIVE_CALL algo_equal_range(AMX* amx, cell* params)
 	{
-		error_if(!check_params(6), "[PLE] algorithm>> equal_range: expected 6 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(6), "[PLE] algorithm>> equal_range: expected 6 parameters but found %d parameters.", get_params_count());
 
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
@@ -1346,7 +1361,7 @@ namespace Natives
 		functionID fid(func);
 		error_if(!fid.IsFunctionValid(2), "[PLE] algorithm>> equal_range: function object 'func' is not valid");
 
-		auto pr = std::equal_range(start, end, value, [&amx, &fid](cell x, cell y) { return ExecuteFunctionCC1C2O3O4(amx, &fid, x, y); });
+		auto pr = std::equal_range(start, end, value, [&amx, &fid](cell x, cell y) { return ExecuteFunctionCC1C2O3O4O5(amx, &fid, x, y); });
 
 		*smallest_addr = pr.first - start;
 		*largest_addr = pr.second - start;
@@ -1355,7 +1370,7 @@ namespace Natives
 	//native bool:binary_search(range[], numcells, value, {func_bool2, func_cell2, _}:func[FTSIZE] = fixed_functions::less);
 	cell AMX_NATIVE_CALL algo_binary_search(AMX* amx, cell* params)
 	{
-		error_if(!check_params(4), "[PLE] algorithm>> binary_search: expected 4 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(4), "[PLE] algorithm>> binary_search: expected 4 parameters but found %d parameters.", get_params_count());
 
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
@@ -1369,13 +1384,13 @@ namespace Natives
 		functionID fid(func);
 		error_if(!fid.IsFunctionValid(2), "[PLE] algorithm>> binary_search: function object 'func' is not valid");
 
-		return std::binary_search(start, end, val, [&amx, &fid](cell x, cell y) { return ExecuteFunctionCC1C2O3O4(amx, &fid, x, y); });
+		return std::binary_search(start, end, val, [&amx, &fid](cell x, cell y) { return ExecuteFunctionCC1C2O3O4O5(amx, &fid, x, y); });
 	}
 
 	//native merge(range1[], numcells1, range2[], numcells2, dest[], {_, func_bool2, func_cell2}:func[FTSIZE] = fixed_functions::less);
 	cell AMX_NATIVE_CALL algo_merge(AMX* amx, cell* params)
 	{
-		error_if(!check_params(6), "[PLE] algorithm>> merge: expected 6 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(6), "[PLE] algorithm>> merge: expected 6 parameters but found %d parameters.", get_params_count());
 
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
@@ -1395,12 +1410,12 @@ namespace Natives
 		functionID fid(func);
 		error_if(!fid.IsFunctionValid(2), "[PLE] algorithm>> merge: function object 'func' is not valid");
 
-		return std::merge(start1, end1, start2, end2, result, [&amx, &fid](cell x, cell y) { return ExecuteFunctionCC1C2O3O4(amx, &fid, x, y); }) - result;
+		return std::merge(start1, end1, start2, end2, result, [&amx, &fid](cell x, cell y) { return ExecuteFunctionCC1C2O3O4O5(amx, &fid, x, y); }) - result;
 	}
 	//native noret:inplace_merge(range[], middle, end, {func_bool2, func_cell2, _}:func[FTSIZE] = fixed_functions::less);
 	cell AMX_NATIVE_CALL algo_inplace_merge(AMX* amx, cell* params)
 	{
-		error_if(!check_params(4), "[PLE] algorithm>> inplace_merge: expected 4 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(4), "[PLE] algorithm>> inplace_merge: expected 4 parameters but found %d parameters.", get_params_count());
 
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
@@ -1416,13 +1431,13 @@ namespace Natives
 		functionID fid(func);
 		error_if(!fid.IsFunctionValid(2), "[PLE] algorithm>> inplace_merge: function object 'func' is not valid");
 
-		std::inplace_merge(start, middle, end, [&amx, &fid](cell x, cell y) { return ExecuteFunctionCC1C2O3O4(amx, &fid, x, y); });
+		std::inplace_merge(start, middle, end, [&amx, &fid](cell x, cell y) { return ExecuteFunctionCC1C2O3O4O5(amx, &fid, x, y); });
 		return true;
 	}
 	//native bool:includes(range1[], numcells1, range2[], numcells2, {func_bool2, func_cell2, _}:func[FTSIZE] = fixed_functions::equal_to);
 	cell AMX_NATIVE_CALL algo_includes(AMX* amx, cell* params)
 	{
-		error_if(!check_params(5), "[PLE] algorithm>> includes: expected 5 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(5), "[PLE] algorithm>> includes: expected 5 parameters but found %d parameters.", get_params_count());
 
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
@@ -1439,12 +1454,12 @@ namespace Natives
 		functionID fid(func);
 		error_if(!fid.IsFunctionValid(2), "[PLE] algorithm>> includes: function object 'func' is not valid");
 
-		return std::includes(start1, end1, start2, end2, [&amx, &fid](cell x, cell y) { return ExecuteFunctionCC1C2O3O4(amx, &fid, x, y); });
+		return std::includes(start1, end1, start2, end2, [&amx, &fid](cell x, cell y) { return ExecuteFunctionCC1C2O3O4O5(amx, &fid, x, y); });
 	}
 	//native set_union(range1[], numcells1, range2[], numcells2, dest[], {func_bool2, func_cell2, _}:func[FTSIZE] = fixed_functions::less);
 	cell AMX_NATIVE_CALL algo_set_union(AMX* amx, cell* params)
 	{
-		error_if(!check_params(6), "[PLE] algorithm>> set_union: expected 6 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(6), "[PLE] algorithm>> set_union: expected 6 parameters but found %d parameters.", get_params_count());
 
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
@@ -1464,12 +1479,12 @@ namespace Natives
 		functionID fid(func);
 		error_if(!fid.IsFunctionValid(2), "[PLE] algorithm>> set_union: function object 'func' is not valid");
 
-		return std::set_union(start1, end1, start2, end2, result, [&amx, &fid](cell x, cell y) { return ExecuteFunctionCC1C2O3O4(amx, &fid, x, y); }) - result;
+		return std::set_union(start1, end1, start2, end2, result, [&amx, &fid](cell x, cell y) { return ExecuteFunctionCC1C2O3O4O5(amx, &fid, x, y); }) - result;
 	}
 	//native set_intersection(range1[], numcells1, range2[], numcells2, dest[], {func_bool2, func_cell2, _}:func[FTSIZE] = fixed_functions::less);
 	cell AMX_NATIVE_CALL algo_set_intersection(AMX* amx, cell* params)
 	{
-		error_if(!check_params(6), "[PLE] algorithm>> set_intersection: expected 6 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(6), "[PLE] algorithm>> set_intersection: expected 6 parameters but found %d parameters.", get_params_count());
 
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
@@ -1489,12 +1504,12 @@ namespace Natives
 		functionID fid(func);
 		error_if(!fid.IsFunctionValid(2), "[PLE] algorithm>> set_intersection: function object 'func' is not valid");
 
-		return std::set_intersection(start1, end1, start2, end2, result, [&amx, &fid](cell x, cell y) { return ExecuteFunctionCC1C2O3O4(amx, &fid, x, y); }) - result;
+		return std::set_intersection(start1, end1, start2, end2, result, [&amx, &fid](cell x, cell y) { return ExecuteFunctionCC1C2O3O4O5(amx, &fid, x, y); }) - result;
 	}
 	//native set_difference(range1[], numcells1, range2[], numcells2, dest[], {func_bool2, func_cell2, _}:func[FTSIZE] = fixed_functions::less);
 	cell AMX_NATIVE_CALL algo_set_difference(AMX* amx, cell* params)
 	{
-		error_if(!check_params(6), "[PLE] algorithm>> set_difference: expected 6 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(6), "[PLE] algorithm>> set_difference: expected 6 parameters but found %d parameters.", get_params_count());
 
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
@@ -1514,12 +1529,12 @@ namespace Natives
 		functionID fid(func);
 		error_if(!fid.IsFunctionValid(2), "[PLE] algorithm>> set_difference: function object 'func' is not valid");
 
-		return std::set_difference(start1, end1, start2, end2, result, [&amx, &fid](cell x, cell y) { return ExecuteFunctionCC1C2O3O4(amx, &fid, x, y); }) - result;
+		return std::set_difference(start1, end1, start2, end2, result, [&amx, &fid](cell x, cell y) { return ExecuteFunctionCC1C2O3O4O5(amx, &fid, x, y); }) - result;
 	}
 	//native set_symmetric_difference(range1[], numcells1, range2[], numcells2, dest[], {func_bool2, func_cell2, _}:func[FTSIZE] = fixed_functions::less);
 	cell AMX_NATIVE_CALL algo_set_symmetric_difference(AMX* amx, cell* params)
 	{
-		error_if(!check_params(6), "[PLE] algorithm>> set_symmetric_difference: expected 6 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(6), "[PLE] algorithm>> set_symmetric_difference: expected 6 parameters but found %d parameters.", get_params_count());
 
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
@@ -1539,7 +1554,7 @@ namespace Natives
 		functionID fid(func);
 		error_if(!fid.IsFunctionValid(2), "[PLE] algorithm>> set_symmetric_difference: function object 'func' is not valid");
 
-		return std::set_symmetric_difference(start1, end1, start2, end2, result, [&amx, &fid](cell x, cell y) { return ExecuteFunctionCC1C2O3O4(amx, &fid, x, y); }) - result;
+		return std::set_symmetric_difference(start1, end1, start2, end2, result, [&amx, &fid](cell x, cell y) { return ExecuteFunctionCC1C2O3O4O5(amx, &fid, x, y); }) - result;
 	}
 
 	//push_heap, pop_heap, make_heap, sort_heap, is_heap, is_heap_until not implemented
@@ -1548,7 +1563,7 @@ namespace Natives
 	//native noret:minmax_element(range[], numcells, &smallest, &largest, {func_bool2, func_cell2, _}:func[FTSIZE] = fixed_functions::less);
 	cell AMX_NATIVE_CALL algo_minmax_element(AMX* amx, cell* params)
 	{
-		error_if(!check_params(5), "[PLE] algorithm>> minmax_element: expected 5 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(5), "[PLE] algorithm>> minmax_element: expected 5 parameters but found %d parameters.", get_params_count());
 
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
@@ -1569,8 +1584,8 @@ namespace Natives
 		cell *smallest = start, *largest = start, *pos = start;
 		while (pos != end)
 		{
-			if (ExecuteFunctionCC1C2O3O4(amx, &fid, *pos, *smallest))	smallest = pos;
-			if (ExecuteFunctionCC1C2O3O4(amx, &fid, *largest, *pos))	largest = pos;
+			if (ExecuteFunctionCC1C2O3O4O5(amx, &fid, *pos, *smallest))	smallest = pos;
+			if (ExecuteFunctionCC1C2O3O4O5(amx, &fid, *largest, *pos))	largest = pos;
 			pos++;
 		}
 		*smallest_addr = smallest - start;
@@ -1580,7 +1595,7 @@ namespace Natives
 	//native min_element(range[], numcells, {func_bool2, func_cell2, _}:func[FTSIZE] = fixed_functions::less);
 	cell AMX_NATIVE_CALL algo_min_element(AMX* amx, cell* params)
 	{
-		error_if(!check_params(3), "[PLE] algorithm>> min_element: expected 3 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(3), "[PLE] algorithm>> min_element: expected 3 parameters but found %d parameters.", get_params_count());
 
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
@@ -1595,7 +1610,7 @@ namespace Natives
 		cell *pos = start, *smallest = start;
 		while (pos != end)
 		{
-			if (ExecuteFunctionCC1C2O3O4(amx, &fid, *pos, *smallest))	smallest = pos;
+			if (ExecuteFunctionCC1C2O3O4O5(amx, &fid, *pos, *smallest))	smallest = pos;
 			pos++;
 		}
 		return smallest - start;
@@ -1603,7 +1618,7 @@ namespace Natives
 	//native max_element(range[], numcells, {func_bool2, func_cell2, _}:func[FTSIZE] = fixed_functions::less);
 	cell AMX_NATIVE_CALL algo_max_element(AMX* amx, cell* params)
 	{
-		error_if(!check_params(3), "[PLE] algorithm>> max_element: expected 3 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(3), "[PLE] algorithm>> max_element: expected 3 parameters but found %d parameters.", get_params_count());
 
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
@@ -1618,7 +1633,7 @@ namespace Natives
 		cell *pos = start, *largest = start;
 		while (pos != end)
 		{
-			if (ExecuteFunctionCC1C2O3O4(amx, &fid, *largest, *pos))	largest = pos;
+			if (ExecuteFunctionCC1C2O3O4O5(amx, &fid, *largest, *pos))	largest = pos;
 			pos++;
 		}
 		return largest - start;
@@ -1627,7 +1642,7 @@ namespace Natives
 	//native bool:lexicographical_compare(range1[], numcells1, range2[], numcells2, {func_bool2, func_cell2, _}:func[FTSIZE]) = fixed_functions::less;
 	cell AMX_NATIVE_CALL algo_lexicographical_compare(AMX* amx, cell* params)
 	{
-		error_if(!check_params(5), "[PLE] algorithm>> lexicographical_compare: expected 5 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(5), "[PLE] algorithm>> lexicographical_compare: expected 5 parameters but found %d parameters.", get_params_count());
 
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
@@ -1644,12 +1659,12 @@ namespace Natives
 		functionID fid(func);
 		error_if(!fid.IsFunctionValid(2), "[PLE] algorithm>> lexicographical_compare: function object 'func' is not valid");
 
-		return std::lexicographical_compare(start1, end1, start2, end2, [&amx, &fid](cell x, cell y) { return ExecuteFunctionCC1C2O3O4(amx, &fid, x, y); });
+		return std::lexicographical_compare(start1, end1, start2, end2, [&amx, &fid](cell x, cell y) { return ExecuteFunctionCC1C2O3O4O5(amx, &fid, x, y); });
 	}
 	//native bool:prev_permutation(range[], numcells, {func_bool2, func_cell2, _}:func[FTSIZE] = fixed_functions::less);
 	cell AMX_NATIVE_CALL algo_next_permutation(AMX* amx, cell* params)
 	{
-		error_if(!check_params(3), "[PLE] algorithm>> next_permutation: expected 3 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(3), "[PLE] algorithm>> next_permutation: expected 3 parameters but found %d parameters.", get_params_count());
 
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
@@ -1661,12 +1676,12 @@ namespace Natives
 		functionID fid(func);
 		error_if(!fid.IsFunctionValid(2), "[PLE] algorithm>> next_permutation: function object 'func' is not valid");
 
-		return std::next_permutation(start, end, [&amx, &fid](cell x, cell y) { return ExecuteFunctionCC1C2O3O4(amx, &fid, x, y); });
+		return std::next_permutation(start, end, [&amx, &fid](cell x, cell y) { return ExecuteFunctionCC1C2O3O4O5(amx, &fid, x, y); });
 	}
 	//native bool:next_permutation(range[], numcells, {func_bool2, func_cell2, _}:func[FTSIZE] = fixed_functions::less);
 	cell AMX_NATIVE_CALL algo_prev_permutation(AMX* amx, cell* params)
 	{
-		error_if(!check_params(3), "[PLE] algorithm>> prev_permutation: expected 3 parameters but found %d parameters.", params[0] / BYTES_PER_CELL);
+		error_if(!check_params(3), "[PLE] algorithm>> prev_permutation: expected 3 parameters but found %d parameters.", get_params_count());
 
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
@@ -1678,6 +1693,6 @@ namespace Natives
 		functionID fid(func);
 		error_if(!fid.IsFunctionValid(2), "[PLE] algorithm>> prev_permutation: function object 'func' is not valid");
 
-		return std::prev_permutation(start, end, [&amx, &fid](cell x, cell y) { return ExecuteFunctionCC1C2O3O4(amx, &fid, x, y); });
+		return std::prev_permutation(start, end, [&amx, &fid](cell x, cell y) { return ExecuteFunctionCC1C2O3O4O5(amx, &fid, x, y); });
 	}
 }

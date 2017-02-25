@@ -62,8 +62,7 @@ namespace Natives
 	cell AMX_NATIVE_CALL algo_reverse_copy(AMX* amx, cell* params);
 	cell AMX_NATIVE_CALL algo_rotate(AMX* amx, cell* params);
 	cell AMX_NATIVE_CALL algo_rotate_copy(AMX* amx, cell* params);
-	//random_shuffle won't be implemented (removed from C++17)
-	//shuffle
+	cell AMX_NATIVE_CALL algo_shuffle(AMX* amx, cell* params);
 	//sample
 
 	cell AMX_NATIVE_CALL algo_is_partitioned(AMX* amx, cell* params);

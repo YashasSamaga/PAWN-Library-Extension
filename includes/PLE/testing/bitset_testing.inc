@@ -49,8 +49,8 @@ stock bitset_inc_test()
 	if(bitset_all(b2) == true) print("[TEST9] bitset_all failed.");
 	if(bitset_none(b2) == false) print("[TEST10] bitset_none failed.");
 
-	if(bitset_test(b2, 0) == false) print("[TEST11] bitset_test failed.");
-	if(bitset_test(b2, 1) == true) print("[TEST12] bitset_test failed.");
+	if(bitset_test(b1, 0) == false) print("[TEST11] bitset_test failed.");
+	if(bitset_test(b1, 1) == true) print("[TEST12] bitset_test failed.");
 
 	bitset_reset(b1, 0);
 	bitset_flip(b1, 1);

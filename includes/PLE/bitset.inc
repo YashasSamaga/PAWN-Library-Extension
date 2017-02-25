@@ -78,6 +78,10 @@ native bool:bitset_set(bitset:bs[], bitpos);
 native bool:bitset_reset(bitset:bs[], bitpos);
 native bool:bitset_flip(bitset:bs[], bitpos);
 
+native noret:bitset_set_all(bitset:bs[]);
+native noret:bitset_reset_all(bitset:bs[]);
+native noret:bitset_flip_all(bitset:bs[]);
+
 native noret:bitset_tostring(bitset:bs[], dest[], dest_size = sizeof(dest));
 
 native noret:bitset_and(bitset:bs1[], bitset:bs2[], bitset:dest[]);

@@ -18,7 +18,7 @@ isc.h
 
 #define VALIDITY_EFID_RESBITS 172
 #define VALIDITY_EVID_RESBITS 171
-
+/************************************************************************************************************/
 typedef struct externalFunctionID
 {
 	unsigned short scriptKey : 8;
@@ -34,7 +34,7 @@ typedef struct externalFunctionID
 	}
 	operator uint32_t()
 	{
-		return (scriptKey << 24) + (funcidx << 8) + reserved;
+		return (scriptKey << 24) | (funcidx << 8) | reserved;
 	}
 	int operator=(uint32_t efid)
 	{
@@ -59,7 +59,7 @@ typedef struct externalVariableID
 	}
 	operator uint32_t()
 	{
-		return (scriptKey << 24) + (varidx << 8) + reserved;
+		return (scriptKey << 24) | (varidx << 8) | reserved;
 	}
 	int operator=(uint32_t evid)
 	{
@@ -69,7 +69,7 @@ typedef struct externalVariableID
 		return *this;
 	}
 }externalVariableID;
-
+/************************************************************************************************************/
 namespace Natives
 {
 	//native GetAMXHeader(scriptKey, hdr[AMX_HEADER]);

@@ -17,31 +17,15 @@ functional.h
 #include <functional>
 #include <vector>
 /************************************************************************************************************/
-/* originally foundin sscanf plugin code */
-#define USENAMETABLE(hdr) \
-					((hdr)->defsize==sizeof(AMX_FUNCSTUBNT))
-
-#define NUMENTRIES(hdr,field,nextfield) \
-					(unsigned)(((hdr)->nextfield - (hdr)->field) / (hdr)->defsize)
-
-#define GETENTRY(hdr,table,index) \
-					(AMX_FUNCSTUB *)((unsigned char*)(hdr) + (unsigned)(hdr)->table + (unsigned)index*(hdr)->defsize)
-
-#define GETENTRYNAME(hdr,entry) \
-					(USENAMETABLE(hdr) ? \
-						(char *)((unsigned char*)(hdr) + (unsigned)((AMX_FUNCSTUBNT*)(entry))->nameofs) : \
-				((AMX_FUNCSTUB*)(entry))->name)
-/* end */
-
-#define FTSIZE 4
+#define FTSIZE 5
 
 enum
 {
-	FUNCTION_ID_INVALID			=	0x00,
-	FUNCTION_ID_INVALID2		=	0x01,
-	FUNCTION_ID_TYPE_PUBLIC		=	0x02,
-	FUNCTION_ID_TYPE_NATIVE		=	0x04,
-	FUNCTION_ID_TYPE_DEFAULT	=	0x08
+	FUNCTION_ID_INVALID = 0x00,
+	FUNCTION_ID_INVALID2 = 0x01,
+	FUNCTION_ID_TYPE_PUBLIC = 0x02,
+	FUNCTION_ID_TYPE_NATIVE = 0x04,
+	FUNCTION_ID_TYPE_DEFAULT = 0x08
 };
 enum
 {
@@ -77,49 +61,72 @@ enum
 };
 enum
 {
-	FUNCTION_FLAG_NOT		=	0x01,
-	FUNCTION_FLAG_BIND1		=	0x02,
-	FUNCTION_FLAG_BIND2		=	0x04,
-	FUNCTION_FLAG_VAARGS	=	0x08
+	FUNCTION_FLAG_NOT = 0x01,
+	FUNCTION_FLAG_BIND1 = 0x02,
+	FUNCTION_FLAG_BIND2 = 0x04,
+	FUNCTION_FLAG_BIND3 = 0x08,
+	FUNCTION_FLAG_VAARGS = 0x10
 };
+/************************************************************************************************************/
+/* originally found in sscanf plugin code */
+#define USENAMETABLE(hdr) \
+					((hdr)->defsize==sizeof(AMX_FUNCSTUBNT))
 
+#define NUMENTRIES(hdr,field,nextfield) \
+					(unsigned)(((hdr)->nextfield - (hdr)->field) / (hdr)->defsize)
+
+#define GETENTRY(hdr,table,index) \
+					(AMX_FUNCSTUB *)((unsigned char*)(hdr) + (unsigned)(hdr)->table + (unsigned)index*(hdr)->defsize)
+
+#define GETENTRYNAME(hdr,entry) \
+					(USENAMETABLE(hdr) ? \
+						(char *)((unsigned char*)(hdr) + (unsigned)((AMX_FUNCSTUBNT*)(entry))->nameofs) : \
+				((AMX_FUNCSTUB*)(entry))->name)
+/************************************************************************************************************/
 typedef struct functionID
 {
 	uint32_t address;
-	uint8_t argc;
 	uint16_t flags;
+	uint8_t argc;	
 	uint8_t type;
 
 	cell params[3];
 
-	functionID(uint8_t type, uint16_t flags, uint8_t argc, uint32_t address) : type(type), flags(flags), argc(argc), address(address) { }
+	functionID(uint8_t type, uint8_t argc, uint16_t flags, uint32_t address) : type(type), argc(argc), flags(flags), address(address) { }
 	functionID(cell *func)
 	{
 		address = func[1];
 		params[0] = func[2];
 		params[1] = func[3];
+		params[2] = func[4];
 
-		argc = static_cast<uint8_t>((0xFF000000 & func[0]) >> 24);
-		flags = static_cast<uint16_t>((0x00FFFF00 & func[0]) >> 8);
 		type = static_cast<uint8_t>(0x000000FF & func[0]);
+		argc = static_cast<uint8_t>((0x0000FF00 & func[0]) >> 8);
+		flags = static_cast<uint16_t>((0xFFFF0000 & func[0]) >> 16);
+		
 	}
 	functionID(uint32_t cell1, uint32_t cell2)
 	{
 		address = cell2;
 
-		argc = static_cast<uint8_t>((0xFF000000 & cell1) >> 24);
-		flags = static_cast<uint16_t>((0x00FFFF00 & cell1) >> 8);
 		type = static_cast<uint8_t>(0x000000FF & cell1);
+		argc = static_cast<uint8_t>((0x0000FF00 & cell1) >> 8);
+		flags = static_cast<uint16_t>((0xFFFF0000 & cell1) >> 16);		
 	}
 
-	bool IsFunctionValid(int _argc)
+	bool IsFunctionValid(int _argc) const
 	{
+		if (!(type & (FUNCTION_ID_TYPE_PUBLIC | FUNCTION_ID_TYPE_NATIVE | FUNCTION_ID_TYPE_DEFAULT))
+			|| ((type & (FUNCTION_ID_INVALID | FUNCTION_ID_INVALID2 | 0xF0)) != 0)) return false;
+
+		if (IsFlagSet(FUNCTION_FLAG_VAARGS)) return true;
+
 		int actual_argc = argc;
 		if (IsFlagSet(FUNCTION_FLAG_BIND1)) actual_argc--;
 		if (IsFlagSet(FUNCTION_FLAG_BIND2)) actual_argc--;
+		if (IsFlagSet(FUNCTION_FLAG_BIND3)) actual_argc--;
 
-		return ((type & (FUNCTION_ID_TYPE_PUBLIC | FUNCTION_ID_TYPE_NATIVE | FUNCTION_ID_TYPE_DEFAULT))
-			&&  ((type & (FUNCTION_ID_INVALID | FUNCTION_ID_INVALID2 | 0xF0)) == 0) && (actual_argc == _argc));
+		return (actual_argc == _argc);
 	}
 	bool IsFlagSet(uint16_t flag) const
 	{
@@ -127,22 +134,21 @@ typedef struct functionID
 	}
 	uint32_t getFirst() const
 	{
-		return (type | flags << 8 | argc << 24);
+		return (type | argc << 8 | flags << 16);
 	}
 	uint32_t getSecond() const
 	{
 		return address;
 	}
 }functionID;
-
-extern cell ExecuteFunctionCC1C2O3O4(AMX *amx, functionID *fid, cell cparam1, cell cparam2);
-extern cell ExecuteFunctionCO1O2(AMX *amx, functionID *fid);
-extern cell ExecuteFunctionCC1O2O3(AMX *amx, functionID *fid, cell cparam);
-
-extern std::vector <std::function<cell(cell)>> unary_functions;
-extern std::vector <std::function<cell(cell, cell)>> binary_functions;
-
+/************************************************************************************************************/
+extern cell ExecuteFunctionCO1O2O3(AMX *amx, functionID *fid);
+extern cell ExecuteFunctionCC1O2O3O4(AMX *amx, functionID *fid, cell cparam);
+extern cell ExecuteFunctionCC1C2O3O4O5(AMX *amx, functionID *fid, cell cparam1, cell cparam2);
+/************************************************************************************************************/
 namespace Natives
 {
+	cell AMX_NATIVE_CALL functional_argArray(AMX* amx, cell* params);
+	cell AMX_NATIVE_CALL functional_argReference(AMX* amx, cell* params);
 	cell AMX_NATIVE_CALL functional_make_function(AMX* amx, cell* params);
 }

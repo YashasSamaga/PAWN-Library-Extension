@@ -24,7 +24,6 @@ main.h
 typedef void(*logprintf_t)(char *, ...);
 extern logprintf_t logprintf;
 
-
 #define MAX_FUNC_NAME 32
 
 #define BYTES_PER_CELL 4
@@ -33,3 +32,5 @@ extern logprintf_t logprintf;
 #define warn_if(x,...) if(x) logprintf(__VA_ARGS__), 0; 
 #define error_if(x,...) if(x) return logprintf(__VA_ARGS__), 0; 
 #define check_params(n) (params[0] == n*BYTES_PER_CELL)
+#define check_params_min(n) (params[0] >= n*BYTES_PER_CELL)
+#define get_params_count() (params[0]/(BYTES_PER_CELL))

@@ -1,9 +1,9 @@
-/************************************************************************************************************
+/******************************************************************************************************************
 PAWN Library Extension
 
 Interscript-Communication
 isc.inc
-*************************************************************************************************************/
+******************************************************************************************************************/
 #if defined _PLE_ISC_INC
 	#endinput
 #else
@@ -63,21 +63,6 @@ stock const AMX_HEADER_OFFSETS[] =
 	48, //AMX_HEADER_TAGS
 	52 	//AMX_HEADER_NAMETABLE
 };
-
-stock GetArrayAddress(arr[])
-{
-	#emit LOAD.S.pri arr
-	#emit RETN
-
-	return 0; //make the compiler happy
-}
-stock GetVarAddress(&var)
-{
-	#emit LOAD.S.pri var
-	#emit RETN
-
-	return 0; //make the compiler happy
-}
 /*****************************************************************************************************************/
 native GetAMXHeader(scriptKey, hdr[AMX_HEADER]);
 native ReadAMXMemory(scriptKey, address, &val); //address relative to the script's DAT segment

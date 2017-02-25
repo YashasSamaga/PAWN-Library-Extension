@@ -16,12 +16,6 @@ config.inc
 #define PLE_MAGIC_KEY 0x3A7B8C
 #define PLE_INCLUDE_VERSION_KEY 0xAB000001
 
-#if defined MERGE_STD_NAMESPACE
-	#define std::
-#else
-	#define std:: std_
-#endif
-
 #include <PLE/interface>
 /*****************************************************************************************************************/
 static const ScriptIdentifier[] = SCRIPT_IDENTIFIER;

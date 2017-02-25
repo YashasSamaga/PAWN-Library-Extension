@@ -1,29 +1,22 @@
 /*****************************************************************************************************************
-Standard Library Extension
+PAWN Library Extension
 
-Character types
+Character typesv testing
 ctype.inc
 ******************************************************************************************************************/
-#if defined _PLE_CTYPES_INC
+#if defined _PLE_CTYPET_INC
 	#endinput
 #else
-	#define _PLE_CTYPES_INC
+	#define _PLE_CTYPET_INC
 #endif
 
 #if !defined _PLE_CONFIG_INC
 	#include <PLE/config>
 #endif
+
+#include <PLE/ctype>
 /*****************************************************************************************************************/
-native isalnum(c);
-native isalpha(c);
-native isblank(c);
-native iscntrl(c);
-native isdigit(c);
-native isgraph(c);
-native islower(c);
-native isprint(c);
-native ispunct(c);
-native isspace(c);
-native isupper(c);
-native isxdigit(c);
-/*****************************************************************************************************************/
+stock ctype_testing()
+{
+	//TO:DO
+}

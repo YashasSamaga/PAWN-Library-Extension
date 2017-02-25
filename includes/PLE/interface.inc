@@ -24,20 +24,18 @@ interface.inc
 
 #define SCRIPT_IDENTIFIER_SIZE 32
 /***********************************************************************************************************/
-#if !defined interface
-	#define interface:: int_
-#endif
-
 enum
 {
-	INVALID,
-	SCRIPT_UNSUPPORTED,
-	SCRIPT_SUPPORTED
+	INVALID = 0x0,
+	LOADED = 0x01,
+	SCRIPT_SUPPORTED = 0x02,
+	SCRIPT_UNSUPPORTED	= 0x04,
+	INTERFACE_INITILIZED = 0x08
 };
 
-native interface::IsValidScript(scriptKey);
-native interface::GetScriptType(scriptKey);
-native interface::GetScriptPoolSize();
-native interface::GetScriptIdentifierFromKey(scriptKey, dest[], len = sizeof(dest));
-native interface::GetScriptKeyFromIdentifier(const identifier[], scriptID[], len = sizeof(scriptID));
-native interface::GetScriptStartupTime(scriptKey, _time_t[time_t]);
+native IsValidScript(scriptKey);
+native GetScriptType(scriptKey);
+native GetScriptPoolSize();
+native GetScriptIdentifierFromKey(scriptKey, dest[], len = sizeof(dest));
+native GetScriptKeyFromIdentifier(const identifier[], scriptID[], len = sizeof(scriptID));
+native GetScriptStartupTime(scriptKey, _time_t[time_t]);
