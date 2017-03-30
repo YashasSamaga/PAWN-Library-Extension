@@ -344,7 +344,7 @@ namespace Natives
 		}
 		return ret - start1;
 	}
-	//native find_first_of(range1[], numcells1, range2[], numcells2, {func_bool2, func_cell2, _}:func[FTSIZE]) = fixed_functions::equal_to;
+	//native find_first_of(range1[], numcells1, range2[], numcells2, {func_bool2, func_cell2, _}:func[FTSIZE]) = fixed_functions::equal_to);
 	cell AMX_NATIVE_CALL algo_find_first_of(AMX* amx, cell* params)
 	{
 		error_if(!check_params(5), "[PLE] algorithm>> find_first_of: expected 5 parameters but found %d parameters.", get_params_count());
@@ -1559,7 +1559,9 @@ namespace Natives
 
 	//push_heap, pop_heap, make_heap, sort_heap, is_heap, is_heap_until not implemented
 
+	//min, max already implemented
 	//minmax not implemented
+	//clamp already implemented
 	//native noret:minmax_element(range[], numcells, &smallest, &largest, {func_bool2, func_cell2, _}:func[FTSIZE] = fixed_functions::less);
 	cell AMX_NATIVE_CALL algo_minmax_element(AMX* amx, cell* params)
 	{

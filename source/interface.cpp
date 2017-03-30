@@ -31,15 +31,15 @@ interface.cpp
 /************************************************************************************************************/
 struct PUBVAR_ENTRY { char name[32]; cell value; }; static PUBVAR_ENTRY entries[] =
 {
-	{ "EOF", EOF },
-	{ "SEEK_SET", SEEK_SET },
-	{ "SEEK_CUR", SEEK_CUR },
-	{ "SEEK_END", SEEK_END },
-	{ "BUFSIZ", BUFSIZ },
-	{ "FILENAME_MAX", FILENAME_MAX },
-	{ "FOPEN_MAX", FOPEN_MAX },
-	{ "L_tmpnam", L_tmpnam },
-	{ "TMP_MAX", TMP_MAX },
+	{ "file_EOF", EOF },
+	{ "file_SEEK_SET", SEEK_SET },
+	{ "file_SEEK_CUR", SEEK_CUR },
+	{ "file_SEEK_END", SEEK_END },
+	{ "file_BUFSIZ", BUFSIZ },
+	{ "file_FILENAME_MAX", FILENAME_MAX },
+	{ "file_FOPEN_MAX", FOPEN_MAX },
+	{ "file_L_tmpnam", L_tmpnam },
+	{ "file_TMP_MAX", TMP_MAX },
 
 	{ "MATH_ERRNO", MATH_ERRNO },
 	{ "MATH_ERREXCEPT", MATH_ERREXCEPT },
@@ -134,10 +134,8 @@ struct PUBVAR_ENTRY { char name[32]; cell value; }; static PUBVAR_ENTRY entries[
 static AMX_NATIVE_INFO NativeFunctionsTable[] =
 {
 	//interface
-	{ "__InitAcknowledge", Natives::interface_ScriptInitAcknowledge },
-
 	{ "IsValidScript", Natives::interface_IsValidScript },
-	{ "GetScriptType", Natives::interface_GetScriptFlags },
+	{ "GetScriptType", Natives::interface_GetScriptType },
 	{ "GetScriptPoolSize", Natives::interface_GetScriptPoolSize },
 	{ "GetScriptIdentifierFromKey", Natives::interface_GetScriptIdentifierFromKey },
 	{ "GetScriptKeyFromIdentifier", Natives::interface_GetScriptKeyFromIdentifier },
@@ -393,12 +391,72 @@ namespace Interface
 	static std::vector <Interface> InterfaceList;
 	/********************************************************************************************************/
 	//Initilizes the interface, registers natives, sets public constants
-	int Interface::Initilize(AMX * amx, int ScriptKey)
+	int Interface::Initilize(AMX * amx, int scriptKey)
 	{
-		this->Reset();
-		this->SetFlag(INTERFACE_FLAGS::LOADED);
 		this->amx = amx;
-		this->ScriptKey = ScriptKey;
+		this->ScriptKey = scriptKey;
+		this->ple_header = nullptr;
+		this->type = INTERFACE_TYPE::UNSUPPORTED;
+		this->ScriptIdentifier = UNSUPPORTED_SCRIPT_IDENTIFIER;
+		this->ple_compliant_pubvar_addr = -1;
+
+		if (amx_FindPubVar(amx, "@@@ple_compliant", &this->ple_compliant_pubvar_addr) == AMX_ERR_NONE)
+		{
+			cell *data_phys_addr;
+			amx_GetAddr(amx, 0, &data_phys_addr);
+
+			AMX_HEADER * amx_hdr = (AMX_HEADER *)amx->base;
+			cell *heap_phys_addr = data_phys_addr + (amx_hdr->hea - amx_hdr->dat);
+			for (cell *data_cur = data_phys_addr; data_cur < heap_phys_addr; data_cur++)
+			{
+				if ((data_cur[0] == 0x1F48)
+					&& (data_cur[1] == 0x1362)
+					&& (data_cur[2] == 0x5961)
+					&& (data_cur[3] == 0x5368)) //check header signatures
+				{
+					PLE_HEADER *ple_hdr = (PLE_HEADER*)data_cur;
+					this->ple_header = ple_hdr;
+
+					if (*(data_cur + ple_hdr->size - 1) != 0x12AA)
+					{
+						logprintf("[NOTICE] PAWN Library Extension: The script (ScriptKey:%d) loaded has a corrupt PLE header.", scriptKey);
+						break;
+					}
+
+					char cstr_scriptidentifier[SCRIPT_IDENTIFIER_SIZE];
+					amx_GetString(cstr_scriptidentifier, ple_hdr->scriptidentifier, 0, SCRIPT_IDENTIFIER_SIZE);
+					this->ScriptIdentifier = cstr_scriptidentifier;
+					ple_hdr->scriptkey = scriptKey;
+
+					if (PLE_PLUGIN_VERSION_KEY > ple_hdr->inc_version)
+						logprintf("[WARNING] PAWN Library Extension: The plugin version does not match the include version in script '%s' (ScriptKey:%d).\nThe script is using an older version of PLE with a newer version of the plugin.", cstr_scriptidentifier, scriptKey);
+					else if (PLE_PLUGIN_VERSION_KEY < ple_hdr->inc_version)
+						logprintf("[WARNING] PAWN Library Extension: The plugin version does not match the include version in script '%s' (ScriptKey:%d).\nThe script is using a newer version of PLE with an older version of the plugin.", cstr_scriptidentifier, scriptKey);
+
+					int duplicate_count = 0;
+					for (int i = 0, j = ::Interface::InterfaceList.size(); i < j; i++)
+					{
+						if (::Interface::InterfaceList[i].empty()) continue;
+						if (i == scriptKey) continue;
+
+						if (::Interface::InterfaceList[i].ScriptIdentifier == this->ScriptIdentifier)
+							duplicate_count++;
+
+						::Interface::InterfaceList[i].Trigger_OnScriptInit(scriptKey, this->ScriptIdentifier);
+					}
+
+					if (this->ScriptIdentifier == UNDEFINED_SCRIPT_IDENTIFIER)
+						logprintf("[NOTICE] PAWN Library Extension: A loaded script does not have a script identifier. (Total undefined scripts: %d)", duplicate_count + 1);
+					else if (duplicate_count)
+						logprintf("[WARNING] PAWN Library Extension: Script identifier '%s' is being used by %d scripts.", cstr_scriptidentifier, duplicate_count + 1);
+	
+					// TO:DO if(ple_hdr->dynmem_reserve_size){}
+					break;
+				}
+			}
+		}
+		else	
+			logprintf("[NOTICE] PAWN Library Extension: A script (ScriptKey:%d) was loaded which wasn't compiled for PLE.", scriptKey);	
 
 		//public OnScriptInit(scriptKey, scriptIdentifier[])
 		if (amx_FindPublic(amx, "OnScriptInit", &this->cbidx_OnScriptInit) != AMX_ERR_NONE)
@@ -410,34 +468,15 @@ namespace Interface
 
 		this->time_loaded = std::chrono::system_clock::now();
 
-		char cur_pubvar[32];
 		cell pubvar_addr;
-		int numPubVars;
-		amx_NumPubVars(amx, &numPubVars);
 		for (int i = 0; entries[i].name[0] != 0; i++)
 		{
-			int first = 0, last, mid, result;
-			last = numPubVars - 1;
-
-			while (first <= last)
+			if (amx_FindPubVar(amx, entries[i].name, &pubvar_addr) == AMX_ERR_NONE)
 			{
-				mid = (first + last) / 2;
-
-				amx_GetPubVar(amx, mid, cur_pubvar, &pubvar_addr);
-				result = strcmp(cur_pubvar, entries[i].name);
-
-				if (result > 0)
-					last = mid - 1;
-				else if (result < 0)
-					first = mid + 1;
-				else
-				{
-					cell *pubvar_phyaddr;
-					amx_GetAddr(amx, pubvar_addr, &pubvar_phyaddr);
-					*pubvar_phyaddr = entries[i].value;
-					break;
-				}
-			}
+				cell *pubvar_phyaddr;
+				amx_GetAddr(amx, pubvar_addr, &pubvar_phyaddr);
+				*pubvar_phyaddr = entries[i].value;
+			}			
 		}
 		return amx_Register(amx, NativeFunctionsTable, -1);
 	}
@@ -473,7 +512,7 @@ namespace Interface
 		if (amx_interface == InterfaceList.end()) return INVALID_SCRIPT_ID;
 		return (*amx_interface).ScriptKey;
 	}
-	//Creates and intilizes an interface for amx
+	//Creates and initilizes an interface for amx
 	int AddInterface(AMX * amx)
 	{
 		int scriptKey = INVALID_SCRIPT_ID;
@@ -502,7 +541,7 @@ namespace Interface
 
 				InterfaceList[i].Trigger_OnScriptExit(scriptKey, InterfaceList[scriptKey].ScriptIdentifier);
 			}
-			InterfaceList[scriptKey].Reset();
+			InterfaceList[scriptKey].Delete();
 		}
 		return scriptKey;
 	}
@@ -518,96 +557,9 @@ namespace Interface
 	{
 		return InterfaceList[scriptKey].amx;
 	}
-	/********************************************************************************************************/
-	void ProcessTick()
-	{
-		for (int scriptKey = 0, j = InterfaceList.size(); scriptKey < j; scriptKey++)
-		{
-			if (InterfaceList[scriptKey].empty()) continue;
-			if (InterfaceList[scriptKey].IsFlagSet(INTERFACE_FLAGS::LOADED) &&
-				!InterfaceList[scriptKey].IsFlagSet(INTERFACE_FLAGS::INTERFACE_INITILIZED))
-			{
-				Interface *initilizing_interface = &InterfaceList[scriptKey];
-				AMX *target_amx = initilizing_interface->amx;
-				int funcidx, retval = 0;
-				if (amx_FindPublic(target_amx, "__PLEInitilize", &funcidx) == AMX_ERR_NONE)
-				{
-					amx_Push(target_amx, scriptKey);
-					amx_Exec(target_amx, &retval, funcidx);
-				}
-				//__PLEInitilize calls ScriptInitAcknowledge; retval contains the value returned by ScriptInitAcknowledge
-				if (retval == PLE_MAGIC_KEY) initilizing_interface->SetFlag(INTERFACE_FLAGS::SCRIPT_SUPPORTED);
-				else
-				{
-					initilizing_interface->ScriptIdentifier = UNSUPPORTED_SCRIPT_IDENTIFIER;
-					initilizing_interface->SetFlag(INTERFACE_FLAGS::SCRIPT_UNSUPPORTED);
-					logprintf("[NOTICE] PAWN Library Extension: A script (ScriptKey:%d ScriptIdentifier:%s) was loaded which wasn't compiled for PLE.", scriptKey, initilizing_interface->ScriptIdentifier.c_str());
-				}
-				initilizing_interface->SetFlag(INTERFACE_FLAGS::INTERFACE_INITILIZED);
-				for (int i = 0, j = InterfaceList.size(); i < j; i++)
-				{
-					if (i == scriptKey) continue;
-					if (InterfaceList[i].empty()) continue;
-
-					InterfaceList[i].Trigger_OnScriptInit(scriptKey, InterfaceList[scriptKey].ScriptIdentifier);
-				}
-				break;
-			}
-		}
-	}
 }
 namespace Natives
 {
-	//native __InitAcknowledge(magic_key, version_key, const scriptIdentifier[], size = sizeof(scriptIdentifier));
-	cell AMX_NATIVE_CALL interface_ScriptInitAcknowledge(AMX* amx, cell* params)
-	{
-		error_if(!check_params(4), "[PLE] interface>> Unexpected error during script-acknowledgement call.");
-
-		cell MagicNumber = params[1];
-		cell VersionKey = params[2];
-
-		int len;
-		cell *addr = NULL;
-		amx_GetAddr(amx, params[3], &addr);
-		amx_StrLen(addr, &len);
-
-		std::string scriptIdentifier;
-		scriptIdentifier.resize(SCRIPT_IDENTIFIER_SIZE);
-		amx_GetString(&scriptIdentifier[0], addr, 0, SCRIPT_IDENTIFIER_SIZE);
-		scriptIdentifier.resize(len);
-
-		int scriptKey = INVALID_SCRIPT_ID, duplicate_count = 0;
-		for (int i = 0, j = Interface::InterfaceList.size(); i < j; i++)
-		{
-			if (Interface::InterfaceList[i].empty()) continue;
-			if (Interface::InterfaceList[i].amx == amx)
-			{
-				Interface::InterfaceList[i].ScriptIdentifier = scriptIdentifier;
-				scriptKey = i;
-			}
-			else if (Interface::InterfaceList[i].ScriptIdentifier == scriptIdentifier)
-				duplicate_count++;
-		}
-
-		if (scriptIdentifier == UNDEFINED_SCRIPT_IDENTIFIER)
-		{
-			logprintf("[NOTICE] PAWN Library Extension: A loaded script does not have a script identifier.");
-			logprintf("[NOTICE] Total number of scripts without identifer: %d", duplicate_count);
-		}
-		else if (duplicate_count)
-			logprintf("[WARNING] PAWN Library Extension: Script identifier '%s' is being used by %d scripts.", scriptIdentifier.c_str(), duplicate_count);
-
-		if (PLE_PLUGIN_VERSION_KEY > VersionKey)
-			logprintf("[WARNING] PAWN Library Extension: The plugin version does not match the include version in script '%s'.\nThe script is using an older version of PLE with a newer version of the plugin.", scriptIdentifier.c_str());
-		else if (PLE_PLUGIN_VERSION_KEY < VersionKey)
-			logprintf("[WARNING] PAWN Library Extension: The plugin version does not match the include version in script '%s'.\nThe script is using a newer version of PLE with an older version of the plugin.", scriptIdentifier.c_str());
-
-		if (PLE_MAGIC_KEY != MagicNumber)
-			logprintf("[WARNING] PAWN Library Extension: The script's ('%s') magic number does not match with the plugin's magic number.\nThis may cause undefined behaviour.", scriptIdentifier.c_str());
-
-		return PLE_MAGIC_KEY;
-	}
-
 	//native IsValidScript(scriptKey);
 	cell AMX_NATIVE_CALL interface_IsValidScript(AMX* amx, cell* params)
 	{
@@ -616,12 +568,12 @@ namespace Natives
 		return ::Interface::IsValidScript(scriptKey);
 	}
 	//native GetScriptType(scriptKey);
-	cell AMX_NATIVE_CALL interface_GetScriptFlags(AMX* amx, cell* params)
+	cell AMX_NATIVE_CALL interface_GetScriptType(AMX* amx, cell* params)
 	{
-		error_if(!check_params(1), "[PLE] interface>> GetScriptFlags: expected 1 parameters but found %d parameters.", get_params_count());
+		error_if(!check_params(1), "[PLE] interface>> GetScriptType: expected 1 parameters but found %d parameters.", get_params_count());
 		const int scriptKey = params[1];
-		if (::Interface::IsValidScript(scriptKey)) return Interface::INTERFACE_FLAGS::INVALID;
-		return Interface::InterfaceList[scriptKey].GetFlags();
+		if (::Interface::IsValidScript(scriptKey)) return Interface::INTERFACE_TYPE::INVALID;
+		return Interface::InterfaceList[scriptKey].GetType();
 	}
 	//native GetScriptPoolSize();
 	cell AMX_NATIVE_CALL interface_GetScriptPoolSize(AMX* amx, cell* params)

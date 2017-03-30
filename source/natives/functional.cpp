@@ -18,39 +18,447 @@ functional.cpp
 /************************************************************************************************************/
 static std::vector <std::function<cell(cell)>> unary_functions =
 {
-	[](cell x) {return -x; },	//negate
-	[](cell x) {return !x; },	//logical_not
-	[](cell x) {return ~x; },	//bit_not
-	[](cell x) {return x + 1; }, //increment
-	[](cell x) {return x - 1; }, //decrement
+	[](cell x)->cell {return -x; },	//negate
+	[](cell x)->cell {return !x; },	//logical_not
+	[](cell x)->cell {return ~x; },	//bit_not
+	[](cell x)->cell {return x + 1; }, //increment
+	[](cell x)->cell {return x - 1; }, //decrement
 
-	[](cell x) {float n = -amx_ctof(x);  return amx_ftoc(n); },		//negatef
-	[](cell x) {float n = amx_ctof(x) + 1;  return amx_ftoc(n); },	//incrementf
-	[](cell x) {float n = amx_ctof(x) - 1;  return amx_ftoc(n); }	//decrementf
+	[](cell x)->cell {float n = -amx_ctof(x);  return amx_ftoc(n); },		//negatef
+	[](cell x)->cell {float n = amx_ctof(x) + 1;  return amx_ftoc(n); },	//incrementf
+	[](cell x)->cell {float n = amx_ctof(x) - 1;  return amx_ftoc(n); },	//decrementf
 };
+/*static std::vector <std::function<cell(AMX*, cell)>> ref_unary_functions =
+{
+	[](AMX * amx, cell x)->cell 
+	{ 
+		cell *phys_addr; 
+		amx_GetAddr(amx, x, &phys_addr); 
+		if (phys_addr == NULL) return 0; 
+		return -*phys_addr; 
+	},	//ref_negate
+	[](AMX * amx, cell x)->cell 
+	{ 
+		cell *phys_addr; 
+		amx_GetAddr(amx, x, &phys_addr); 
+		if (phys_addr == NULL) return 0; 
+		return static_cast<cell>(!*phys_addr); 
+	},	//ref_logical_not
+	[](AMX * amx, cell x)->cell 
+	{ 
+		cell *phys_addr; 
+		amx_GetAddr(amx, x, &phys_addr); 
+		if (phys_addr == NULL) return 0; 
+		return ~*phys_addr; 
+	},	//ref_bit_not
+	[](AMX * amx, cell x)->cell 
+	{ 
+		cell *phys_addr; 
+		amx_GetAddr(amx, x, &phys_addr); 
+		if (phys_addr == NULL) return 0; 
+		return *phys_addr + 1; 
+	}, //ref_increment
+	[](AMX * amx, cell x)->cell 
+	{ 
+		cell *phys_addr; 
+		amx_GetAddr(amx, x, &phys_addr); 
+		if (phys_addr == NULL) return 0; 
+		return *phys_addr - 1; 
+	}, //ref_decrement
+	[](AMX * amx, cell x)->cell 
+	{ 
+		cell *phys_addr; 
+		amx_GetAddr(amx, x, &phys_addr); 
+		if (phys_addr == NULL) return 0; 
+		float n = -amx_ctof(*phys_addr);  
+		return amx_ftoc(n); 
+	},		//ref_negatef
+	[](AMX * amx, cell x)->cell 
+	{ 
+		cell *phys_addr; 
+		amx_GetAddr(amx, x, &phys_addr); 
+		if (phys_addr == NULL) return 0; 
+		float n = amx_ctof(*phys_addr) + 1;  
+		return amx_ftoc(n); 
+	},	//ref_incrementf
+	[](AMX * amx, cell x)->cell 
+	{ 
+		cell *phys_addr; 
+		amx_GetAddr(amx, x, &phys_addr); 
+		if (phys_addr == NULL) return 0; 
+		float n = amx_ctof(*phys_addr) - 1;  
+		return amx_ftoc(n); 
+	},	//ref_decrementf
+};
+static std::vector <std::function<cell(AMX*, cell)>> array_unary_functions =
+{
+	[](AMX *amx, cell str)->cell 
+	{
+		cell *phys_addr;
+		amx_GetAddr(amx, str, &phys_addr);
+		cell addr = str + *phys_addr;
+		amx_GetAddr(amx, addr, &phys_addr);
+		if (phys_addr == NULL) return 0;
+		return ((!phys_addr[0]) || (((phys_addr[0]) == '\1') && !phys_addr[1]));
+	} //str_isnull
+};*/
 static std::vector <std::function<cell(cell, cell)>> binary_functions =
 {
-	[](cell a, cell b) { return a + b;  }, //plus
-	[](cell a, cell b) { return a - b;  }, //minus
-	[](cell a, cell b) { return a * b;  }, //multiplies
-	[](cell a, cell b) { return a / b;  }, //divides
-	[](cell a, cell b) { return a % b;  }, //modulus
-	[](cell a, cell b) { return a == b; }, //equal_to
-	[](cell a, cell b) { return a != b; }, //not_equal_to
-	[](cell a, cell b) { return a > b;	}, //greater
-	[](cell a, cell b) { return a < b;  }, //less
-	[](cell a, cell b) { return a >= b; }, //greater_equal
-	[](cell a, cell b) { return a <= b; }, //less_equal
-	[](cell a, cell b) { return a && b; }, //logical_and
-	[](cell a, cell b) { return a || b; }, //logical_or
-	[](cell a, cell b) { return a & b;  }, //bit_and
-	[](cell a, cell b) { return a | b;  }, //bit_or
-	[](cell a, cell b) { return a ^ b;  }, //bit_xor
-	[](cell a, cell b) { float n = amx_ctof(a) + amx_ctof(b);  return amx_ftoc(n); }, //plusf
-	[](cell a, cell b) { float n = amx_ctof(a) - amx_ctof(b);  return amx_ftoc(n); }, //minusf
-	[](cell a, cell b) { float n = amx_ctof(a) * amx_ctof(b);  return amx_ftoc(n); }, //multipliesf
-	[](cell a, cell b) { float n = amx_ctof(a) / amx_ctof(b);  return amx_ftoc(n); }  //dividesf
+	[](cell a, cell b)->cell { return a + b;  }, //plus
+	[](cell a, cell b)->cell { return a - b;  }, //minus
+	[](cell a, cell b)->cell { return a * b;  }, //multiplies
+	[](cell a, cell b)->cell { return a / b;  }, //divides
+	[](cell a, cell b)->cell { return a % b;  }, //modulus
+	[](cell a, cell b)->cell { return a == b; }, //equal_to
+	[](cell a, cell b)->cell { return a != b; }, //not_equal_to
+	[](cell a, cell b)->cell { return a > b;	}, //greater
+	[](cell a, cell b)->cell { return a < b;  }, //less
+	[](cell a, cell b)->cell { return a >= b; }, //greater_equal
+	[](cell a, cell b)->cell { return a <= b; }, //less_equal
+	[](cell a, cell b)->cell { return a && b; }, //logical_and
+	[](cell a, cell b)->cell { return a || b; }, //logical_or
+	[](cell a, cell b)->cell { return a & b;  }, //bit_and
+	[](cell a, cell b)->cell { return a | b;  }, //bit_or
+	[](cell a, cell b)->cell { return a ^ b;  }, //bit_xor
+	[](cell a, cell b)->cell { float n = amx_ctof(a) + amx_ctof(b);  return amx_ftoc(n); }, //plusf
+	[](cell a, cell b)->cell { float n = amx_ctof(a) - amx_ctof(b);  return amx_ftoc(n); }, //minusf
+	[](cell a, cell b)->cell { float n = amx_ctof(a) * amx_ctof(b);  return amx_ftoc(n); }, //multipliesf
+	[](cell a, cell b)->cell { float n = amx_ctof(a) / amx_ctof(b);  return amx_ftoc(n); }  //dividesf
 };
+/*static std::vector <std::function<cell(AMX*, cell, cell)>> ref_binary_functions =
+{
+	[](AMX* amx, cell a, cell b)->cell 
+	{
+		cell *phys_addr_a, *phys_addr_b;
+		amx_GetAddr(amx, a, &phys_addr_a);
+		amx_GetAddr(amx, b, &phys_addr_b);
+		if (phys_addr_a == NULL || phys_addr_b == NULL) return 0;
+		return *phys_addr_a + *phys_addr_b;
+	}, //ref_plus
+	[](AMX* amx, cell a, cell b)->cell 
+	{ 
+		cell *phys_addr_a, *phys_addr_b;
+		amx_GetAddr(amx, a, &phys_addr_a);
+		amx_GetAddr(amx, b, &phys_addr_b);
+		if (phys_addr_a == NULL || phys_addr_b == NULL) return 0;
+		return *phys_addr_a - *phys_addr_b;
+	}, //ref_minus
+	[](AMX* amx, cell a, cell b)->cell 
+	{ 
+		cell *phys_addr_a, *phys_addr_b;
+		amx_GetAddr(amx, a, &phys_addr_a);
+		amx_GetAddr(amx, b, &phys_addr_b);
+		if (phys_addr_a == NULL || phys_addr_b == NULL) return 0;
+		return *phys_addr_a * *phys_addr_b;
+	}, //ref_multiplies
+	[](AMX* amx, cell a, cell b)->cell 
+	{ 
+		cell *phys_addr_a, *phys_addr_b;
+		amx_GetAddr(amx, a, &phys_addr_a);
+		amx_GetAddr(amx, b, &phys_addr_b);
+		if (phys_addr_a == NULL || phys_addr_b == NULL) return 0;
+		return *phys_addr_a / *phys_addr_b;
+	}, //ref_divides
+	[](AMX* amx, cell a, cell b)->cell 
+	{ 
+		cell *phys_addr_a, *phys_addr_b;
+		amx_GetAddr(amx, a, &phys_addr_a);
+		amx_GetAddr(amx, b, &phys_addr_b);
+		if (phys_addr_a == NULL || phys_addr_b == NULL) return 0;
+		return *phys_addr_a % *phys_addr_b;
+	}, //ref_modulus
+	[](AMX* amx, cell a, cell b)->cell 
+	{ 
+		cell *phys_addr_a, *phys_addr_b;
+		amx_GetAddr(amx, a, &phys_addr_a);
+		amx_GetAddr(amx, b, &phys_addr_b);
+		if (phys_addr_a == NULL || phys_addr_b == NULL) return 0;
+		return *phys_addr_a == *phys_addr_b;
+	}, //ref_equal_to
+	[](AMX* amx, cell a, cell b)->cell 
+	{ 
+		cell *phys_addr_a, *phys_addr_b;
+		amx_GetAddr(amx, a, &phys_addr_a);
+		amx_GetAddr(amx, b, &phys_addr_b);
+		if (phys_addr_a == NULL || phys_addr_b == NULL) return 0;
+		return *phys_addr_a != *phys_addr_b;
+	}, //ref_not_equal_to
+	[](AMX* amx, cell a, cell b)->cell 
+	{ 
+		cell *phys_addr_a, *phys_addr_b;
+		amx_GetAddr(amx, a, &phys_addr_a);
+		amx_GetAddr(amx, b, &phys_addr_b);
+		if (phys_addr_a == NULL || phys_addr_b == NULL) return 0;
+		return *phys_addr_a > *phys_addr_b;
+	}, //ref_greater
+	[](AMX* amx, cell a, cell b)->cell 
+	{ 
+		cell *phys_addr_a, *phys_addr_b;
+		amx_GetAddr(amx, a, &phys_addr_a);
+		amx_GetAddr(amx, b, &phys_addr_b);
+		if (phys_addr_a == NULL || phys_addr_b == NULL) return 0;
+		return *phys_addr_a < *phys_addr_b;
+	}, //ref_less
+	[](AMX* amx, cell a, cell b)->cell 
+	{ 
+		cell *phys_addr_a, *phys_addr_b;
+		amx_GetAddr(amx, a, &phys_addr_a);
+		amx_GetAddr(amx, b, &phys_addr_b);
+		if (phys_addr_a == NULL || phys_addr_b == NULL) return 0;
+		return *phys_addr_a >= *phys_addr_b;
+	}, //ref_greater_equal
+	[](AMX* amx, cell a, cell b)->cell 
+	{ 
+		cell *phys_addr_a, *phys_addr_b;
+		amx_GetAddr(amx, a, &phys_addr_a);
+		amx_GetAddr(amx, b, &phys_addr_b);
+		if (phys_addr_a == NULL || phys_addr_b == NULL) return 0;
+		return *phys_addr_a <= *phys_addr_b;
+	}, //ref_less_equal
+	[](AMX* amx, cell a, cell b)->cell 
+	{ 
+		cell *phys_addr_a, *phys_addr_b;
+		amx_GetAddr(amx, a, &phys_addr_a);
+		amx_GetAddr(amx, b, &phys_addr_b);
+		if (phys_addr_a == NULL || phys_addr_b == NULL) return 0;
+		return *phys_addr_a && *phys_addr_b;
+	}, //ref_logical_and
+	[](AMX* amx, cell a, cell b)->cell 
+	{ 
+		cell *phys_addr_a, *phys_addr_b;
+		amx_GetAddr(amx, a, &phys_addr_a);
+		amx_GetAddr(amx, b, &phys_addr_b);
+		if (phys_addr_a == NULL || phys_addr_b == NULL) return 0;
+		return *phys_addr_a || *phys_addr_b;
+	}, //ref_logical_or
+	[](AMX* amx, cell a, cell b)->cell 
+	{ 
+		cell *phys_addr_a, *phys_addr_b;
+		amx_GetAddr(amx, a, &phys_addr_a);
+		amx_GetAddr(amx, b, &phys_addr_b);
+		if (phys_addr_a == NULL || phys_addr_b == NULL) return 0;
+		return *phys_addr_a & *phys_addr_b;
+	}, //ref_bit_and
+	[](AMX* amx, cell a, cell b)->cell 
+	{ 
+		cell *phys_addr_a, *phys_addr_b;
+		amx_GetAddr(amx, a, &phys_addr_a);
+		amx_GetAddr(amx, b, &phys_addr_b);
+		if (phys_addr_a == NULL || phys_addr_b == NULL) return 0;
+		return *phys_addr_a | *phys_addr_b;
+	}, //ref_bit_or
+	[](AMX* amx, cell a, cell b)->cell 
+	{ 
+		cell *phys_addr_a, *phys_addr_b;
+		amx_GetAddr(amx, a, &phys_addr_a);
+		amx_GetAddr(amx, b, &phys_addr_b);
+		if (phys_addr_a == NULL || phys_addr_b == NULL) return 0;
+		return *phys_addr_a ^ *phys_addr_b;
+	}, //ref_bit_xor
+	[](AMX* amx, cell a, cell b)->cell 
+	{ 
+		cell *phys_addr_a, *phys_addr_b;
+		amx_GetAddr(amx, a, &phys_addr_a);
+		amx_GetAddr(amx, b, &phys_addr_b);
+		if (phys_addr_a == NULL || phys_addr_b == NULL) return 0;
+		float n = amx_ctof(*phys_addr_a) + amx_ctof(*phys_addr_b);  
+		return amx_ftoc(n);
+	}, //ref_plusf
+	[](AMX* amx, cell a, cell b)->cell 
+	{ 
+		cell *phys_addr_a, *phys_addr_b;
+		amx_GetAddr(amx, a, &phys_addr_a);
+		amx_GetAddr(amx, b, &phys_addr_b);
+		if (phys_addr_a == NULL || phys_addr_b == NULL) return 0;
+		float n = amx_ctof(*phys_addr_a) - amx_ctof(*phys_addr_b);
+		return amx_ftoc(n); 
+	}, //ref_minusf
+	[](AMX* amx, cell a, cell b)->cell 
+	{ 
+		cell *phys_addr_a, *phys_addr_b;
+		amx_GetAddr(amx, a, &phys_addr_a);
+		amx_GetAddr(amx, b, &phys_addr_b);
+		if (phys_addr_a == NULL || phys_addr_b == NULL) return 0;
+		float n = amx_ctof(*phys_addr_a) * amx_ctof(*phys_addr_b);  
+		return amx_ftoc(n);
+	}, //ref_multipliesf
+	[](AMX* amx, cell a, cell b)->cell 
+	{ 
+		cell *phys_addr_a, *phys_addr_b;
+		amx_GetAddr(amx, a, &phys_addr_a);
+		amx_GetAddr(amx, b, &phys_addr_b);
+		if (phys_addr_a == NULL || phys_addr_b == NULL) return 0;
+		float n = amx_ctof(*phys_addr_a) / amx_ctof(*phys_addr_b); 
+		return amx_ftoc(n);
+	}  //ref_dividesf
+};
+static std::vector <std::function<cell(AMX*, cell, cell)>> array_binary_functions =
+{11
+	[](AMX* amx, cell a, cell b)->cell
+{
+	cell *phys_addr_a, *phys_addr_b;
+	amx_GetAddr(amx, a, &phys_addr_a);
+	amx_GetAddr(amx, b, &phys_addr_b);
+	if (phys_addr_a == NULL || phys_addr_b == NULL) return 0;
+	return *phys_addr_a + *phys_addr_b;
+}, //ref_plus
+[](AMX* amx, cell a, cell b)->cell
+{
+	cell *phys_addr_a, *phys_addr_b;
+	amx_GetAddr(amx, a, &phys_addr_a);
+	amx_GetAddr(amx, b, &phys_addr_b);
+	if (phys_addr_a == NULL || phys_addr_b == NULL) return 0;
+	return *phys_addr_a - *phys_addr_b;
+}, //ref_minus
+[](AMX* amx, cell a, cell b)->cell
+{
+	cell *phys_addr_a, *phys_addr_b;
+	amx_GetAddr(amx, a, &phys_addr_a);
+	amx_GetAddr(amx, b, &phys_addr_b);
+	if (phys_addr_a == NULL || phys_addr_b == NULL) return 0;
+	return *phys_addr_a * *phys_addr_b;
+}, //ref_multiplies
+[](AMX* amx, cell a, cell b)->cell
+{
+	cell *phys_addr_a, *phys_addr_b;
+	amx_GetAddr(amx, a, &phys_addr_a);
+	amx_GetAddr(amx, b, &phys_addr_b);
+	if (phys_addr_a == NULL || phys_addr_b == NULL) return 0;
+	return *phys_addr_a / *phys_addr_b;
+}, //ref_divides
+[](AMX* amx, cell a, cell b)->cell
+{
+	cell *phys_addr_a, *phys_addr_b;
+	amx_GetAddr(amx, a, &phys_addr_a);
+	amx_GetAddr(amx, b, &phys_addr_b);
+	if (phys_addr_a == NULL || phys_addr_b == NULL) return 0;
+	return *phys_addr_a % *phys_addr_b;
+}, //ref_modulus
+[](AMX* amx, cell a, cell b)->cell
+{
+	cell *phys_addr_a, *phys_addr_b;
+	amx_GetAddr(amx, a, &phys_addr_a);
+	amx_GetAddr(amx, b, &phys_addr_b);
+	if (phys_addr_a == NULL || phys_addr_b == NULL) return 0;
+	return *phys_addr_a == *phys_addr_b;
+}, //ref_equal_to
+[](AMX* amx, cell a, cell b)->cell
+{
+	cell *phys_addr_a, *phys_addr_b;
+	amx_GetAddr(amx, a, &phys_addr_a);
+	amx_GetAddr(amx, b, &phys_addr_b);
+	if (phys_addr_a == NULL || phys_addr_b == NULL) return 0;
+	return *phys_addr_a != *phys_addr_b;
+}, //ref_not_equal_to
+[](AMX* amx, cell a, cell b)->cell
+{
+	cell *phys_addr_a, *phys_addr_b;
+	amx_GetAddr(amx, a, &phys_addr_a);
+	amx_GetAddr(amx, b, &phys_addr_b);
+	if (phys_addr_a == NULL || phys_addr_b == NULL) return 0;
+	return *phys_addr_a > *phys_addr_b;
+}, //ref_greater
+[](AMX* amx, cell a, cell b)->cell
+{
+	cell *phys_addr_a, *phys_addr_b;
+	amx_GetAddr(amx, a, &phys_addr_a);
+	amx_GetAddr(amx, b, &phys_addr_b);
+	if (phys_addr_a == NULL || phys_addr_b == NULL) return 0;
+	return *phys_addr_a < *phys_addr_b;
+}, //ref_less
+[](AMX* amx, cell a, cell b)->cell
+{
+	cell *phys_addr_a, *phys_addr_b;
+	amx_GetAddr(amx, a, &phys_addr_a);
+	amx_GetAddr(amx, b, &phys_addr_b);
+	if (phys_addr_a == NULL || phys_addr_b == NULL) return 0;
+	return *phys_addr_a >= *phys_addr_b;
+}, //ref_greater_equal
+[](AMX* amx, cell a, cell b)->cell
+{
+	cell *phys_addr_a, *phys_addr_b;
+	amx_GetAddr(amx, a, &phys_addr_a);
+	amx_GetAddr(amx, b, &phys_addr_b);
+	if (phys_addr_a == NULL || phys_addr_b == NULL) return 0;
+	return *phys_addr_a <= *phys_addr_b;
+}, //ref_less_equal
+[](AMX* amx, cell a, cell b)->cell
+{
+	cell *phys_addr_a, *phys_addr_b;
+	amx_GetAddr(amx, a, &phys_addr_a);
+	amx_GetAddr(amx, b, &phys_addr_b);
+	if (phys_addr_a == NULL || phys_addr_b == NULL) return 0;
+	return *phys_addr_a && *phys_addr_b;
+}, //ref_logical_and
+[](AMX* amx, cell a, cell b)->cell
+{
+	cell *phys_addr_a, *phys_addr_b;
+	amx_GetAddr(amx, a, &phys_addr_a);
+	amx_GetAddr(amx, b, &phys_addr_b);
+	if (phys_addr_a == NULL || phys_addr_b == NULL) return 0;
+	return *phys_addr_a || *phys_addr_b;
+}, //ref_logical_or
+[](AMX* amx, cell a, cell b)->cell
+{
+	cell *phys_addr_a, *phys_addr_b;
+	amx_GetAddr(amx, a, &phys_addr_a);
+	amx_GetAddr(amx, b, &phys_addr_b);
+	if (phys_addr_a == NULL || phys_addr_b == NULL) return 0;
+	return *phys_addr_a & *phys_addr_b;
+}, //ref_bit_and
+[](AMX* amx, cell a, cell b)->cell
+{
+	cell *phys_addr_a, *phys_addr_b;
+	amx_GetAddr(amx, a, &phys_addr_a);
+	amx_GetAddr(amx, b, &phys_addr_b);
+	if (phys_addr_a == NULL || phys_addr_b == NULL) return 0;
+	return *phys_addr_a | *phys_addr_b;
+}, //ref_bit_or
+[](AMX* amx, cell a, cell b)->cell
+{
+	cell *phys_addr_a, *phys_addr_b;
+	amx_GetAddr(amx, a, &phys_addr_a);
+	amx_GetAddr(amx, b, &phys_addr_b);
+	if (phys_addr_a == NULL || phys_addr_b == NULL) return 0;
+	return *phys_addr_a ^ *phys_addr_b;
+}, //ref_bit_xor
+[](AMX* amx, cell a, cell b)->cell
+{
+	cell *phys_addr_a, *phys_addr_b;
+	amx_GetAddr(amx, a, &phys_addr_a);
+	amx_GetAddr(amx, b, &phys_addr_b);
+	if (phys_addr_a == NULL || phys_addr_b == NULL) return 0;
+	float n = amx_ctof(*phys_addr_a) + amx_ctof(*phys_addr_b);
+	return amx_ftoc(n);
+}, //ref_plusf
+[](AMX* amx, cell a, cell b)->cell
+{
+	cell *phys_addr_a, *phys_addr_b;
+	amx_GetAddr(amx, a, &phys_addr_a);
+	amx_GetAddr(amx, b, &phys_addr_b);
+	if (phys_addr_a == NULL || phys_addr_b == NULL) return 0;
+	float n = amx_ctof(*phys_addr_a) - amx_ctof(*phys_addr_b);
+	return amx_ftoc(n);
+}, //ref_minusf
+[](AMX* amx, cell a, cell b)->cell
+{
+	cell *phys_addr_a, *phys_addr_b;
+	amx_GetAddr(amx, a, &phys_addr_a);
+	amx_GetAddr(amx, b, &phys_addr_b);
+	if (phys_addr_a == NULL || phys_addr_b == NULL) return 0;
+	float n = amx_ctof(*phys_addr_a) * amx_ctof(*phys_addr_b);
+	return amx_ftoc(n);
+}, //ref_multipliesf
+[](AMX* amx, cell a, cell b)->cell
+{
+	cell *phys_addr_a, *phys_addr_b;
+	amx_GetAddr(amx, a, &phys_addr_a);
+	amx_GetAddr(amx, b, &phys_addr_b);
+	if (phys_addr_a == NULL || phys_addr_b == NULL) return 0;
+	float n = amx_ctof(*phys_addr_a) / amx_ctof(*phys_addr_b);
+	return amx_ftoc(n);
+}  //ref_dividesf
+};*/
 /************************************************************************************************************/
 cell ExecuteFunctionCO1O2O3(AMX *amx, functionID *fid)
 {
