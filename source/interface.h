@@ -14,8 +14,6 @@ interface.h
 #include "main.h"
 
 #include <string>
-#include <chrono>
-#include <ctime>
 #include <cstdint>
 /************************************************************************************************************/
 namespace Interface 
@@ -26,40 +24,39 @@ namespace Interface
 	#define INVALID_SCRIPT_ID -1
 	#define INVALID_AMX_FUNCIDX -1
 
-	#define SCRIPT_IDENTIFIER_SIZE 32
+	#define SCRIPT_IDENTIFIER_SIZE MAX_SYMBOL_LEN
 	/********************************************************************************************************/
 	enum INTERFACE_TYPE
 	{
 		INVALID = 0x0,
-		SUPPORTED = 0x02,
-		UNSUPPORTED = 0x04,
+		SUPPORTED = 0x01,
+		UNSUPPORTED = 0x02
 	};
 	/********************************************************************************************************/
 	struct PLE_HEADER
 	{
-		cell signature1;
-		cell signature2;
-		cell signature3;
-		cell signature4;
-
 		cell version;
 		cell size;
 		cell inc_version;
-		cell reserved8;
+		cell reserved4;
 
 		cell flags;
 		cell debug_level;
 		cell compiler_version;
-		cell reserved12;
+		cell reserved8;
 
 		cell dynmem_reserve_size;
+		cell reserved10;
+		cell reserved11;
+		cell reserved12;
+		cell reserved13;
 		cell reserved14;
 		cell reserved15;
 		cell reserved16;
-		cell reserved17;
-		cell reserved18;
-		cell reserved19;
-		cell reserved20;
+		cell custom1;
+		cell custom2;
+		cell custom3;
+		cell custom4;
 		cell reserved21;
 		cell reserved22;
 		cell reserved23;
@@ -77,22 +74,21 @@ namespace Interface
 		cell reserved63;
 		cell signature_end;
 	};
+	/********************************************************************************************************/
 	class Interface
 	{
 	public:
 		AMX * amx;
-		PLE_HEADER * ple_header;
-
-		cell ple_compliant_pubvar_addr;
-
-		int ScriptKey; //every AMX instance is assigned a unique id	
+		
+		int ScriptKey; //every AMX instance is assigned a unique id
 		std::string ScriptIdentifier; //SSO optimization in most cases
-		std::chrono::system_clock::time_point time_loaded;
 
 		Interface() {}
 		~Interface() {}
+
 		int Initilize(AMX * amx, int ScriptKey);
 		INTERFACE_TYPE GetType() const { return type; }
+		PLE_HEADER* GetHeader() const { return this->ple_header;  }
 		void Trigger_OnScriptInit(int scriptKey, std::string& scriptIdentifier) const;
 		void Trigger_OnScriptExit(int scriptKey, std::string& scriptIdentifier) const;
 
@@ -100,9 +96,12 @@ namespace Interface
 		void Delete() { this->type = INTERFACE_TYPE::INVALID; }
 
 	private:
-		int cbidx_OnScriptInit;
-		int cbidx_OnScriptExit;
+		PLE_HEADER * ple_header;
+		cell ple_compliant_pubvar_addr;
 		INTERFACE_TYPE type;
+
+		int cbidx_OnScriptInit;
+		int cbidx_OnScriptExit;		
 	};
 	/********************************************************************************************************/
 	extern int AddInterface(AMX * amx);
@@ -118,4 +117,6 @@ namespace Natives
 	cell AMX_NATIVE_CALL interface_GetScriptPoolSize(AMX* amx, cell* params);
 	cell AMX_NATIVE_CALL interface_GetScriptIdentifierFromKey(AMX* amx, cell* params);
 	cell AMX_NATIVE_CALL interface_GetScriptKeyFromIdentifier(AMX* amx, cell* params);
+	cell AMX_NATIVE_CALL interface_GetScriptPLEHeader(AMX* amx, cell* params);
+	
 }

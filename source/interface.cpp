@@ -12,24 +12,28 @@ interface.cpp
 #include "main.h"
 #include "interface.h"
 
-#include "natives/isc.h"
-#include "natives/ctype.h"
-#include "natives/string.h"
-#include "natives/file.h"
-#include "natives/time.h"
-#include "natives/errno.h"
-#include "natives/functional.h"
 #include "natives/algorithm.h"
-#include "natives/numeric.h"
-#include "natives/math.h"
-#include "natives/complex.h"
 #include "natives/bitset.h"
+#include "natives/complex.h"
+#include "natives/ctype.h"
+#include "natives/errno.h"
+#include "natives/file.h"
+#include "natives/functional.h"
+#include "natives/isc.h"
+#include "natives/list.h"
+#include "natives/math.h"
+#include "natives/memory.h"
+#include "natives/numeric.h"
+#include "natives/random.h"
+#include "natives/string.h"
+#include "natives/time.h"
+#include "natives/vector.h"
 
 #include <algorithm>
 #include <vector>
 #include <fenv.h>
 /************************************************************************************************************/
-struct PUBVAR_ENTRY { char name[32]; cell value; }; static PUBVAR_ENTRY entries[] =
+struct PUBVAR_ENTRY { char name[MAX_SYMBOL_LEN]; cell value; }; static PUBVAR_ENTRY entries[] =
 {
 	{ "file_EOF", EOF },
 	{ "file_SEEK_SET", SEEK_SET },
@@ -131,11 +135,13 @@ struct PUBVAR_ENTRY { char name[32]; cell value; }; static PUBVAR_ENTRY entries[
 	{ "EXDEV", EXDEV },
 	{ 0, 0 },
 };
+
 static AMX_NATIVE_INFO NativeFunctionsTable[] =
 {
 	//interface
 	{ "IsValidScript", Natives::interface_IsValidScript },
 	{ "GetScriptType", Natives::interface_GetScriptType },
+	{ "GetScriptPLEHeader", Natives::interface_GetScriptPLEHeader },
 	{ "GetScriptPoolSize", Natives::interface_GetScriptPoolSize },
 	{ "GetScriptIdentifierFromKey", Natives::interface_GetScriptIdentifierFromKey },
 	{ "GetScriptKeyFromIdentifier", Natives::interface_GetScriptKeyFromIdentifier },
@@ -383,6 +389,42 @@ static AMX_NATIVE_INFO NativeFunctionsTable[] =
 	{ "bitset_foreach_notset", Natives::bitset_foreach_notset },
 	{ "bitset_find_set", Natives::bitset_find_set },
 	{ "bitset_find_notset", Natives::bitset_find_notset },
+
+	//vector
+	{ "vector_create", Natives::vector_create },
+	{ "vector_destroy", Natives::vector_destroy },
+	{ "vector_assign", Natives::vector_assign },
+	{ "vector_get", Natives::vector_get },
+	{ "vector_set", Natives::vector_set },
+	{ "vector_front", Natives::vector_front },
+	{ "vector_back", Natives::vector_back },
+	{ "vector_data", Natives::vector_data },
+	{ "vector_empty", Natives::vector_empty },
+	{ "vector_size", Natives::vector_size },
+	{ "vector_max_size", Natives::vector_max_size },
+	{ "vector_reserve", Natives::vector_reserve },
+	{ "vector_capacity", Natives::vector_capacity },
+	{ "vector_shrink_to_fit", Natives::vector_shrink_to_fit },
+	{ "vector_clear", Natives::vector_clear },
+	{ "vector_erase", Natives::vector_erase },
+	{ "vector_insert", Natives::vector_insert },
+	{ "vector_push_back", Natives::vector_push_back },
+	{ "vector_pop_back", Natives::vector_pop_back },
+	{ "vector_resize", Natives::vector_resize },
+	{ "vector_swap", Natives::vector_swap },
+	{ "vector_equal", Natives::vector_equal },
+	{ "vector_greater_than", Natives::vector_greater_than },
+	{ "vector_lesser_than", Natives::vector_lesser_than },
+	{ "vector_find", Natives::vector_find },
+	{ "vector_find_if", Natives::vector_find_if },
+	{ "vector_count", Natives::vector_count },
+	{ "vector_count_if", Natives::vector_count_if },
+	{ "vector_remove", Natives::vector_remove },
+	{ "vector_remove_if", Natives::vector_remove_if },
+	{ "vector_unique", Natives::vector_unique },
+	{ "vector_sort", Natives::vector_sort },
+	{ "vector_reverse", Natives::vector_reverse },
+	{ "vector_foreach_getValINC", Natives::vector_foreach_getValINC },
 	{ 0, 0 }
 };
 /************************************************************************************************************/
@@ -395,33 +437,30 @@ namespace Interface
 	{
 		this->amx = amx;
 		this->ScriptKey = scriptKey;
-		this->ple_header = nullptr;
-		this->type = INTERFACE_TYPE::UNSUPPORTED;
 		this->ScriptIdentifier = UNSUPPORTED_SCRIPT_IDENTIFIER;
-		this->ple_compliant_pubvar_addr = -1;
 
+		this->ple_header = nullptr;
+		this->ple_compliant_pubvar_addr = -1;
+		this->type = INTERFACE_TYPE::UNSUPPORTED;
+		
 		if (amx_FindPubVar(amx, "@@@ple_compliant", &this->ple_compliant_pubvar_addr) == AMX_ERR_NONE)
 		{
 			cell *data_phys_addr;
 			amx_GetAddr(amx, 0, &data_phys_addr);
 
+			cell *ple_hdr_phys_addr;
+			amx_GetAddr(amx, this->ple_compliant_pubvar_addr + BYTES_PER_CELL, &ple_hdr_phys_addr);
+
 			AMX_HEADER * amx_hdr = (AMX_HEADER *)amx->base;
 			cell *heap_phys_addr = data_phys_addr + (amx_hdr->hea - amx_hdr->dat);
-			for (cell *data_cur = data_phys_addr; data_cur < heap_phys_addr; data_cur++)
-			{
-				if ((data_cur[0] == 0x1F48)
-					&& (data_cur[1] == 0x1362)
-					&& (data_cur[2] == 0x5961)
-					&& (data_cur[3] == 0x5368)) //check header signatures
-				{
-					PLE_HEADER *ple_hdr = (PLE_HEADER*)data_cur;
-					this->ple_header = ple_hdr;
 
-					if (*(data_cur + ple_hdr->size - 1) != 0x12AA)
-					{
-						logprintf("[NOTICE] PAWN Library Extension: The script (ScriptKey:%d) loaded has a corrupt PLE header.", scriptKey);
-						break;
-					}
+			if (ple_hdr_phys_addr + sizeof(PLE_HEADER) / sizeof(cell) < heap_phys_addr)
+			{
+				PLE_HEADER *ple_hdr = (PLE_HEADER*)(ple_hdr_phys_addr);
+				if (ple_hdr->size == (&ple_hdr->signature_end - &ple_hdr->version + 1) && ple_hdr->signature_end == 0x12AA)
+				{
+					this->ple_header = ple_hdr;
+					this->type = INTERFACE_TYPE::SUPPORTED;
 
 					char cstr_scriptidentifier[SCRIPT_IDENTIFIER_SIZE];
 					amx_GetString(cstr_scriptidentifier, ple_hdr->scriptidentifier, 0, SCRIPT_IDENTIFIER_SIZE);
@@ -433,30 +472,30 @@ namespace Interface
 					else if (PLE_PLUGIN_VERSION_KEY < ple_hdr->inc_version)
 						logprintf("[WARNING] PAWN Library Extension: The plugin version does not match the include version in script '%s' (ScriptKey:%d).\nThe script is using a newer version of PLE with an older version of the plugin.", cstr_scriptidentifier, scriptKey);
 
-					int duplicate_count = 0;
-					for (int i = 0, j = ::Interface::InterfaceList.size(); i < j; i++)
-					{
-						if (::Interface::InterfaceList[i].empty()) continue;
-						if (i == scriptKey) continue;
-
-						if (::Interface::InterfaceList[i].ScriptIdentifier == this->ScriptIdentifier)
-							duplicate_count++;
-
-						::Interface::InterfaceList[i].Trigger_OnScriptInit(scriptKey, this->ScriptIdentifier);
-					}
-
 					if (this->ScriptIdentifier == UNDEFINED_SCRIPT_IDENTIFIER)
-						logprintf("[NOTICE] PAWN Library Extension: A loaded script does not have a script identifier. (Total undefined scripts: %d)", duplicate_count + 1);
-					else if (duplicate_count)
-						logprintf("[WARNING] PAWN Library Extension: Script identifier '%s' is being used by %d scripts.", cstr_scriptidentifier, duplicate_count + 1);
-	
-					// TO:DO if(ple_hdr->dynmem_reserve_size){}
-					break;
+						logprintf("[NOTICE] PAWN Library Extension: A loaded script does not have a script identifier.");
+					else
+					{
+						int duplicate_count = 0;
+						for (int i = 0, j = ::Interface::InterfaceList.size(); i < j; i++)
+						{
+							if (::Interface::InterfaceList[i].empty()) continue;
+							if (i == scriptKey) continue;
+
+							if (::Interface::InterfaceList[i].ScriptIdentifier == this->ScriptIdentifier)
+								duplicate_count++;
+
+							::Interface::InterfaceList[i].Trigger_OnScriptInit(scriptKey, this->ScriptIdentifier);
+						}
+
+						if (duplicate_count)
+							logprintf("[WARNING] PAWN Library Extension: Script identifier '%s' is being used by %d scripts.", cstr_scriptidentifier, duplicate_count + 1);
+					}					
 				}
 			}
-		}
-		else	
-			logprintf("[NOTICE] PAWN Library Extension: A script (ScriptKey:%d) was loaded which wasn't compiled for PLE.", scriptKey);	
+		}					
+		if (this->type != INTERFACE_TYPE::SUPPORTED)			
+			logprintf("[NOTICE] PAWN Library Extension: A script (ScriptKey:%d) was loaded which does not have a functional PLE header.", scriptKey);	
 
 		//public OnScriptInit(scriptKey, scriptIdentifier[])
 		if (amx_FindPublic(amx, "OnScriptInit", &this->cbidx_OnScriptInit) != AMX_ERR_NONE)
@@ -465,8 +504,6 @@ namespace Interface
 		//public OnScriptExit(scriptKey, scriptIdentifier[])
 		if (amx_FindPublic(amx, "OnScriptExit", &this->cbidx_OnScriptExit) != AMX_ERR_NONE)
 			this->cbidx_OnScriptExit = INVALID_AMX_FUNCIDX;
-
-		this->time_loaded = std::chrono::system_clock::now();
 
 		cell pubvar_addr;
 		for (int i = 0; entries[i].name[0] != 0; i++)
@@ -624,30 +661,20 @@ namespace Natives
 		}
 		return count;
 	}
-	//native GetScriptStartupTime(scriptKey, _time_t[time_t]);
-	cell AMX_NATIVE_CALL interface_GetScriptStartupTime(AMX* amx, cell* params)
+	//native GetScriptPLEHeader(scriptKey, _ple_header[PLE_HEADER]);
+	cell AMX_NATIVE_CALL interface_GetScriptPLEHeader(AMX* amx, cell* params)
 	{
-		error_if(!check_params(2), "[PLE] interface>> GetScriptStartupTime: expected 2 parameters but found %d parameters.", get_params_count());
+		error_if(!check_params(2), "[PLE] interface>> GetScriptPLEHeader: expected 2 parameters but found %d parameters.", get_params_count());
 		const int scriptKey = params[1];
-		if (::Interface::IsValidScript(scriptKey)) return 0;
+		if (::Interface::IsValidScript(scriptKey)) return false;
 
-		cell* time_dest_addr = NULL;
-		amx_GetAddr(amx, params[1], &time_dest_addr);
+		cell* addr = NULL;
+		amx_GetAddr(amx, params[2], &addr);
+		::Interface::Interface * intr = &::Interface::InterfaceList[scriptKey];
 
-		struct tm * time_dest;
-		time_t posix_time = std::chrono::system_clock::to_time_t(Interface::InterfaceList[scriptKey].time_loaded);
-		time_dest = gmtime(&posix_time);
-
-		time_dest_addr[second] = time_dest->tm_sec;
-		time_dest_addr[minute] = time_dest->tm_min;
-		time_dest_addr[hour] = time_dest->tm_hour;
-		time_dest_addr[day] = time_dest->tm_mday;
-		time_dest_addr[month] = time_dest->tm_mon;
-		time_dest_addr[year] = time_dest->tm_year + 1900;
-		time_dest_addr[wday] = time_dest->tm_wday;
-		time_dest_addr[yday] = time_dest->tm_yday;
-		time_dest_addr[isdst] = time_dest->tm_isdst;
-
-		return static_cast<cell>(posix_time);
+		if (intr->GetType() != ::Interface::INTERFACE_TYPE::SUPPORTED) return false;
+		
+		*reinterpret_cast<::Interface::PLE_HEADER*>(addr) = *intr->GetHeader();
+		return true;		
 	}
 }

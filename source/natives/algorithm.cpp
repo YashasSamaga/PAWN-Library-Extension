@@ -40,7 +40,7 @@ namespace Natives
 		amx_GetAddr(amx, params[3], &idx_addr);
 
 		size_t size = params[4];
-		error_if(size < 0, "[PLE] algorithm>> ibsearch: 'size' paramter (%d) below zero", size);
+		error_if(size < 0, "[PLE] algorithm>> ibsearch: 'size' parameter (%d) below zero", size);
 
 		int low = 0, high = size - 1, mid = 0;
 		while (low <= high)
@@ -73,13 +73,13 @@ namespace Natives
 		amx_GetAddr(amx, params[3], &idx_addr);
 
 		float error = amx_ctof(params[4]);
-		error_if(error < 0.0, "[PLE] algorithm>> fbsearch: 'error' paramter (%f) below zero", error);
+		error_if(error < 0.0, "[PLE] algorithm>> fbsearch: 'error' parameter (%f) below zero", error);
 
 		float key_lower = key - error;
 		float key_upper = key + error;
 
 		size_t size = params[5];
-		error_if(size < 0, "[PLE] algorithm>> fbsearch: 'size' paramter (%d) below zero", size);
+		error_if(size < 0, "[PLE] algorithm>> fbsearch: 'size' parameter (%d) below zero", size);
 
 		int low = 0, high = size - 1, mid = 0;
 		while (low <= high)
@@ -113,10 +113,10 @@ namespace Natives
 		amx_GetAddr(amx, params[3], &idx);
 
 		size_t size_major = static_cast<size_t>(params[4]);
-		error_if(size_major < 0, "[PLE] algorithm>> sbsearch: 'size_major' paramter (%d) below zero", size_major);
+		error_if(size_major < 0, "[PLE] algorithm>> sbsearch: 'size_major' parameter (%d) below zero", size_major);
 
 		size_t size_minor = static_cast<size_t>(params[5]);
-		error_if(size_minor < 0, "[PLE] algorithm>> sbsearch: 'size_minor' paramter (%d) below zero", size_minor);
+		error_if(size_minor < 0, "[PLE] algorithm>> sbsearch: 'size_minor' parameter (%d) below zero", size_minor);
 
 		source_arr += size_major - size_minor;
 
@@ -151,7 +151,7 @@ namespace Natives
 		amx_GetAddr(amx, params[1], &start);
 
 		cell* end = start + params[2];
-		error_if(end < start, "[PLE] algorithm>> all_of: 'numcells' paramter (%d) below zero", params[2]);
+		error_if(end < start, "[PLE] algorithm>> all_of: 'numcells' parameter (%d) below zero", params[2]);
 
 		cell* func = NULL;
 		amx_GetAddr(amx, params[3], &func);
@@ -174,7 +174,7 @@ namespace Natives
 		amx_GetAddr(amx, params[1], &start);
 
 		cell* end = start + params[2];
-		error_if(end < start, "[PLE] algorithm>> any_of: 'numcells' paramter (%d) below zero", params[2]);
+		error_if(end < start, "[PLE] algorithm>> any_of: 'numcells' parameter (%d) below zero", params[2]);
 
 		cell* func = NULL;
 		amx_GetAddr(amx, params[3], &func);
@@ -197,7 +197,7 @@ namespace Natives
 		amx_GetAddr(amx, params[1], &start);
 
 		cell* end = start + params[2];
-		error_if(end < start, "[PLE] algorithm>> none_of: 'numcells' paramter (%d) below zero", params[2]);
+		error_if(end < start, "[PLE] algorithm>> none_of: 'numcells' parameter (%d) below zero", params[2]);
 
 		cell* func = NULL;
 		amx_GetAddr(amx, params[3], &func);
@@ -220,7 +220,7 @@ namespace Natives
 		amx_GetAddr(amx, params[1], &start);
 
 		cell* end = start + params[2];
-		error_if(end < start, "[PLE] algorithm>> for_each: 'numcells' paramter (%d) below zero", params[2]);
+		error_if(end < start, "[PLE] algorithm>> for_each: 'numcells' parameter (%d) below zero", params[2]);
 
 		cell* func = NULL;
 		amx_GetAddr(amx, params[3], &func);
@@ -243,7 +243,7 @@ namespace Natives
 		amx_GetAddr(amx, params[1], &start);
 
 		cell* end = start + params[2];
-		error_if(end < start, "[PLE] algorithm>> find: 'numcells' paramter (%d) below zero", params[2]);
+		error_if(end < start, "[PLE] algorithm>> find: 'numcells' parameter (%d) below zero", params[2]);
 
 		cell value = params[3];
 
@@ -264,7 +264,7 @@ namespace Natives
 		amx_GetAddr(amx, params[1], &start);
 
 		cell* end = start + params[2];
-		error_if(end < start, "[PLE] algorithm>> find_if: 'numcells' paramter (%d) below zero", params[2]);
+		error_if(end < start, "[PLE] algorithm>> find_if: 'numcells' parameter (%d) below zero", params[2]);
 
 		cell* func = NULL;
 		amx_GetAddr(amx, params[3], &func);
@@ -288,7 +288,7 @@ namespace Natives
 		amx_GetAddr(amx, params[1], &start);
 
 		cell* end = start + params[2];
-		error_if(end < start, "[PLE] algorithm>> find_if_not: 'numcells' paramter (%d) below zero", params[2]);
+		error_if(end < start, "[PLE] algorithm>> find_if_not: 'numcells' parameter (%d) below zero", params[2]);
 
 		cell* func = NULL;
 		amx_GetAddr(amx, params[3], &func);
@@ -311,12 +311,12 @@ namespace Natives
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
 		cell* end1 = start1 + params[2];
-		error_if(end1 < start1, "[PLE] algorithm>> find_end: 'numcells1' paramter (%d) below zero", params[2]);
+		error_if(end1 < start1, "[PLE] algorithm>> find_end: 'numcells1' parameter (%d) below zero", params[2]);
 
 		cell* start2 = NULL;
 		amx_GetAddr(amx, params[3], &start2);
 		cell* end2 = start2 + params[4];
-		error_if(end2 < start2, "[PLE] algorithm>> find_end: 'numcells2' paramter (%d) below zero", params[4]);
+		error_if(end2 < start2, "[PLE] algorithm>> find_end: 'numcells2' parameter (%d) below zero", params[4]);
 
 		cell* func = NULL;
 		amx_GetAddr(amx, params[5], &func);
@@ -352,12 +352,12 @@ namespace Natives
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
 		cell* end1 = start1 + params[2];
-		error_if(end1 < start1, "[PLE] algorithm>> find_first_of: 'numcells1' paramter (%d) below zero", params[2]);
+		error_if(end1 < start1, "[PLE] algorithm>> find_first_of: 'numcells1' parameter (%d) below zero", params[2]);
 
 		cell* start2 = NULL;
 		amx_GetAddr(amx, params[3], &start2);
 		cell* end2 = start2 + params[4];
-		error_if(end2 < start2, "[PLE] algorithm>> find_first_of: 'numcells2' paramter (%d) below zero", params[4]);
+		error_if(end2 < start2, "[PLE] algorithm>> find_first_of: 'numcells2' parameter (%d) below zero", params[4]);
 
 		cell* func = NULL;
 		amx_GetAddr(amx, params[5], &func);
@@ -386,7 +386,7 @@ namespace Natives
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
 		cell* end = start + params[2];
-		error_if(end < start, "[PLE] algorithm>> adjacent_find: 'numcells' paramter (%d) below zero", params[2]);
+		error_if(end < start, "[PLE] algorithm>> adjacent_find: 'numcells' parameter (%d) below zero", params[2]);
 
 		cell* func = NULL;
 		amx_GetAddr(amx, params[3], &func);
@@ -415,7 +415,7 @@ namespace Natives
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
 		cell* end = start + params[2];
-		error_if(end < start, "[PLE] algorithm>> count: 'numcells' paramter (%d) below zero", params[2]);
+		error_if(end < start, "[PLE] algorithm>> count: 'numcells' parameter (%d) below zero", params[2]);
 
 		cell value = params[3];
 
@@ -433,7 +433,7 @@ namespace Natives
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
 		cell* end = start + params[2];
-		error_if(end < start, "[PLE] algorithm>> count_if: 'numcells' paramter (%d) below zero", params[2]);
+		error_if(end < start, "[PLE] algorithm>> count_if: 'numcells' parameter (%d) below zero", params[2]);
 
 		cell* func = NULL;
 		amx_GetAddr(amx, params[3], &func);
@@ -456,7 +456,7 @@ namespace Natives
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
 		cell* end1 = start1 + params[2];
-		error_if(end1 < start1, "[PLE] algorithm>> mismatch: 'numcells1' paramter (%d) below zero", params[2]);
+		error_if(end1 < start1, "[PLE] algorithm>> mismatch: 'numcells1' parameter (%d) below zero", params[2]);
 
 		cell* start2 = NULL;
 		amx_GetAddr(amx, params[3], &start2);
@@ -482,7 +482,7 @@ namespace Natives
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
 		cell* end1 = start1 + params[2];
-		error_if(end1 < start1, "[PLE] algorithm>> equal: 'numcells1' paramter (%d) below zero", params[2]);
+		error_if(end1 < start1, "[PLE] algorithm>> equal: 'numcells1' parameter (%d) below zero", params[2]);
 
 		cell* start2 = NULL;
 		amx_GetAddr(amx, params[3], &start2);
@@ -509,7 +509,7 @@ namespace Natives
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
 		cell* end1 = start1 + params[2];
-		error_if(end1 < start1, "[PLE] algorithm>> is_permutation: 'numcells1' paramter (%d) below zero", params[2]);
+		error_if(end1 < start1, "[PLE] algorithm>> is_permutation: 'numcells1' parameter (%d) below zero", params[2]);
 
 		cell* start2 = NULL;
 		amx_GetAddr(amx, params[3], &start2);
@@ -529,12 +529,12 @@ namespace Natives
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
 		cell* end1 = start1 + params[2];
-		error_if(end1 < start1, "[PLE] algorithm>> search: 'numcells1' paramter (%d) below zero", params[2]);
+		error_if(end1 < start1, "[PLE] algorithm>> search: 'numcells1' parameter (%d) below zero", params[2]);
 
 		cell* start2 = NULL;
 		amx_GetAddr(amx, params[3], &start2);
 		cell* end2 = start2 + params[4];
-		error_if(end2 < start2, "[PLE] algorithm>> search: 'numcells2' paramter (%d) below zero", params[4]);
+		error_if(end2 < start2, "[PLE] algorithm>> search: 'numcells2' parameter (%d) below zero", params[4]);
 
 		cell* func = NULL;
 		amx_GetAddr(amx, params[5], &func);
@@ -551,10 +551,10 @@ namespace Natives
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
 		cell* end = start + params[2];
-		error_if(end < start, "[PLE] algorithm>> search_n: 'numcells' paramter (%d) below zero", params[2]);
+		error_if(end < start, "[PLE] algorithm>> search_n: 'numcells' parameter (%d) below zero", params[2]);
 
 		cell n = params[3];
-		error_if(n < 0, "[PLE] algorithm>> search_n: 'n' paramter (%d) below zero", n);
+		error_if(n < 0, "[PLE] algorithm>> search_n: 'n' parameter (%d) below zero", n);
 
 		cell val = params[4];
 
@@ -574,7 +574,7 @@ namespace Natives
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
 		cell* end1 = start1 + params[2];
-		error_if(end1 < start1, "[PLE] algorithm>> copy: 'numcells' paramter (%d) below zero", params[2]);
+		error_if(end1 < start1, "[PLE] algorithm>> copy: 'numcells' parameter (%d) below zero", params[2]);
 
 		cell* start2 = NULL;
 		amx_GetAddr(amx, params[3], &start2);
@@ -590,7 +590,7 @@ namespace Natives
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
 		cell* end1 = start1 + params[2];
-		error_if(end1 < start1, "[PLE] algorithm>> copy_if: 'numcells' paramter (%d) below zero", params[2]);
+		error_if(end1 < start1, "[PLE] algorithm>> copy_if: 'numcells' parameter (%d) below zero", params[2]);
 
 		cell* start2 = NULL;
 		amx_GetAddr(amx, params[3], &start2);
@@ -611,7 +611,7 @@ namespace Natives
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
 		cell* end1 = start1 + params[2];
-		error_if(end1 < start1, "[PLE] algorithm>> copy_backward: 'numcells' paramter (%d) below zero", params[2]);
+		error_if(end1 < start1, "[PLE] algorithm>> copy_backward: 'numcells' parameter (%d) below zero", params[2]);
 
 		cell* end2 = NULL;
 		amx_GetAddr(amx, params[3], &end2);
@@ -644,7 +644,7 @@ namespace Natives
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
 		cell* end1 = start1 + params[2];
-		error_if(end1 < start1, "[PLE] algorithm>> swap_ranges: 'numcells1' paramter (%d) below zero", params[2]);
+		error_if(end1 < start1, "[PLE] algorithm>> swap_ranges: 'numcells1' parameter (%d) below zero", params[2]);
 
 		cell* start2 = NULL;
 		amx_GetAddr(amx, params[3], &start2);
@@ -660,7 +660,7 @@ namespace Natives
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
 		cell* end1 = start1 + params[2];
-		error_if(end1 < start1, "[PLE] algorithm>> transform: 'numcells' paramter (%d) below zero", params[2]);
+		error_if(end1 < start1, "[PLE] algorithm>> transform: 'numcells' parameter (%d) below zero", params[2]);
 
 		cell* start2 = NULL;
 		amx_GetAddr(amx, params[3], &start2);
@@ -687,7 +687,7 @@ namespace Natives
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
 		cell* end1 = start1 + params[2];
-		error_if(end1 < start1, "[PLE] algorithm>> transform2: 'numcells1' paramter (%d) below zero", params[2]);
+		error_if(end1 < start1, "[PLE] algorithm>> transform2: 'numcells1' parameter (%d) below zero", params[2]);
 
 		cell* start2 = NULL;
 		amx_GetAddr(amx, params[3], &start2);
@@ -718,7 +718,7 @@ namespace Natives
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
 		cell* end = start + params[2];
-		error_if(end < start, "[PLE] algorithm>> replace: 'numcells' paramter (%d) below zero", params[2]);
+		error_if(end < start, "[PLE] algorithm>> replace: 'numcells' parameter (%d) below zero", params[2]);
 
 		cell search_value = params[3];
 		cell replace_value = params[4];
@@ -743,7 +743,7 @@ namespace Natives
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
 		cell* end = start + params[2];
-		error_if(end < start, "[PLE] algorithm>> replace_if: 'numcells' paramter (%d) below zero", params[2]);
+		error_if(end < start, "[PLE] algorithm>> replace_if: 'numcells' parameter (%d) below zero", params[2]);
 
 		cell* func = NULL;
 		amx_GetAddr(amx, params[3], &func);
@@ -772,7 +772,7 @@ namespace Natives
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
 		cell* end1 = start1 + params[2];
-		error_if(end1 < start1, "[PLE] algorithm>> replace_copy: 'numcells' paramter (%d) below zero", params[2]);
+		error_if(end1 < start1, "[PLE] algorithm>> replace_copy: 'numcells' parameter (%d) below zero", params[2]);
 
 		cell* start2 = NULL;
 		amx_GetAddr(amx, params[3], &start2);
@@ -804,7 +804,7 @@ namespace Natives
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
 		cell* end1 = start1 + params[2];
-		error_if(end1 < start1, "[PLE] algorithm>> replace_copy_if: 'numcells' paramter (%d) below zero", params[2]);
+		error_if(end1 < start1, "[PLE] algorithm>> replace_copy_if: 'numcells' parameter (%d) below zero", params[2]);
 
 		cell* start2 = NULL;
 		amx_GetAddr(amx, params[3], &start2);
@@ -840,7 +840,7 @@ namespace Natives
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
 		cell* end = start + params[2];
-		error_if(end < start, "[PLE] algorithm>> fill: 'numcells' paramter (%d) below zero", params[2]);
+		error_if(end < start, "[PLE] algorithm>> fill: 'numcells' parameter (%d) below zero", params[2]);
 
 		cell fill_value = params[3];
 
@@ -860,7 +860,7 @@ namespace Natives
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
 		cell* end = start + params[2];
-		error_if(end < start, "[PLE] algorithm>> generate: 'numcells' paramter (%d) below zero", params[2]);
+		error_if(end < start, "[PLE] algorithm>> generate: 'numcells' parameter (%d) below zero", params[2]);
 
 		cell* func = NULL;
 		amx_GetAddr(amx, params[3], &func);
@@ -883,7 +883,7 @@ namespace Natives
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
 		cell* end = start + params[2];
-		error_if(end < start, "[PLE] algorithm>> remove: 'numcells' paramter (%d) below zero", params[2]);
+		error_if(end < start, "[PLE] algorithm>> remove: 'numcells' parameter (%d) below zero", params[2]);
 
 		cell value = params[3];
 
@@ -897,7 +897,7 @@ namespace Natives
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
 		cell* end = start + params[2];
-		error_if(end < start, "[PLE] algorithm>> remove_if: 'numcells' paramter (%d) below zero", params[2]);
+		error_if(end < start, "[PLE] algorithm>> remove_if: 'numcells' parameter (%d) below zero", params[2]);
 
 		cell* func = NULL;
 		amx_GetAddr(amx, params[3], &func);
@@ -914,7 +914,7 @@ namespace Natives
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
 		cell* end1 = start1 + params[2];
-		error_if(end1 < start1, "[PLE] algorithm>> remove_copy: 'numcells' paramter (%d) below zero", params[2]);
+		error_if(end1 < start1, "[PLE] algorithm>> remove_copy: 'numcells' parameter (%d) below zero", params[2]);
 
 		cell* start2 = NULL;
 		amx_GetAddr(amx, params[3], &start2);
@@ -941,7 +941,7 @@ namespace Natives
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
 		cell* end1 = start1 + params[2];
-		error_if(end1 < start1, "[PLE] algorithm>> remove_copy_if: 'numcells' paramter (%d) below zero", params[2]);
+		error_if(end1 < start1, "[PLE] algorithm>> remove_copy_if: 'numcells' parameter (%d) below zero", params[2]);
 
 		cell* start2 = NULL;
 		amx_GetAddr(amx, params[3], &start2);
@@ -971,7 +971,7 @@ namespace Natives
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
 		cell* end = start + params[2];
-		error_if(end < start, "[PLE] algorithm>> unique: 'numcells' paramter (%d) below zero", params[2]);
+		error_if(end < start, "[PLE] algorithm>> unique: 'numcells' parameter (%d) below zero", params[2]);
 
 		cell* func = NULL;
 		amx_GetAddr(amx, params[3], &func);
@@ -988,7 +988,7 @@ namespace Natives
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
 		cell* end1 = start1 + params[2];
-		error_if(end1 < start1, "[PLE] algorithm>> unique_copy: 'numcells' paramter (%d) below zero", params[2]);
+		error_if(end1 < start1, "[PLE] algorithm>> unique_copy: 'numcells' parameter (%d) below zero", params[2]);
 
 		cell* start2 = NULL;
 		amx_GetAddr(amx, params[3], &start2);
@@ -1020,7 +1020,7 @@ namespace Natives
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
 		cell* end = start + params[2];
-		error_if(end < start, "[PLE] algorithm>> reverse: 'numcells' paramter (%d) below zero", params[2]);
+		error_if(end < start, "[PLE] algorithm>> reverse: 'numcells' parameter (%d) below zero", params[2]);
 
 		while ((start != end) && (start != --end))
 		{
@@ -1039,7 +1039,7 @@ namespace Natives
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
 		cell* end1 = start1 + params[2];
-		error_if(end1 < start1, "[PLE] algorithm>> reverse_copy: 'numcells' paramter (%d) below zero", params[2]);
+		error_if(end1 < start1, "[PLE] algorithm>> reverse_copy: 'numcells' parameter (%d) below zero", params[2]);
 
 		cell* start2 = NULL;
 		amx_GetAddr(amx, params[3], &start2);
@@ -1061,11 +1061,11 @@ namespace Natives
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
 		cell* middle = start + params[2];
-		error_if(middle < start, "[PLE] algorithm>> rotate: 'middle' paramter (%d) below zero", params[2]);
+		error_if(middle < start, "[PLE] algorithm>> rotate: 'middle' parameter (%d) below zero", params[2]);
 		cell* end = start + params[3];
-		error_if(end < start, "[PLE] algorithm>> rotate: 'end' paramter (%d) below zero", params[3]);
+		error_if(end < start, "[PLE] algorithm>> rotate: 'end' parameter (%d) below zero", params[3]);
 
-		error_if(end < middle, "[PLE] algorithm>> rotate: 'middle' paramter (%d) is more than 'end' parameter (%d)", params[2], params[3]);
+		error_if(end < middle, "[PLE] algorithm>> rotate: 'middle' parameter (%d) is more than 'end' parameter (%d)", params[2], params[3]);
 
 		std::rotate(start, middle, end);
 		return true;
@@ -1078,11 +1078,11 @@ namespace Natives
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
 		cell* middle1 = start1 + params[2];
-		error_if(middle1 < start1, "[PLE] algorithm>> rotate_copy: 'middle' paramter (%d) below zero", params[2]);
+		error_if(middle1 < start1, "[PLE] algorithm>> rotate_copy: 'middle' parameter (%d) below zero", params[2]);
 		cell* end1 = start1 + params[3];
-		error_if(end1 < start1, "[PLE] algorithm>> rotate_copy: 'end' paramter (%d) below zero", params[3]);
+		error_if(end1 < start1, "[PLE] algorithm>> rotate_copy: 'end' parameter (%d) below zero", params[3]);
 
-		error_if(end1 < middle1, "[PLE] algorithm>> rotate_copy: 'middle' paramter (%d) is more than 'end' parameter (%d)", params[2], params[3]);
+		error_if(end1 < middle1, "[PLE] algorithm>> rotate_copy: 'middle' parameter (%d) is more than 'end' parameter (%d)", params[2], params[3]);
 
 		cell* start2 = NULL;
 		amx_GetAddr(amx, params[4], &start2);
@@ -1098,7 +1098,7 @@ namespace Natives
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
 		cell* end = start + params[2];
-		error_if(end < start, "[PLE] algorithm>> shuffle: 'end' paramter (%d) below zero", params[2]);		
+		error_if(end < start, "[PLE] algorithm>> shuffle: 'end' parameter (%d) below zero", params[2]);		
 
 		std::shuffle(start, end, algo_mt19937);
 		return true;
@@ -1113,7 +1113,7 @@ namespace Natives
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
 		cell* end = start + params[2];
-		error_if(end < start, "[PLE] algorithm>> is_partitioned: 'numcells' paramter (%d) below zero", params[2]);
+		error_if(end < start, "[PLE] algorithm>> is_partitioned: 'numcells' parameter (%d) below zero", params[2]);
 
 		cell* func = NULL;
 		amx_GetAddr(amx, params[3], &func);
@@ -1130,7 +1130,7 @@ namespace Natives
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
 		cell* end = start + params[2];
-		error_if(end < start, "[PLE] algorithm>> partition: 'numcells' paramter (%d) below zero", params[2]);
+		error_if(end < start, "[PLE] algorithm>> partition: 'numcells' parameter (%d) below zero", params[2]);
 
 		cell* func = NULL;
 		amx_GetAddr(amx, params[3], &func);
@@ -1147,7 +1147,7 @@ namespace Natives
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
 		cell* end = start + params[2];
-		error_if(end < start, "[PLE] algorithm>> stable_partition: 'numcells' paramter (%d) below zero", params[2]);
+		error_if(end < start, "[PLE] algorithm>> stable_partition: 'numcells' parameter (%d) below zero", params[2]);
 
 		cell* func = NULL;
 		amx_GetAddr(amx, params[3], &func);
@@ -1164,7 +1164,7 @@ namespace Natives
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
 		cell* end1 = start1 + params[2];
-		error_if(end1 < start1, "[PLE] algorithm>> partition_copy: 'numcells' paramter (%d) below zero", params[2]);
+		error_if(end1 < start1, "[PLE] algorithm>> partition_copy: 'numcells' parameter (%d) below zero", params[2]);
 
 		cell* start2 = NULL;
 		amx_GetAddr(amx, params[3], &start2);
@@ -1188,7 +1188,7 @@ namespace Natives
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
 		cell* end = start + params[2];
-		error_if(end < start, "[PLE] algorithm>> partition_point: 'numcells' paramter (%d) below zero", params[2]);
+		error_if(end < start, "[PLE] algorithm>> partition_point: 'numcells' parameter (%d) below zero", params[2]);
 
 		cell* func = NULL;
 		amx_GetAddr(amx, params[3], &func);
@@ -1206,7 +1206,7 @@ namespace Natives
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
 		cell* end = start + params[2];
-		error_if(end < start, "[PLE] algorithm>> sort: 'numcells' paramter (%d) below zero", params[2]);
+		error_if(end < start, "[PLE] algorithm>> sort: 'numcells' parameter (%d) below zero", params[2]);
 
 		cell* func = NULL;
 		amx_GetAddr(amx, params[3], &func);
@@ -1224,11 +1224,11 @@ namespace Natives
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
 		cell* middle = start + params[2];
-		error_if(middle < start, "[PLE] algorithm>> partial_sort:'middle' paramter (%d) below zero", params[2]);
+		error_if(middle < start, "[PLE] algorithm>> partial_sort:'middle' parameter (%d) below zero", params[2]);
 		cell* end = start + params[3];
-		error_if(end < start, "[PLE] algorithm>> partial_sort: 'end' paramter (%d) below zero", params[3]);
+		error_if(end < start, "[PLE] algorithm>> partial_sort: 'end' parameter (%d) below zero", params[3]);
 
-		error_if(end < middle, "[PLE] algorithm>> partial_sort: 'middle' paramter (%d) is more than end parameter (%d)", params[2], params[2]);
+		error_if(end < middle, "[PLE] algorithm>> partial_sort: 'middle' parameter (%d) is more than end parameter (%d)", params[2], params[2]);
 
 		cell* func = NULL;
 		amx_GetAddr(amx, params[4], &func);
@@ -1246,12 +1246,12 @@ namespace Natives
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
 		cell* end1 = start1 + params[2];
-		error_if(end1 < start1, "[PLE] algorithm>> partial_sort_copy: 'range_numcells' paramter (%d) below zero", params[2]);
+		error_if(end1 < start1, "[PLE] algorithm>> partial_sort_copy: 'range_numcells' parameter (%d) below zero", params[2]);
 
 		cell* start2 = NULL;
 		amx_GetAddr(amx, params[3], &start2);
 		cell* end2 = start2 + params[4];
-		error_if(end2 < start2, "[PLE] algorithm>> partial_sort_copy: 'dest_numcells' paramter (%d) below zero", params[4]);
+		error_if(end2 < start2, "[PLE] algorithm>> partial_sort_copy: 'dest_numcells' parameter (%d) below zero", params[4]);
 
 		cell* func = NULL;
 		amx_GetAddr(amx, params[5], &func);
@@ -1268,7 +1268,7 @@ namespace Natives
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
 		cell* end = start + params[2];
-		error_if(end < start, "[PLE] algorithm>> is_sorted: 'numcells' paramter (%d) below zero", params[2]);
+		error_if(end < start, "[PLE] algorithm>> is_sorted: 'numcells' parameter (%d) below zero", params[2]);
 
 		cell* func = NULL;
 		amx_GetAddr(amx, params[3], &func);
@@ -1285,11 +1285,11 @@ namespace Natives
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
 		cell* nth = start + params[2];
-		error_if(nth < start, "[PLE] algorithm>> nth_element: 'nth' paramter (%d) below zero", params[2]);
+		error_if(nth < start, "[PLE] algorithm>> nth_element: 'nth' parameter (%d) below zero", params[2]);
 		cell* end = start + params[3];
-		error_if(end < start, "[PLE] algorithm>> nth_element: 'end' paramter (%d) below zero", params[3]);
+		error_if(end < start, "[PLE] algorithm>> nth_element: 'end' parameter (%d) below zero", params[3]);
 
-		error_if((end < nth), "[PLE] algorithm>> nth_element: 'nth' paramter (%d) is more than or equal to 'end' parameter (%d)", params[2], params[3]);
+		error_if((end < nth), "[PLE] algorithm>> nth_element: 'nth' parameter (%d) is more than or equal to 'end' parameter (%d)", params[2], params[3]);
 
 		cell* func = NULL;
 		amx_GetAddr(amx, params[4], &func);
@@ -1308,7 +1308,7 @@ namespace Natives
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
 		cell* end = start + params[2];
-		error_if(end < start, "[PLE] algorithm>> lower_bound: 'numcells' paramter (%d) below zero", params[2]);
+		error_if(end < start, "[PLE] algorithm>> lower_bound: 'numcells' parameter (%d) below zero", params[2]);
 
 		cell val = params[3];
 
@@ -1327,7 +1327,7 @@ namespace Natives
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
 		cell* end = start + params[2];
-		error_if(end < start, "[PLE] algorithm>> upper_bound: 'numcells' paramter (%d) below zero", params[2]);
+		error_if(end < start, "[PLE] algorithm>> upper_bound: 'numcells' parameter (%d) below zero", params[2]);
 
 		cell val = params[3];
 
@@ -1346,7 +1346,7 @@ namespace Natives
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
 		cell* end = start + params[2];
-		error_if(end < start, "[PLE] algorithm>> equal_range: 'numcells' paramter (%d) below zero", params[2]);
+		error_if(end < start, "[PLE] algorithm>> equal_range: 'numcells' parameter (%d) below zero", params[2]);
 
 		cell value = params[3];
 
@@ -1375,7 +1375,7 @@ namespace Natives
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
 		cell* end = start + params[2];
-		error_if(end < start, "[PLE] algorithm>> binary_search: 'numcells' paramter (%d) below zero", params[2]);
+		error_if(end < start, "[PLE] algorithm>> binary_search: 'numcells' parameter (%d) below zero", params[2]);
 
 		cell val = params[3];
 
@@ -1395,12 +1395,12 @@ namespace Natives
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
 		cell* end1 = start1 + params[2];
-		error_if(end1 < start1, "[PLE] algorithm>> merge: 'numcells1' paramter (%d) below zero", params[2]);
+		error_if(end1 < start1, "[PLE] algorithm>> merge: 'numcells1' parameter (%d) below zero", params[2]);
 
 		cell* start2 = NULL;
 		amx_GetAddr(amx, params[3], &start2);
 		cell* end2 = start2 + params[4];
-		error_if(end2 < start2, "[PLE] algorithm>> merge: 'numcells2' paramter (%d) below zero", params[4]);
+		error_if(end2 < start2, "[PLE] algorithm>> merge: 'numcells2' parameter (%d) below zero", params[4]);
 
 		cell* result = NULL;
 		amx_GetAddr(amx, params[5], &result);
@@ -1420,11 +1420,11 @@ namespace Natives
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
 		cell* middle = start + params[2];
-		error_if(middle < start, "[PLE] algorithm>> inplace_merge: 'middle' paramter (%d) below zero", params[2]);
+		error_if(middle < start, "[PLE] algorithm>> inplace_merge: 'middle' parameter (%d) below zero", params[2]);
 		cell* end = start + params[3];
-		error_if(end < start, "[PLE] algorithm>> inplace_merge: 'end' paramter (%d) below zero", params[4]);
+		error_if(end < start, "[PLE] algorithm>> inplace_merge: 'end' parameter (%d) below zero", params[4]);
 
-		error_if((end < middle), "[PLE] algorithm>> inplace_merge: 'middle' paramter (%d) is more than or equal to 'end' parameter (%d)", params[2], params[3]);
+		error_if((end < middle), "[PLE] algorithm>> inplace_merge: 'middle' parameter (%d) is more than or equal to 'end' parameter (%d)", params[2], params[3]);
 
 		cell* func = NULL;
 		amx_GetAddr(amx, params[4], &func);
@@ -1442,12 +1442,12 @@ namespace Natives
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
 		cell* end1 = start1 + params[2];
-		error_if(end1 < start1, "[PLE] algorithm>> includes: 'numcells1' paramter (%d) below zero", params[2]);
+		error_if(end1 < start1, "[PLE] algorithm>> includes: 'numcells1' parameter (%d) below zero", params[2]);
 
 		cell* start2 = NULL;
 		amx_GetAddr(amx, params[3], &start2);
 		cell* end2 = start2 + params[4];
-		error_if(end2 < start2, "[PLE] algorithm>> includes: 'numcells2' paramter (%d) below zero", params[4]);
+		error_if(end2 < start2, "[PLE] algorithm>> includes: 'numcells2' parameter (%d) below zero", params[4]);
 
 		cell* func = NULL;
 		amx_GetAddr(amx, params[5], &func);
@@ -1464,12 +1464,12 @@ namespace Natives
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
 		cell* end1 = start1 + params[2];
-		error_if(end1 < start1, "[PLE] algorithm>> set_union: 'numcells1' paramter (%d) below zero", params[2]);
+		error_if(end1 < start1, "[PLE] algorithm>> set_union: 'numcells1' parameter (%d) below zero", params[2]);
 
 		cell* start2 = NULL;
 		amx_GetAddr(amx, params[3], &start2);
 		cell* end2 = start2 + params[4];
-		error_if(end2 < start2, "[PLE] algorithm>> set_union: 'numcells2' paramter (%d) below zero", params[4]);
+		error_if(end2 < start2, "[PLE] algorithm>> set_union: 'numcells2' parameter (%d) below zero", params[4]);
 
 		cell* result = NULL;
 		amx_GetAddr(amx, params[5], &result);
@@ -1489,12 +1489,12 @@ namespace Natives
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
 		cell* end1 = start1 + params[2];
-		error_if(end1 < start1, "[PLE] algorithm>> set_intersection: 'numcells1' paramter (%d) below zero", params[2]);
+		error_if(end1 < start1, "[PLE] algorithm>> set_intersection: 'numcells1' parameter (%d) below zero", params[2]);
 
 		cell* start2 = NULL;
 		amx_GetAddr(amx, params[3], &start2);
 		cell* end2 = start2 + params[4];
-		error_if(end2 < start2, "[PLE] algorithm>> set_intersection: 'numcells2' paramter (%d) below zero", params[4]);
+		error_if(end2 < start2, "[PLE] algorithm>> set_intersection: 'numcells2' parameter (%d) below zero", params[4]);
 
 		cell* result = NULL;
 		amx_GetAddr(amx, params[5], &result);
@@ -1514,12 +1514,12 @@ namespace Natives
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
 		cell* end1 = start1 + params[2];
-		error_if(end1 < start1, "[PLE] algorithm>> set_difference: 'numcells1' paramter (%d) below zero", params[2]);
+		error_if(end1 < start1, "[PLE] algorithm>> set_difference: 'numcells1' parameter (%d) below zero", params[2]);
 
 		cell* start2 = NULL;
 		amx_GetAddr(amx, params[3], &start2);
 		cell* end2 = start2 + params[4];
-		error_if(end2 < start2, "[PLE] algorithm>> set_difference: 'numcells2' paramter (%d) below zero", params[4]);
+		error_if(end2 < start2, "[PLE] algorithm>> set_difference: 'numcells2' parameter (%d) below zero", params[4]);
 
 		cell* result = NULL;
 		amx_GetAddr(amx, params[5], &result);
@@ -1539,12 +1539,12 @@ namespace Natives
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
 		cell* end1 = start1 + params[2];
-		error_if(end1 < start1, "[PLE] algorithm>> set_symmetric_difference: 'numcells1' paramter (%d) below zero", params[2]);
+		error_if(end1 < start1, "[PLE] algorithm>> set_symmetric_difference: 'numcells1' parameter (%d) below zero", params[2]);
 
 		cell* start2 = NULL;
 		amx_GetAddr(amx, params[3], &start2);
 		cell* end2 = start2 + params[4];
-		error_if(end2 < start2, "[PLE] algorithm>> set_symmetric_difference: 'numcells2' paramter (%d) below zero", params[4]);
+		error_if(end2 < start2, "[PLE] algorithm>> set_symmetric_difference: 'numcells2' parameter (%d) below zero", params[4]);
 
 		cell* result = NULL;
 		amx_GetAddr(amx, params[5], &result);
@@ -1570,7 +1570,7 @@ namespace Natives
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
 		cell* end = start + params[2];
-		error_if(end < start, "[PLE] algorithm>> minmax_element: 'numcells' paramter (%d) below zero", params[2]);
+		error_if(end < start, "[PLE] algorithm>> minmax_element: 'numcells' parameter (%d) below zero", params[2]);
 
 		cell* smallest_addr = NULL;
 		amx_GetAddr(amx, params[3], &smallest_addr);
@@ -1602,7 +1602,7 @@ namespace Natives
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
 		cell* end = start + params[2];
-		error_if(end < start, "[PLE] algorithm>> min_element: 'numcells' paramter (%d) below zero", params[2]);
+		error_if(end < start, "[PLE] algorithm>> min_element: 'numcells' parameter (%d) below zero", params[2]);
 
 		cell* func = NULL;
 		amx_GetAddr(amx, params[3], &func);
@@ -1625,7 +1625,7 @@ namespace Natives
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
 		cell* end = start + params[2];
-		error_if(end < start, "[PLE] algorithm>> max_element: 'numcells' paramter (%d) below zero", params[2]);
+		error_if(end < start, "[PLE] algorithm>> max_element: 'numcells' parameter (%d) below zero", params[2]);
 
 		cell* func = NULL;
 		amx_GetAddr(amx, params[3], &func);
@@ -1649,12 +1649,12 @@ namespace Natives
 		cell* start1 = NULL;
 		amx_GetAddr(amx, params[1], &start1);
 		cell* end1 = start1 + params[2];
-		error_if(end1 < start1, "[PLE] algorithm>> lexicographical_compare: 'numcells1' paramter (%d) below zero", params[2]);
+		error_if(end1 < start1, "[PLE] algorithm>> lexicographical_compare: 'numcells1' parameter (%d) below zero", params[2]);
 
 		cell* start2 = NULL;
 		amx_GetAddr(amx, params[3], &start2);
 		cell* end2 = start2 + params[4];
-		error_if(end2 < start2, "[PLE] algorithm>> lexicographical_compare: 'numcells2' paramter (%d) below zero", params[4]);
+		error_if(end2 < start2, "[PLE] algorithm>> lexicographical_compare: 'numcells2' parameter (%d) below zero", params[4]);
 
 		cell* func = NULL;
 		amx_GetAddr(amx, params[5], &func);
@@ -1671,7 +1671,7 @@ namespace Natives
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
 		cell* end = start + params[2];
-		error_if(end < start, "[PLE] algorithm>> prev_permutation: 'numcells' paramter (%d) below zero", params[2]);
+		error_if(end < start, "[PLE] algorithm>> prev_permutation: 'numcells' parameter (%d) below zero", params[2]);
 
 		cell* func = NULL;
 		amx_GetAddr(amx, params[3], &func);
@@ -1688,7 +1688,7 @@ namespace Natives
 		cell* start = NULL;
 		amx_GetAddr(amx, params[1], &start);
 		cell* end = start + params[2];
-		error_if(end < start, "[PLE] algorithm>> prev_permutation: 'numcells' paramter (%d) below zero", params[2]);
+		error_if(end < start, "[PLE] algorithm>> prev_permutation: 'numcells' parameter (%d) below zero", params[2]);
 
 		cell* func = NULL;
 		amx_GetAddr(amx, params[3], &func);

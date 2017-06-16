@@ -14,7 +14,7 @@ main.h
 #include "lib/sdk/amx/amx.h"
 #include "lib/sdk/plugincommon.h"
 /************************************************************************************************************/
-#define PLE_PLUGIN_VERSION_KEY 0xAB000001
+#define PLE_PLUGIN_VERSION_KEY 0x0001
 
 #define PLUGIN_MAJOR_VERSION 1
 #define PLUGIN_MINOR_VERSION 0
@@ -23,13 +23,13 @@ main.h
 typedef void(*logprintf_t)(char *, ...);
 extern logprintf_t logprintf;
 
-#define MAX_FUNC_NAME 32
+#define MAX_SYMBOL_LEN sNAMEMAX + 1
 
-#define BYTES_PER_CELL 4
+#define BYTES_PER_CELL PAWN_CELL_SIZE/8
 #define BITS_PER_CELL (BYTES_PER_CELL*8)
 
-#define warn_if(x,...) if(x) logprintf(__VA_ARGS__), 0; 
-#define error_if(x,...) if(x) return logprintf(__VA_ARGS__), 0; 
+#define warn_if(x,...) if(x) logprintf(__VA_ARGS__), 0
+#define error_if(x,...) if(x) return logprintf(__VA_ARGS__), 0
 
 #define check_params(n) (params[0] == n*BYTES_PER_CELL)
 #define check_params_min(n) (params[0] >= n*BYTES_PER_CELL)

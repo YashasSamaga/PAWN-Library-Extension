@@ -69,6 +69,18 @@
     <ClCompile Include="source\natives\bitset.cpp">
       <Filter>source\natives</Filter>
     </ClCompile>
+    <ClCompile Include="source\utility.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\natives\random.cpp">
+      <Filter>source\natives</Filter>
+    </ClCompile>
+    <ClCompile Include="source\natives\memory.cpp">
+      <Filter>source\natives</Filter>
+    </ClCompile>
+    <ClCompile Include="source\natives\vector.cpp">
+      <Filter>source\natives</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="lib\sdk\plugincommon.h">
@@ -123,6 +135,18 @@
       <Filter>source\natives</Filter>
     </ClInclude>
     <ClInclude Include="source\natives\bitset.h">
+      <Filter>source\natives</Filter>
+    </ClInclude>
+    <ClInclude Include="source\utility.h">
+      <Filter>source</Filter>
+    </ClInclude>
+    <ClInclude Include="source\natives\random.h">
+      <Filter>source\natives</Filter>
+    </ClInclude>
+    <ClInclude Include="source\natives\memory.h">
+      <Filter>source\natives</Filter>
+    </ClInclude>
+    <ClInclude Include="source\natives\vector.h">
       <Filter>source\natives</Filter>
     </ClInclude>
   </ItemGroup>

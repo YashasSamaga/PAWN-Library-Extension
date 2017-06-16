@@ -243,7 +243,7 @@ namespace Natives
 				}
 			}
 		}
-		if (param_count) logprintf("[WARNING] PAWN Library Extension >> number of specifiers give to CallExternalFunction does not agree with the number of paramters. (Difference: %d)", param_count);
+		if (param_count) logprintf("[WARNING] PAWN Library Extension >> number of specifiers give to CallExternalFunction does not agree with the number of parameters. (Difference: %d)", param_count);
 
 		cell *retval;
 		amx_GetAddr(target_amx, params[2], &retval);

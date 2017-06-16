@@ -833,7 +833,7 @@ namespace Natives
 		cell argc = params[3];
 		error_if(argc > 31, "[PLE] functional>> make_function: 'argc' (%d) must be less than 32", argc);
 
-		char name[MAX_FUNC_NAME];
+		char name[MAX_SYMBOL_LEN];
 		amx_GetString(name, name_addr, 0, sizeof(name));
 
 		switch (params[4])
