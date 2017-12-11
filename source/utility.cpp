@@ -7,13 +7,12 @@ collection of C++ libaries for PAWN.
 
 utility.cpp
 *************************************************************************************************************/
-#pragma once
 
 #include "main.h"
-/************************************************************************************************************/
+
 namespace Utility
 {
-	cell strcmp4b(const cell* s1, const cell* s2) //strcmp for PAWN strings; takes two PAWN strings instead of C strings
+	cell strcmp4b(const cell* s1, const cell* s2) //strcmp for PAWN strings: takes two PAWN strings instead of C strings
 	{
 		while (*s1 && (*s1 == *s2))
 		{

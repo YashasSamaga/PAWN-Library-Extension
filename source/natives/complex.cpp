@@ -8,16 +8,19 @@ collection of C++ libaries for PAWN.
 complex numbers
 complex.cpp
 
+NOTES:
+ - proj not implemented
+ - hyperbolic trignometric functions not implemented
+
 *************************************************************************************************************/
 #include "main.h"
 #include "complex.h"
-
 #include <complex>
-/************************************************************************************************************/
-namespace Natives
+
+namespace PLE::natives
 {
 	//native Float:cabs(num[complext_t]);
-	cell AMX_NATIVE_CALL complex_cabs(AMX* amx, cell* params)
+	cell AMX_NATIVE_CALL complex_cabs(AMX * amx, cell* params)
 	{
 		error_if(!check_params(1), "[PLE] complex>> complex::abs: expected 1 parameters but found %d parameters.", get_params_count());
 
@@ -27,7 +30,7 @@ namespace Natives
 		return amx_ftoc(result);
 	}
 	//native Float:carg(num[complext_t]);
-	cell AMX_NATIVE_CALL complex_carg(AMX* amx, cell* params)
+	cell AMX_NATIVE_CALL complex_carg(AMX * amx, cell* params)
 	{
 		error_if(!check_params(1), "[PLE] complex>> complex::arg: expected 1 parameters but found %d parameters.", get_params_count());
 
@@ -37,7 +40,7 @@ namespace Natives
 		return amx_ftoc(arg);
 	}
 	//native Float:cnorm(num[complext_t]);
-	cell AMX_NATIVE_CALL complex_cnorm(AMX* amx, cell* params)
+	cell AMX_NATIVE_CALL complex_cnorm(AMX * amx, cell* params)
 	{
 		error_if(!check_params(1), "[PLE] complex>> complex::norm: expected 1 parameters but found %d parameters.", get_params_count());
 
@@ -47,7 +50,7 @@ namespace Natives
 		return amx_ftoc(result);
 	}
 	//native conj(num[complex_t]);
-	cell AMX_NATIVE_CALL complex_cconj(AMX* amx, cell* params)
+	cell AMX_NATIVE_CALL complex_cconj(AMX * amx, cell* params)
 	{
 		error_if(!check_params(1), "[PLE] complex>> complex::conj: expected 1 parameters but found %d parameters.", get_params_count());
 
@@ -59,7 +62,7 @@ namespace Natives
 		return true;
 	}
 	//native polar(Float:modulus, Float:arg, result[complex_t]);
-	cell AMX_NATIVE_CALL complex_cpolar(AMX* amx, cell* params)
+	cell AMX_NATIVE_CALL complex_cpolar(AMX * amx, cell* params)
 	{
 		error_if(!check_params(3), "[PLE] complex>> complex::polar: expected 3 parameters but found %d parameters.", get_params_count());
 
@@ -79,7 +82,7 @@ namespace Natives
 	}
 
 	//native ccos(num[complex_t], result[complex_t]);
-	cell AMX_NATIVE_CALL complex_ccos(AMX* amx, cell* params)
+	cell AMX_NATIVE_CALL complex_ccos(AMX * amx, cell* params)
 	{
 		error_if(!check_params(2), "[PLE] complex>> complex::cos: expected 2 parameters but found %d parameters.", get_params_count());
 
@@ -99,7 +102,7 @@ namespace Natives
 		return true;
 	}
 	//native csin(num[complex_t], result[complex_t]);
-	cell AMX_NATIVE_CALL complex_csin(AMX* amx, cell* params)
+	cell AMX_NATIVE_CALL complex_csin(AMX * amx, cell* params)
 	{
 		error_if(!check_params(2), "[PLE] complex>> complex::sin: expected 2 parameters but found %d parameters.", get_params_count());
 
@@ -119,7 +122,7 @@ namespace Natives
 		return true;
 	}
 	//native ctan(num[complex_t], result[complex_t]);
-	cell AMX_NATIVE_CALL complex_ctan(AMX* amx, cell* params)
+	cell AMX_NATIVE_CALL complex_ctan(AMX * amx, cell* params)
 	{
 		error_if(!check_params(2), "[PLE] complex>> complex::tan: expected 2 parameters but found %d parameters.", get_params_count());
 
@@ -139,7 +142,7 @@ namespace Natives
 		return true;
 	}
 	//native cacos(num[complex_t], result[complex_t]);
-	cell AMX_NATIVE_CALL complex_cacos(AMX* amx, cell* params)
+	cell AMX_NATIVE_CALL complex_cacos(AMX * amx, cell* params)
 	{
 		error_if(!check_params(2), "[PLE] complex>> complex::acos: expected 2 parameters but found %d parameters.", get_params_count());
 
@@ -159,7 +162,7 @@ namespace Natives
 		return true;
 	}
 	//native casin(num[complex_t], result[complex_t]);
-	cell AMX_NATIVE_CALL complex_casin(AMX* amx, cell* params)
+	cell AMX_NATIVE_CALL complex_casin(AMX * amx, cell* params)
 	{
 		error_if(!check_params(2), "[PLE] complex>> complex::asin: expected 2 parameters but found %d parameters.", get_params_count());
 
@@ -179,7 +182,7 @@ namespace Natives
 		return true;
 	}
 	//native catan(num[complex_t], result[complex_t]);
-	cell AMX_NATIVE_CALL complex_catan(AMX* amx, cell* params)
+	cell AMX_NATIVE_CALL complex_catan(AMX * amx, cell* params)
 	{
 		error_if(!check_params(2), "[PLE] complex>> complex::atan: expected 2 parameters but found %d parameters.", get_params_count());
 
@@ -197,11 +200,10 @@ namespace Natives
 		val = result.imag();
 		complex_addr_dest[1] = amx_ftoc(val);
 		return true;
-	}
-	//cosh, sinh, tanh, acosh, asinh, atanh not implemented
+	}	
 
 	//native cexp(num[complex_t], result[complex_t]);
-	cell AMX_NATIVE_CALL complex_cexp(AMX* amx, cell* params)
+	cell AMX_NATIVE_CALL complex_cexp(AMX * amx, cell* params)
 	{
 		error_if(!check_params(2), "[PLE] complex>> complex::exp: expected 2 parameters but found %d parameters.", get_params_count());
 
@@ -221,7 +223,7 @@ namespace Natives
 		return true;
 	}
 	//native clog(num[complex_t], result[complex_t]);
-	cell AMX_NATIVE_CALL complex_clog(AMX* amx, cell* params)
+	cell AMX_NATIVE_CALL complex_clog(AMX * amx, cell* params)
 	{
 		error_if(!check_params(2), "[PLE] complex>> complex::log: expected 2 parameters but found %d parameters.", get_params_count());
 
@@ -241,7 +243,7 @@ namespace Natives
 		return true;
 	}
 	//native clog10(num[complex_t], result[complex_t]);
-	cell AMX_NATIVE_CALL complex_clog10(AMX* amx, cell* params)
+	cell AMX_NATIVE_CALL complex_clog10(AMX * amx, cell* params)
 	{
 		error_if(!check_params(2), "[PLE] complex>> complex::log10: expected 2 parameters but found %d parameters.", get_params_count());
 
@@ -261,7 +263,7 @@ namespace Natives
 		return true;
 	}
 	//native cpow(num[complex_t], pow[complex_t], result[complex_t]);
-	cell AMX_NATIVE_CALL complex_cpow(AMX* amx, cell* params)
+	cell AMX_NATIVE_CALL complex_cpow(AMX * amx, cell* params)
 	{
 		error_if(!check_params(3), "[PLE] complex>> complex::pow: expected 3 parameters but found %d parameters.", get_params_count());
 
@@ -285,7 +287,7 @@ namespace Natives
 		return true;
 	}
 	//native csqrt(num[complex_t], result[complex_t]);
-	cell AMX_NATIVE_CALL complex_csqrt(AMX* amx, cell* params)
+	cell AMX_NATIVE_CALL complex_csqrt(AMX * amx, cell* params)
 	{
 		error_if(!check_params(2), "[PLE] complex>> complex::sqrt: expected 2 parameters but found %d parameters.", get_params_count());
 
@@ -306,7 +308,7 @@ namespace Natives
 	}
 
 	//native cnegate(num[complex_t]);
-	cell AMX_NATIVE_CALL complex_cnegate(AMX* amx, cell* params)
+	cell AMX_NATIVE_CALL complex_cnegate(AMX * amx, cell* params)
 	{
 		error_if(!check_params(1), "[PLE] complex>> complex::negate: expected 1 parameters but found %d parameters.", get_params_count());
 
@@ -321,7 +323,7 @@ namespace Natives
 		return true;
 	}
 	//native cadd(num1[complex_t], num2[complex_t], result[complex_t]);
-	cell AMX_NATIVE_CALL complex_cadd(AMX* amx, cell* params)
+	cell AMX_NATIVE_CALL complex_cadd(AMX * amx, cell* params)
 	{
 		error_if(!check_params(3), "[PLE] complex>> complex::add: expected 3 parameters but found %d parameters.", get_params_count());
 
@@ -342,7 +344,7 @@ namespace Natives
 		return true;
 	}
 	//native csub(num1[complex_t], num2[complex_t], result[complex_t]);
-	cell AMX_NATIVE_CALL complex_csub(AMX* amx, cell* params)
+	cell AMX_NATIVE_CALL complex_csub(AMX * amx, cell* params)
 	{
 		error_if(!check_params(3), "[PLE] complex>> complex::sub: expected 3 parameters but found %d parameters.", get_params_count());
 
@@ -363,7 +365,7 @@ namespace Natives
 		return true;
 	}
 	//native cmul(num1[complex_t], num2[complex_t], result[complex_t]);
-	cell AMX_NATIVE_CALL complex_cmul(AMX* amx, cell* params)
+	cell AMX_NATIVE_CALL complex_cmul(AMX * amx, cell* params)
 	{
 		error_if(!check_params(3), "[PLE] complex>> complex::mul: expected 3 parameters but found %d parameters.", get_params_count());
 
@@ -384,7 +386,7 @@ namespace Natives
 		return true;
 	}
 	//native cdiv(num1[complex_t], num2[complex_t], result[complex_t]);
-	cell AMX_NATIVE_CALL complex_cdiv(AMX* amx, cell* params)
+	cell AMX_NATIVE_CALL complex_cdiv(AMX * amx, cell* params)
 	{
 		error_if(!check_params(3), "[PLE] complex>> complex::div: expected 3 parameters but found %d parameters.", get_params_count());
 
@@ -411,7 +413,7 @@ namespace Natives
 	}
 
 	//native bool:cequal(num1[complex_t], num2[complex_t]);
-	cell AMX_NATIVE_CALL complex_cequal(AMX* amx, cell* params)
+	cell AMX_NATIVE_CALL complex_cequal(AMX * amx, cell* params)
 	{
 		error_if(!check_params(2), "[PLE] complex>> complex::equal: expected 2 parameters but found %d parameters.", get_params_count());
 

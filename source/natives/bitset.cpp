@@ -8,6 +8,10 @@ collection of C++ libaries for PAWN.
 bitset
 bitset.cpp
 
+TODO:
+ - bitset_shift_left(bitset:bs[], shift)
+ - bitset_shift_right(bitset:bs[], shift)
+
 *************************************************************************************************************/
 #include "main.h"
 
@@ -15,8 +19,8 @@ bitset.cpp
 #include "functional.h"
 
 #include <algorithm>
-/************************************************************************************************************/
-namespace Natives
+
+namespace PLE::natives
 {
 	//native std::bitset_count(bitset:bs[]);
 	cell AMX_NATIVE_CALL bitset_count(AMX *amx, cell params[])
@@ -43,7 +47,7 @@ namespace Natives
 		size_t count = 0;
 		while (bitset != end)
 		{
-			uint8_t *p = (uint8_t*)bitset++;
+			uint8_t *p = reinterpret_cast<uint8_t*>(bitset);
 			#if BYTES_PER_CELL == 2
 				count += bcount_tlb256[p[0]] +
 						 bcount_tlb256[p[1]];
@@ -64,6 +68,7 @@ namespace Natives
 					 bcount_tlb256[p[6]] +
 					 bcount_tlb256[p[7]];
 			#endif
+			bitset++;
 		}
 		if (bits_last_cell)
 			for (int i = 0; i < bits_last_cell; i++)
@@ -400,6 +405,7 @@ namespace Natives
 			*bitset_dest = (*bitset_dest & ~((1 << bits_last_cell) - 1)) | ((*bitset1 ^ *bitset2) & ((1 << bits_last_cell) - 1));
 		return true;
 	}
+	//native bool:std::bitset_flip_all(bitset:bs[], shift);	
 
 	//native bool:std::bitset_equal(bitset:bs1[], bitset : bs2[]);
 	cell AMX_NATIVE_CALL bitset_equal(AMX *amx, cell params[])
@@ -440,13 +446,13 @@ namespace Natives
 
 		cell* func = NULL;
 		amx_GetAddr(amx, params[2], &func);
-		functionID fid(func);
-		error_if(!fid.IsFunctionValid(1), "[PLE] bitset>> bitset::foreach_set: function object 'func' is not valid");
+		PLE::functional::function fid(func);
+		error_if(!fid.IsValidFunctionID(1), "[PLE] bitset>> bitset::foreach_set: function object 'func' is not valid");
 
 		for (int i = 0; i < size; i++)
 		{
 			if (bitset[i / BITS_PER_CELL] & (1 << (i%BITS_PER_CELL)))
-				ExecuteFunctionCC1O2O3O4(amx, &fid, i);
+				ExecuteFunctionC1(amx, fid, i);
 		}
 		return true;
 	}
@@ -463,13 +469,13 @@ namespace Natives
 
 		cell* func = NULL;
 		amx_GetAddr(amx, params[2], &func);
-		functionID fid(func);
-		error_if(!fid.IsFunctionValid(1), "[PLE] bitset>> bitset::foreach_set: function object 'func' is not valid");
+		PLE::functional::function fid(func);
+		error_if(!fid.IsValidFunctionID(1), "[PLE] bitset>> bitset::foreach_set: function object 'func' is not valid");
 
 		for (int i = 0; i < size; i++)
 		{
 			if (!(bitset[i / BITS_PER_CELL] & (1 << (i % BITS_PER_CELL))))
-				ExecuteFunctionCC1O2O3O4(amx, &fid, i);
+				ExecuteFunctionC1(amx, fid, i);
 		}
 		return true;
 	}

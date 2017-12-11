@@ -9,11 +9,9 @@ Memory Management
 memory.h
 
 *************************************************************************************************************/
-#pragma once
+#ifndef PLE_MEMORY_H_INCLUDED
+#define PLE_MEMORY_H_INCLUDED
 
 #include "main.h"
-/************************************************************************************************************/
-namespace Natives
-{
-	
-}
+
+#endif /* PLE_MEMORY_H_INCLUDED */

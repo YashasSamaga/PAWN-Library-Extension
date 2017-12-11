@@ -9,7 +9,8 @@ collection of libaries for PAWN.
 time.h
 
 *************************************************************************************************************/
-#pragma once
+#ifndef PLE_TIME_H_INCLUDED
+#define PLE_TIME_H_INCLUDED
 
 #include "main.h"
 /************************************************************************************************************/
@@ -26,12 +27,14 @@ enum
 	isdst
 };
 
-namespace Natives
+namespace PLE::natives
 {
-	cell AMX_NATIVE_CALL time_now(AMX* amx, cell* params);
-	cell AMX_NATIVE_CALL time_createtime(AMX* amx, cell* params);
-	cell AMX_NATIVE_CALL time_gettimestamp(AMX* amx, cell* params);
-	cell AMX_NATIVE_CALL time_difftime(AMX* amx, cell* params);
-	cell AMX_NATIVE_CALL time_asctime(AMX* amx, cell* params);
-	cell AMX_NATIVE_CALL time_strftime(AMX* amx, cell* params);
+	cell AMX_NATIVE_CALL time_now(AMX * amx, cell* params);
+	cell AMX_NATIVE_CALL time_createtime(AMX * amx, cell* params);
+	cell AMX_NATIVE_CALL time_gettimestamp(AMX * amx, cell* params);
+	cell AMX_NATIVE_CALL time_difftime(AMX * amx, cell* params);
+	cell AMX_NATIVE_CALL time_asctime(AMX * amx, cell* params);
+	cell AMX_NATIVE_CALL time_strftime(AMX * amx, cell* params);
 }
+
+#endif

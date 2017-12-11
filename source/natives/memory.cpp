@@ -10,34 +10,7 @@ memory.cpp
 
 *************************************************************************************************************/
 #include "main.h"
-#include "math.h"
 
-#include <memory>
-#include <list>
-/************************************************************************************************************/
-class MemoryManager
-{
-public:
-	AMX * amx;
-	int ScriptKey;
-private:
-	struct block
-	{
-		cell *amx_ptr_addr;
-		cell *amx_addr;
-		cell cells;
-	};
-	std::list<block> free_blocks16;
-	std::list<block> free_blocks32;
-	std::list<block> free_blocks64;
-	std::list<block> free_blocks128;
-	std::list<block> used_blocks;
-};
-
-namespace Natives
-{		
-
-}	
 	
 	
 	

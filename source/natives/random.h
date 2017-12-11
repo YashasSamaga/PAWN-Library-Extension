@@ -9,12 +9,9 @@ Random number generator
 random.h
 
 *************************************************************************************************************/
-#pragma once
+#ifndef PLE_RANDOM_H_INCLUDED
+#define PLE_RANDOM_H_INCLUDED
 
 #include "main.h"
-/************************************************************************************************************/
-namespace Natives
-{
-	cell AMX_NATIVE_CALL errno_errno(AMX* amx, cell* params);
-	cell AMX_NATIVE_CALL errno_clearerrno(AMX* amx, cell* params);
-}
+
+#endif /* PLE_RANDOM_H_INCLUDED */

@@ -8,12 +8,14 @@ collection of libaries for PAWN.
 utility.h
 
 *************************************************************************************************************/
-#pragma once
+#ifndef PLE_UTILITY_H_INCLUDED
+#define PLE_UTILITY_H_INCLUDED
 
 #include "main.h"
-/************************************************************************************************************/
+
 namespace Utility
 {
-	cell strcmp4b(const cell* s1, const cell* s2);
+	extern cell strcmp4b(const cell* s1, const cell* s2);
 };
 
+#endif /* PLE_UTILITY_H_INCLUDED */

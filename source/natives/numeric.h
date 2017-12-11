@@ -9,17 +9,20 @@ Collection of useful numeric algorithms (mostly from C++ standard/template libra
 numeric.h
 
 *************************************************************************************************************/
-#pragma once
+#ifndef PLE_NUMERIC_H_INCLUDED
+#define PLE_NUMERIC_H_INCLUDED
 
 #include "main.h"
-/************************************************************************************************************/
-namespace Natives
+
+namespace PLE::natives
 {
-	cell AMX_NATIVE_CALL numeric_iota(AMX *amx, cell params[]);
-	cell AMX_NATIVE_CALL numeric_accumulate(AMX *amx, cell params[]);
-	cell AMX_NATIVE_CALL numeric_adjacent_difference(AMX *amx, cell params[]);
-	cell AMX_NATIVE_CALL numeric_inner_product(AMX *amx, cell params[]);
-	cell AMX_NATIVE_CALL numeric_partial_sum(AMX *amx, cell params[]);
-	cell AMX_NATIVE_CALL numeric_gcd(AMX *amx, cell params[]);
-	cell AMX_NATIVE_CALL numeric_lcm(AMX *amx, cell params[]);
+	extern cell AMX_NATIVE_CALL numeric_iota(AMX *amx, cell params[]);
+	extern cell AMX_NATIVE_CALL numeric_accumulate(AMX *amx, cell params[]);
+	extern cell AMX_NATIVE_CALL numeric_adjacent_difference(AMX *amx, cell params[]);
+	extern cell AMX_NATIVE_CALL numeric_inner_product(AMX *amx, cell params[]);
+	extern cell AMX_NATIVE_CALL numeric_partial_sum(AMX *amx, cell params[]);
+	extern cell AMX_NATIVE_CALL numeric_gcd(AMX *amx, cell params[]);
+	extern cell AMX_NATIVE_CALL numeric_lcm(AMX *amx, cell params[]);
 }
+
+#endif /* PLE_NUMERIC_H_INCLUDED */
