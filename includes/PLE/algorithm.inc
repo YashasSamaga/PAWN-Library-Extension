@@ -1,21 +1,37 @@
-/************************************************************************************************************
-PAWN Library Extension
+/*
+** PAWN Library Extension (PLE)
+**
+** Algorithm
+** Collection of algorithms
+**
+** This file is part of PAWN Library Extension.
+**
+**   This library is free software: you can redistribute it and/or modify
+**   it under the terms of the GNU General Public License as published by
+**   the Free Software Foundation, either version 3 of the License, or
+**   (at your option) any later version.
+**
+**   This library is distributed in the hope that it will be useful,
+**   but WITHOUT ANY WARRANTY; without even the implied warranty of
+**   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**   GNU General Public License for more details.
+**
+**   You should have received a copy of the GNU General Public License
+**   along with this library.  If not, see <http://www.gnu.org/licenses/>.
+**
+** Copyright (C) 2016-2018  Yashas Samaga
+*/
 
-Collection of useful algorithms (mostly from C++ standard/template library along with addititional functions)
-algorithm.inc
-*************************************************************************************************************/
-#if defined _PLE_ALGORITHM_INC
+#if defined PLE_ALGORITHM_INCLUDED
 	#endinput
-#else
-	#define _PLE_ALGORITHM_INC
 #endif
+#define PLE_ALGORITHM_INCLUDED
 
-#if !defined _PLE_CONFIG_INC
-	#include <PLE/config>
-#endif
-
+/* dependencies */
+#include <PLE/config>
 #include <PLE/functional>
-/*************************************************************************************************************/
+
+//Operations which do not alter contents
 native bool:sbsearch(search[], source[][], &idx, size_major = sizeof(source), size_minor = sizeof(source[]));
 native bool:ibsearch(key, array[], &idx, size = sizeof(array));
 native bool:fbsearch(Float:key, Float:array[], &idx, Float:error = 0.01, size = sizeof(array));
@@ -24,6 +40,7 @@ native bool:all_of(range[], numcells, {_, func_bool1, func_cell1}:func[FTSIZE]);
 native bool:any_of(range[], numcells, {_, func_bool1, func_cell1}:func[FTSIZE]);
 native bool:none_of(range[], numcells, {_, func_bool1, func_cell1}:func[FTSIZE]);
 native noret:for_each(range[], numcells, func[FTSIZE]);
+//for_each_n = for_each
 native find(range[], numcells, search_value);
 native find_if(range[], numcells, {_, func_bool1, func_cell1}:func[FTSIZE]);
 native find_if_not(range[], numcells, {_, func_bool1, func_cell1}:func[FTSIZE]);
@@ -38,6 +55,7 @@ native bool:is_permutation(range1[], numcells1, range2[], {_, func_bool2, func_c
 native search(range1[], numcells1, range2[], numcells2, {_, func_bool2, func_cell2}:func[FTSIZE] = fixed_functions::equal_to);
 native search_n(range[], numcells, n, value, {_, func_bool2, func_cell2}:func[FTSIZE] = fixed_functions::equal_to);
 
+//Operations which modify contents
 native noret:copy(source[], numcells, dest[]);
 native noret:copy_if(source[], numcells, dest[], {_, func_bool1, func_cell1}:func[FTSIZE]);
 native noret:copy_backward(source[], numcells, dest_end[]);
@@ -63,26 +81,30 @@ native noret:reverse(range[], numcells);
 native noret:reverse_copy(range[], numcells, dest[]);
 native noret:rotate(range[], middle, end);
 native noret:rotate_copy(range[], middle, end, dest[]);
-native noret:shuffle(range[], end);
-//sample not implemented
+native noret:shuffle(range[], numcells);
+native sample(range[], numcells, dest[], count);
 
+//Partition functions
 native bool:is_partitioned(range[], numcells, {_, func_bool1, func_cell1}:func[FTSIZE]);
 native partition(range[], numcells, {_, func_bool1, func_cell1}:func[FTSIZE]);
 native stable_partition(range[], numcells, {_, func_bool1, func_cell1}:func[FTSIZE]);
 native noret:partition_copy(range[], numcells, dest1[], dest2[], {_, func_bool1, func_cell1}:func[FTSIZE]);
 native partition_point(range[], numcells, {_, func_bool1, func_cell1}:func[FTSIZE]);
 
+//Sorting functions
 native noret:sort(range[], numcells, {_, func_bool2, func_cell2}:func[FTSIZE] = fixed_functions::less);
 native noret:partial_sort(range[], middle, end, {_, func_bool2, func_cell2}:func[FTSIZE] = fixed_functions::less);
 native partial_sort_copy(range[], range_numcells, dest[], dest_numcells, {_, func_bool2, func_cell2}:func[FTSIZE] = fixed_functions::less);
 native bool:is_sorted(range[], numcells, {_, func_bool2, func_cell2}:func[FTSIZE] = fixed_functions::less);
 native noret:nth_element(range[], nth, end, {_, func_bool2, func_cell2}:func[FTSIZE] = fixed_functions::less);
 
+//Binary search functions
 native lower_bound(range[], numcells, value, {_, func_bool2, func_cell2}:func[FTSIZE] = fixed_functions::less);
 native upper_bound(range[], numcells, value, {_, func_bool2, func_cell2}:func[FTSIZE] = fixed_functions::less);
 native noret:equal_range(range[], numcells, value, &smallest, &largest, {_, func_bool2, func_cell2}:func[FTSIZE] = fixed_functions::less);
 native bool:binary_search(range[], numcells, value, {_, func_bool2, func_cell2}:func[FTSIZE] = fixed_functions::less);
 
+//Set functions
 native merge(range1[], numcells1, range2[], numcells2, dest[], {_, func_bool2, func_cell2}:func[FTSIZE] = fixed_functions::less);
 native noret:inplace_merge(range[], middle, end, {_, func_bool2, func_cell2}:func[FTSIZE] = fixed_functions::less);
 native bool:includes(range1[], numcells1, range2[], numcells2, {_, func_bool2, func_cell2}:func[FTSIZE] = fixed_functions::less);
@@ -93,8 +115,10 @@ native set_symmetric_difference(range1[], numcells1, range2[], numcells2, dest[]
 
 //push_heap, pop_heap, make_heap, sort_heap, is_heap, is_heap_until not implemented
 
+//Maximumm, minimum, compare, permutation functions
 //min, max already implemented
 //minmax not implemented
+//clamp already implemented
 native noret:minmax_element(range[], numcells, &smallest, &largest, {_, func_bool2, func_cell2}:func[FTSIZE] = fixed_functions::less);
 native min_element(range[], numcells, {_, func_bool2, func_cell2}:func[FTSIZE] = fixed_functions::less);
 native max_element(range[], numcells, {_, func_bool2, func_cell2}:func[FTSIZE] = fixed_functions::less);

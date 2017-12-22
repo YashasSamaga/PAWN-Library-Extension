@@ -73,13 +73,13 @@ algorithm_testing()
 	if(none_of(integer_array, sizeof(integer_array), bind1st(functions::equal_to, 5))) print("[TEST14] none_of failed.");
 	if(!none_of(integer_array, sizeof(integer_array), bind1st(functions::equal_to, 55))) print("[TEST15] none_of failed.");
 	
-	for_each(integer_array, sizeof(integer_array), make_function({0,0,0,0,0},"algorithm_testing_func1", 1));
+	for_each(integer_array, sizeof(integer_array), make_function({0,0,0,0,0,0},"algorithm_testing_func1", 1));
 	if(_count != sizeof(integer_array)) print("[TEST16] for_each failed.");
 	
 	if(find(integer_array, sizeof(integer_array), 5) != 4) print("[TEST17] find failed.");
 	if(find(integer_array, sizeof(integer_array), 55) != sizeof(integer_array)) print("[TEST18] find failed.");
 
-	if(find_if(integer_array, sizeof(integer_array), make_function({0,0,0,0,0},"algorithm_testing_equal1", 1)) != 0) print("[TEST19] find_if failed.");
+	if(find_if(integer_array, sizeof(integer_array), make_function({0,0,0,0,0,0},"algorithm_testing_equal1", 1)) != 0) print("[TEST19] find_if failed.");
 	if(find_if(integer_array, sizeof(integer_array), bind1st(functions::equal_to, 177)) != sizeof(integer_array)) print("[TEST20] find_if failed.");
 	
 	if(is_permutation({1, 2, 3}, 3, {1, 3, 4})) print("[TEST21] is_permutation failed.");
@@ -151,7 +151,7 @@ algorithm_testing()
 	if(newarr[0] != 1 || newarr[1] != 4 || newarr[2] != 4 || newarr[3] != 3) print("[TEST] replace_if failed.");
 	
 	_count = 0;
-	generate(newarr, 4, make_function({0,0,0,0,0}, "algorithm_testing_gen", 0));
+	generate(newarr, 4, make_function({0,0,0,0,0,0}, "algorithm_testing_gen", 0));
 	
 	newarr = {1, 2, 2, 3};
 	if(unique(newarr, 4) != 3) print("[TEST] unique failed.");

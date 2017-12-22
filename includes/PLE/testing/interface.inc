@@ -3,7 +3,7 @@ PAWN Library Extension
 
 Interface is a layer between the AMX instance and the plugin itself.
 interface.inc
-************************************************************************************************************/
+*************************************************************************************************************/
 #if defined _PLE_INTERFACE_INC
 	#endinput
 #else
@@ -15,7 +15,7 @@ interface.inc
 #endif
 
 #include <PLE\time>
-/**********************************************************************************************************/
+/*****************************************************************************************************************/
 #define UNDEFINED_SCRIPT_IDENTIFIER "Undefined"
 #define UNSUPPORTED_SCRIPT_IDENTIFIER "Unsupported"
 
@@ -23,14 +23,12 @@ interface.inc
 #define INVALID_INTERFACE_ID -1
 
 #define SCRIPT_IDENTIFIER_SIZE 32
-/***********************************************************************************************************/
+
 enum
 {
-	INVALID = 0x0,
-	LOADED = 0x01,
-	SCRIPT_SUPPORTED = 0x02,
-	SCRIPT_UNSUPPORTED	= 0x04,
-	INTERFACE_INITILIZED = 0x08
+	INVALID,
+	SCRIPT_UNSUPPORTED,
+	SCRIPT_SUPPORTED
 };
 
 native IsValidScript(scriptKey);

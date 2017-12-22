@@ -1,9 +1,9 @@
-/******************************************************************************************************************
+/************************************************************************************************************
 PAWN Library Extension
 
 Interscript-Communication
 isc.inc
-******************************************************************************************************************/
+*************************************************************************************************************/
 #if defined _PLE_ISC_INC
 	#endinput
 #else
@@ -13,6 +13,9 @@ isc.inc
 #if !defined _PLE_CONFIG_INC
 	#include <PLE\config>
 #endif
+/*****************************************************************************************************************/
+#define INVALID_EXT_FID ~172
+#define INVALID_EXT_VID ~171
 /*****************************************************************************************************************/
 enum AMX_HEADER
 {
@@ -60,6 +63,21 @@ stock const AMX_HEADER_OFFSETS[] =
 	48, //AMX_HEADER_TAGS
 	52 	//AMX_HEADER_NAMETABLE
 };
+
+stock GetArrayAddress(arr[])
+{
+	#emit LOAD.S.pri arr
+	#emit RETN
+
+	return 0; //make the compiler happy
+}
+stock GetVarAddress(&var)
+{
+	#emit LOAD.S.pri var
+	#emit RETN
+
+	return 0; //make the compiler happy
+}
 /*****************************************************************************************************************/
 native GetAMXHeader(scriptKey, hdr[AMX_HEADER]);
 native ReadAMXMemory(scriptKey, address, &val); //address relative to the script's DAT segment
@@ -68,11 +86,11 @@ native WriteAMXMemory(scriptKey, address, val); //address relative to the script
 native ReadAMXMemoryArray(scriptKey, address, dest[], numcells); //address relative to the script's DAT segment
 native WriteAMXMemoryArray(scriptKey, address, src[], numcells); //address relative to the script's DAT segment
 
-native GetExternalFunctionID(scriptKey, const name[], &fid);
+native GetExternalFunctionID(scriptKey, const name[]);
 native CallExternalFunction(extFuncID, &ret, const format[], ...);
 native GetExternalFunctionInfo(extFuncID, &scriptKey, &varidx);
 
-native GetExternalVariableID(scriptKey, const name[], &vid);
+native GetExternalVariableID(scriptKey, const name[]);
 native GetExternalVariable(extVarID, &result);
 native SetExternalVariable(extVarID, value);
 native GetExternalVariableInfo(extVarID, &scriptKey, &varidx);

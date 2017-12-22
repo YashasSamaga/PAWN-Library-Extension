@@ -1,20 +1,38 @@
-/*****************************************************************************************************************
-PAWN Library Extension
+/*
+** PAWN Library Extension (PLE)
+**
+** Complex
+** Library to manipulate complex numbers
+**
+** This file is part of PAWN Library Extension.
+**
+**   This library is free software: you can redistribute it and/or modify
+**   it under the terms of the GNU General Public License as published by
+**   the Free Software Foundation, either version 3 of the License, or
+**   (at your option) any later version.
+**
+**   This library is distributed in the hope that it will be useful,
+**   but WITHOUT ANY WARRANTY; without even the implied warranty of
+**   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**   GNU General Public License for more details.
+**
+**   You should have received a copy of the GNU General Public License
+**   along with this library.  If not, see <http://www.gnu.org/licenses/>.
+**
+** Copyright (C) 2016-2018  Yashas Samaga
+*/
 
-complex numbers
-complex.inc
-******************************************************************************************************************/
-#if defined _PLE_COMPLEX_INC
+#if defined PLE_COMPLEX_INCLUDED
 	#endinput
-#else
-	#define _PLE_COMPLEX_INC
 #endif
+#define PLE_COMPLEX_INCLUDED
 
-#if !defined _PLE_CONFIG_INC
-	#include <PLE/config>
+/* dependencies */
+#include <PLE/config>
+
+#if !defined complex::
+	#define complex:: c
 #endif
-/*****************************************************************************************************************/
-#define complex:: c
 
 enum complex_t
 {
@@ -22,6 +40,11 @@ enum complex_t
 	Float:imag
 }
 
+/*
+** all natives allow memory overlapping of arguments
+** i.e: native_func(complex1, complex1) will work as expected even though both
+** the arguments point to the same memory
+*/
 native Float:complex::abs(num[complex_t]);
 native Float:complex::arg(num[complex_t]);
 native Float:complex::norm(num[complex_t]);
@@ -31,16 +54,16 @@ native noret:complex::polar(Float:modulus, Float:arg, result[complex_t]);
 native noret:complex::cos(num[complex_t], result[complex_t]);
 native noret:complex::sin(num[complex_t], result[complex_t]);
 native noret:complex::tan(num[complex_t], result[complex_t]);
-//ccosh not implemented
-//csinh not implemented
-//ctahh not implemented
+native noret:complex::cosh(num[complex_t], result[complex_t]);
+native noret:complex::sinh(num[complex_t], result[complex_t]);
+native noret:complex::tanh(num[complex_t], result[complex_t]);
 
 native noret:complex::acos(num[complex_t], result[complex_t]);
 native noret:complex::asin(num[complex_t], result[complex_t]);
 native noret:complex::atan(num[complex_t], result[complex_t]);
-//cacosh not implemented
-//casinh not implemented
-//catanh not implemented
+native noret:complex::acosh(num[complex_t], result[complex_t]);
+native noret:complex::asinh(num[complex_t], result[complex_t]);
+native noret:complex::atanh(num[complex_t], result[complex_t]);
 
 native noret:complex::exp(num[complex_t], result[complex_t]);
 native noret:complex::log(num[complex_t], result[complex_t]);

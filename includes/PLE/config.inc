@@ -1,41 +1,126 @@
-/******************************************************************************************************************
-PAWN Library Extension
+/*
+** PAWN Library Extension (PLE)
+**
+** Configuration file
+** To be included automatically by every PLE header. The inclusion of this file
+** will automatically add the PLE header to the AMX binary and provides basic
+** set of functions necessary to interact with the plugin.
+**
+** This file is part of PAWN Library Extension.
+**
+**   This library is free software: you can redistribute it and/or modify
+**   it under the terms of the GNU General Public License as published by
+**   the Free Software Foundation, either version 3 of the License, or
+**   (at your option) any later version.
+**
+**   This library is distributed in the hope that it will be useful,
+**   but WITHOUT ANY WARRANTY; without even the implied warranty of
+**   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**   GNU General Public License for more details.
+**
+**   You should have received a copy of the GNU General Public License
+**   along with this library.  If not, see <http://www.gnu.org/licenses/>.
+**
+** Copyright (C) 2016-2018  Yashas Samaga
+*/
 
-config.inc
-******************************************************************************************************************/
-#if defined _PLE_CONFIG_INC
+#if defined PLE_CONFIG_INCLUDED
 	#endinput
-#else
-	#define _PLE_CONFIG_INC
 #endif
-/*****************************************************************************************************************/
+#define PLE_CONFIG_INCLUDED
+
+/* dependencies */
+#include <PLE/iscript> //UNDEFINED_SCRIPT_IDENTIFIER, SCRIPT_IDENTIFIER_SIZE, PLE_HEADER_FORMAT
+#include <PLE/memory> //DYNAMIC_MEMORY_SIZE
+
+/* user configuration file */
+#tryinclude "../../include/ple_config.inc"
+
+/*
+** Script identifier is a string which is 'expected' (but not enforced) to
+** uniquely identify different scripts. This is assigned during compile time by
+** the user. The script identifier can be assigned by defining the
+** "SCRIPT_IDENTIFIER" with the identifying string.
+**
+** See iscript.inc to know more about script identifiers
+*/
 #if !defined SCRIPT_IDENTIFIER
 	#define SCRIPT_IDENTIFIER UNDEFINED_SCRIPT_IDENTIFIER
 #endif
 
-#define PLE_MAGIC_KEY 0x3A7B8C
-#define PLE_INCLUDE_VERSION_KEY 0xAB000001
+/*
+** Higher versions of PLE have a higher value of PLE_INCLUDE_VERSION_KEY.
+** PLE reports if there is a version mismatch between the compiled script and
+** the plugin. In most cases, a script compiled for older version of PLE will
+** work with a closer higher version of the plugin without issues.
+*/
+#define PLE_INCLUDE_VERSION_KEY 0x01000000
 
-#include <PLE/interface>
-/*****************************************************************************************************************/
-static const ScriptIdentifier[] = SCRIPT_IDENTIFIER;
-new ScriptKey = -1;
+/*
+** Every script compiled for PLE will have a header which be searched for by the
+** plugin. The header will contain important information about the script.
+**
+** See iscript.inc to learn more about the PLE header.
+*/
+/*
+** __ple_header_start marks the begining of the header and hence, the header
+** must immediately follow the variable.
+*/
+public __ple_header_start;
+stock __fix__ple_header_start = __ple_header_start;
 
-#pragma unused ScriptKey
-/*****************************************************************************************************************/
-forward OnScriptInit(scriptKey, scriptIdentifier[]);
-forward OnScriptExit(scriptKey, scriptIdentifier[]);
-/*****************************************************************************************************************/
+/* ple header */
+static const __ple_header[PLE_HEADER_FORMAT] =
+{
+	0x01,
+	_:PLE_HEADER_FORMAT,
+	 
+	PLE_INCLUDE_VERSION_KEY,
+	0x00,
+	
+	0x00,
+	debug,
+	__Pawn,
+	0x00,
+	
+	DYNAMIC_MEMORY_SIZE,
+	0x00,
+	0x00,
+	0x00,
+	0x00,
+	0x00,
+	0x00,
+	0x00,
+	0x00,
+	0x00,
+	0x00,
+	0x00,
+	0x00,
+	0x00,
+	0x00,
+	0x00,
+	
+	{SCRIPT_IDENTIFIER},
+	
+	INVALID_SCRIPT_KEY,
+	0x00,
+	0x00,
+	0x00,
+	
+	0x00,
+	0x00,
+	0x00,
+	0x0408
+};
+/*
+** __ple_header_end marks the ending of the header and hence, the header
+** must immediately preceed the variable.
+*/
+public __ple_header_end;
+stock __fix__ple_header_end = __ple_header_end;
+
+/* See iscript.inc to learn about script keys */
 stock GetScriptKey()
 {
-	return ScriptKey;
+	return __ple_header[PLE_HEADER_SCRIPTKEY];
 }
-/*****************************************************************************************************************/
-native __InitAcknowledge(magic_key, version_key, const scriptIdentifier[], size = sizeof(scriptIdentifier));
-forward __PLEInitilize(skey);
-public __PLEInitilize(skey)
-{
-    ScriptKey = skey;
-    return __InitAcknowledge(PLE_MAGIC_KEY, PLE_INCLUDE_VERSION_KEY, ScriptIdentifier);
-}
-
