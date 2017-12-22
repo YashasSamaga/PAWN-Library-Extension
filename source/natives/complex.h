@@ -28,6 +28,12 @@ namespace PLE::natives
 	extern cell AMX_NATIVE_CALL complex_cacos(AMX * amx, cell* params);
 	extern cell AMX_NATIVE_CALL complex_casin(AMX * amx, cell* params);
 	extern cell AMX_NATIVE_CALL complex_catan(AMX * amx, cell* params);
+	extern cell AMX_NATIVE_CALL complex_ccosh(AMX * amx, cell* params);
+	extern cell AMX_NATIVE_CALL complex_csinh(AMX * amx, cell* params);
+	extern cell AMX_NATIVE_CALL complex_ctanh(AMX * amx, cell* params);
+	extern cell AMX_NATIVE_CALL complex_cacosh(AMX * amx, cell* params);
+	extern cell AMX_NATIVE_CALL complex_casinh(AMX * amx, cell* params);
+	extern cell AMX_NATIVE_CALL complex_catanh(AMX * amx, cell* params);
 	extern cell AMX_NATIVE_CALL complex_cexp(AMX * amx, cell* params);
 	extern cell AMX_NATIVE_CALL complex_clog(AMX * amx, cell* params);
 	extern cell AMX_NATIVE_CALL complex_clog10(AMX * amx, cell* params);

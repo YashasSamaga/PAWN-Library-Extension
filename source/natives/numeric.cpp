@@ -171,4 +171,6 @@ namespace PLE::natives
 		};
 		return (params[1] * (params[2] / gcd(params[1], params[2])));
 	}
+
+	//reduce, exclusive_scan, inclusive_scan, transform_reduce, transform_exclusive_scan, transform_inclusive_form not implemented
 }

@@ -4,6 +4,8 @@ PAWN Library Extension
 main.cpp
 
 //TODO
+user config for namespaces complex:: in ple_config.inc
+#pragma library
 debug library
 matrix.cpp library
 invoke using address function
@@ -40,6 +42,7 @@ tuple
 HP Timers
 *************************************************************************************************************/
 #include "main.h"
+#include "version.h"
 #include "iscript.h"
 
 #include <sdk/amx/amx.h>
@@ -57,10 +60,10 @@ PLUGIN_EXPORT bool PLUGIN_CALL Load(void **ppData)
 	logprintf = (logprintf_t)ppData[PLUGIN_DATA_LOGPRINTF];
 	samplog::Init();
 	
-	logprintf("*********************************************************");
+	logprintf("***********************************************************");
 	logprintf("  PAWN Library Extension v%d.%d.%d loaded", PLUGIN_MAJOR_VERSION, PLUGIN_MINOR_VERSION, PLUGIN_PATCH_VERSION);
 	logprintf("  Version Key:%h", PLE_PLUGIN_VERSION_KEY);
-	logprintf("*********************************************************");
+	logprintf("***********************************************************");
 	return true;
 }
 PLUGIN_EXPORT void PLUGIN_CALL Unload()

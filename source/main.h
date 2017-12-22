@@ -11,17 +11,11 @@ main.h
 #include <sdk/plugincommon.h>
 #include <samplog/PluginLogger.h>
 
-typedef void(*logprintf_t)(char *, ...);
+typedef void (*logprintf_t)(char*, ...);
 extern logprintf_t logprintf;
 
 extern samplog::CPluginLogger logger;
 using LogLevel = samplog::LogLevel;
-
-#define PLE_PLUGIN_VERSION_KEY 0x0001
-
-#define PLUGIN_MAJOR_VERSION 1
-#define PLUGIN_MINOR_VERSION 0
-#define PLUGIN_PATCH_VERSION 0
 
 #define MAX_SYMBOL_LEN sNAMEMAX + 1
 

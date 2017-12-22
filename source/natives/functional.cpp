@@ -8,6 +8,10 @@ collection of C++ libaries for PAWN.
 functional
 functional.cpp
 
+TODO:
+amx_FindNative
+store native with scriptKey + index
+
 *************************************************************************************************************/
 #include "main.h"
 #include "iscript.h"

@@ -14,15 +14,14 @@ TODO:
 
 *************************************************************************************************************/
 #include "main.h"
-
 #include "bitset.h"
 #include "functional.h"
-
 #include <algorithm>
+#include <cstdint>
 
 namespace PLE::natives
 {
-	//native std::bitset_count(bitset:bs[]);
+	//native bitset_count(bitset:bs[]);
 	cell AMX_NATIVE_CALL bitset_count(AMX *amx, cell params[])
 	{
 		static const uint8_t bcount_tlb256[256] =
@@ -47,26 +46,22 @@ namespace PLE::natives
 		size_t count = 0;
 		while (bitset != end)
 		{
-			uint8_t *p = reinterpret_cast<uint8_t*>(bitset);
-			#if BYTES_PER_CELL == 2
-				count += bcount_tlb256[p[0]] +
-						 bcount_tlb256[p[1]];
-			#endif
+			unsigned char *p = reinterpret_cast<unsigned char*>(bitset);
 			#if BYTES_PER_CELL == 4
-				count += bcount_tlb256[p[0]] +
-						 bcount_tlb256[p[1]] +
-						 bcount_tlb256[p[2]] +
-						 bcount_tlb256[p[3]];
+			count += bcount_tlb256[p[0]] +
+				bcount_tlb256[p[1]] +
+				bcount_tlb256[p[2]] +
+				bcount_tlb256[p[3]];
 			#endif
 			#if BYTES_PER_CELL == 8
 			count += bcount_tlb256[p[0]] +
-					 bcount_tlb256[p[1]] +
-					 bcount_tlb256[p[2]] +
-					 bcount_tlb256[p[3]];
-					 bcount_tlb256[p[4]] +
-					 bcount_tlb256[p[5]] +
-					 bcount_tlb256[p[6]] +
-					 bcount_tlb256[p[7]];
+				bcount_tlb256[p[1]] +
+				bcount_tlb256[p[2]] +
+				bcount_tlb256[p[3]];
+				bcount_tlb256[p[4]] +
+				bcount_tlb256[p[5]] +
+				bcount_tlb256[p[6]] +
+				bcount_tlb256[p[7]];
 			#endif
 			bitset++;
 		}
@@ -78,7 +73,7 @@ namespace PLE::natives
 			}
 		return count;
 	}
-	//native std::bitset_size(bitset:bs[]);
+	//native bitset_size(bitset:bs[]);
 	cell AMX_NATIVE_CALL bitset_size(AMX *amx, cell params[])
 	{
 		error_if(!check_params(1), "[PLE] bitset>> bitset::size: expected 1 parameters but found %d parameters.", get_params_count());
@@ -91,7 +86,7 @@ namespace PLE::natives
 
 		return size;
 	}
-	//native bool:std::bitset_test(bitset:bs[], bitpos);
+	//native bool:bitset_test(bitset:bs[], bitpos);
 	cell AMX_NATIVE_CALL bitset_test(AMX *amx, cell params[])
 	{
 		error_if(!check_params(2), "[PLE] bitset>> bitset::test: expected 2 parameters but found %d parameters.", get_params_count());
@@ -107,7 +102,7 @@ namespace PLE::natives
 
 		return !!(bitset[bitpos / BITS_PER_CELL] & (1 << (bitpos % BITS_PER_CELL)));
 	}
-	//native bool:std::bitset_any(bitset : bs[]);
+	//native bool:bitset_any(bitset : bs[]);
 	cell AMX_NATIVE_CALL bitset_any(AMX *amx, cell params[])
 	{
 		error_if(!check_params(1), "[PLE] bitset>> bitset::any: expected 1 parameters but found %d parameters.", get_params_count());
@@ -130,7 +125,7 @@ namespace PLE::natives
 
 		return false;
 	}
-	//native bool:std::bitset_none(bitset : bs[]);
+	//native bool:bitset_none(bitset : bs[]);
 	cell AMX_NATIVE_CALL bitset_none(AMX *amx, cell params[])
 	{
 		error_if(!check_params(1), "[PLE] bitset>> bitset::none: expected 1 parameters but found %d parameters.", get_params_count());
@@ -153,7 +148,7 @@ namespace PLE::natives
 
 		return true;
 	}
-	//native bool:std::bitset_all(bitset : bs[]);
+	//native bool:bitset_all(bitset : bs[]);
 	cell AMX_NATIVE_CALL bitset_all(AMX *amx, cell params[])
 	{
 		error_if(!check_params(1), "[PLE] bitset>> bitset::all: expected 1 parameters but found %d parameters.", get_params_count());
@@ -177,7 +172,7 @@ namespace PLE::natives
 		return true;
 	}
 
-	//native bool:std::bitset_set(bitset : bs[], bitpos);
+	//native bool:bitset_set(bitset : bs[], bitpos);
 	cell AMX_NATIVE_CALL bitset_set(AMX *amx, cell params[])
 	{
 		error_if(!check_params(2), "[PLE] bitset>> bitset::set: expected 2 parameters but found %d parameters.", get_params_count());
@@ -194,7 +189,7 @@ namespace PLE::natives
 		bitset[bitpos / BITS_PER_CELL] |= 1 << (bitpos % BITS_PER_CELL);
 		return true;
 	}
-	//native bool:std::bitset_reset(bitset : bs[], bitpos);
+	//native bool:bitset_reset(bitset : bs[], bitpos);
 	cell AMX_NATIVE_CALL bitset_reset(AMX *amx, cell params[])
 	{
 		error_if(!check_params(2), "[PLE] bitset>> bitset::reset: expected 2 parameters but found %d parameters.", get_params_count());
@@ -211,7 +206,7 @@ namespace PLE::natives
 		bitset[bitpos / BITS_PER_CELL] &= ~(1 << (bitpos % BITS_PER_CELL));
 		return true;
 	}
-	//native bool:std::bitset_flip(bitset : bs[], bitpos);
+	//native bool:bitset_flip(bitset : bs[], bitpos);
 	cell AMX_NATIVE_CALL bitset_flip(AMX *amx, cell params[])
 	{
 		error_if(!check_params(2), "[PLE] bitset>> bitset::flip: expected 2 parameters but found %d parameters.", get_params_count());
@@ -229,7 +224,7 @@ namespace PLE::natives
 		return true;
 	}
 
-	//native bool:std::bitset_set_all(bitset:bs[]);
+	//native bool:bitset_set_all(bitset:bs[]);
 	cell AMX_NATIVE_CALL bitset_set_all(AMX *amx, cell params[])
 	{
 		error_if(!check_params(1), "[PLE] bitset>> bitset::set_all: expected 1 parameters but found %d parameters.", get_params_count());
@@ -250,7 +245,7 @@ namespace PLE::natives
 			*bitset |= ((1 << bits_last_cell) - 1);
 		return true;
 	}
-	//native bool:std::bitset_reset_all(bitset:bs[]);
+	//native bool:bitset_reset_all(bitset:bs[]);
 	cell AMX_NATIVE_CALL bitset_reset_all(AMX *amx, cell params[])
 	{
 		error_if(!check_params(1), "[PLE] bitset>> bitset::reset_all: expected 1 parameters but found %d parameters.", get_params_count());
@@ -271,7 +266,7 @@ namespace PLE::natives
 			*bitset &= ~((1 << bits_last_cell) - 1);
 		return true;
 	}
-	//native bool:std::bitset_flip_all(bitset:bs[]);	
+	//native bool:bitset_flip_all(bitset:bs[]);	
 	cell AMX_NATIVE_CALL bitset_flip_all(AMX *amx, cell params[])
 	{
 		error_if(!check_params(1), "[PLE] bitset>> bitset::flip_all: expected 1 parameters but found %d parameters.", get_params_count());
@@ -293,7 +288,7 @@ namespace PLE::natives
 		return true;
 	}
 
-	//native noret:std::bitset_tostring(bitset:bs[], dest[], dest_size = sizeof(dest));
+	//native noret:bitset_tostring(bitset:bs[], dest[], dest_size = sizeof(dest));
 	cell AMX_NATIVE_CALL bitset_tostring(AMX *amx, cell params[])
 	{
 		error_if(!check_params(3), "[PLE] bitset>> bitset::tostring: expected 3 parameters but found %d parameters.", get_params_count());
@@ -324,7 +319,7 @@ namespace PLE::natives
 		return true;
 	}
 
-	//native noret:std::bitset_and(bitset:bs1[], bitset : bs2[], bitset : dest[]);
+	//native noret:bitset_and(bitset:bs1[], bitset : bs2[], bitset : dest[]);
 	cell AMX_NATIVE_CALL bitset_and(AMX *amx, cell params[])
 	{
 		error_if(!check_params(3), "[PLE] bitset>> bitset::and: expected 3 parameters but found %d parameters.", get_params_count());
@@ -347,11 +342,11 @@ namespace PLE::natives
 		while (bitset_dest != end)
 			*bitset_dest++ = *bitset1++ & *bitset2++;
 
-		if(bits_last_cell)
-			*bitset_dest = (*bitset_dest & ~((1 << bits_last_cell) - 1)) | ((*bitset1 & *bitset2) & ((1 << bits_last_cell) -1));
+		if (bits_last_cell)
+			*bitset_dest = (*bitset_dest & ~((1 << bits_last_cell) - 1)) | ((*bitset1 & *bitset2) & ((1 << bits_last_cell) - 1));
 		return true;
 	}
-	//native noret:std::bitset_or(bitset : bs1[], bitset : bs2[], bitset : dest[]);
+	//native noret:bitset_or(bitset : bs1[], bitset : bs2[], bitset : dest[]);
 	cell AMX_NATIVE_CALL bitset_or(AMX *amx, cell params[])
 	{
 		error_if(!check_params(3), "[PLE] bitset>> bitset::or: expected 3 parameters but found %d parameters.", get_params_count());
@@ -378,7 +373,7 @@ namespace PLE::natives
 			*bitset_dest = (*bitset_dest & ~((1 << bits_last_cell) - 1)) | ((*bitset1 | *bitset2) & ((1 << bits_last_cell) - 1));
 		return true;
 	}
-	//native noret:std::bitset_xor(bitset:bs1[], bitset : bs2[], bitset : dest[]);
+	//native noret:bitset_xor(bitset:bs1[], bitset : bs2[], bitset : dest[]);
 	cell AMX_NATIVE_CALL bitset_xor(AMX *amx, cell params[])
 	{
 		error_if(!check_params(3), "[PLE] bitset>> bitset::xor: expected 3 parameters but found %d parameters.", get_params_count());
@@ -405,9 +400,9 @@ namespace PLE::natives
 			*bitset_dest = (*bitset_dest & ~((1 << bits_last_cell) - 1)) | ((*bitset1 ^ *bitset2) & ((1 << bits_last_cell) - 1));
 		return true;
 	}
-	//native bool:std::bitset_flip_all(bitset:bs[], shift);	
+	//native bool:bitset_flip_all(bitset:bs[], shift);	
 
-	//native bool:std::bitset_equal(bitset:bs1[], bitset : bs2[]);
+	//native bool:bitset_equal(bitset:bs1[], bitset : bs2[]);
 	cell AMX_NATIVE_CALL bitset_equal(AMX *amx, cell params[])
 	{
 		error_if(!check_params(2), "[PLE] bitset>> bitset::equal: expected 2 parameters but found %d parameters.", get_params_count());
@@ -428,12 +423,12 @@ namespace PLE::natives
 			if (*bitset1++ != *bitset2++) return false;
 
 		if (bits_last_cell)
-			if ((*bitset1 & ((1 << bits_last_cell) - 1)) != (*bitset2 & ((1 << bits_last_cell) - 1))) 
+			if ((*bitset1 & ((1 << bits_last_cell) - 1)) != (*bitset2 & ((1 << bits_last_cell) - 1)))
 				return false;
 		return true;
 	}
 
-	//native noret:std::bitset_foreach_set(bitset:bs[], { _, func_bool1, func_cell1 } : func[FTSIZE]);
+	//native noret:bitset_foreach_set(bitset:bs[], { _, func_bool1, func_cell1 } : func[FTSIZE]);
 	cell AMX_NATIVE_CALL bitset_foreach_set(AMX *amx, cell params[])
 	{
 		error_if(!check_params(2), "[PLE] bitset>> bitset::foreach_set: expected 2 parameters but found %d parameters.", get_params_count());
@@ -456,7 +451,7 @@ namespace PLE::natives
 		}
 		return true;
 	}
-	//native noret:std::bitset_foreach_notset(bitset:bs[], { _, func_bool1, func_cell1 } : func[FTSIZE]);
+	//native noret:bitset_foreach_notset(bitset:bs[], { _, func_bool1, func_cell1 } : func[FTSIZE]);
 	cell AMX_NATIVE_CALL bitset_foreach_notset(AMX *amx, cell params[])
 	{
 		error_if(!check_params(2), "[PLE] bitset>> bitset::foreach_notset: expected 2 parameters but found %d parameters.", get_params_count());
@@ -479,7 +474,7 @@ namespace PLE::natives
 		}
 		return true;
 	}
-	//native bool:std::bitset_find_set(bitset:bs[], &start_bitpos);	
+	//native bool:bitset_find_set(bitset:bs[], &start_bitpos);	
 	cell AMX_NATIVE_CALL bitset_find_set(AMX *amx, cell params[])
 	{
 		error_if(!check_params(2), "[PLE] bitset>> bitset::find_set: expected 2 parameters but found %d parameters.", get_params_count());
@@ -493,7 +488,7 @@ namespace PLE::natives
 		cell *idx = NULL;
 		amx_GetAddr(amx, params[2], &idx);
 		error_if(*idx < 0, "[PLE] bitset>> bitset::find_set: start_bitpos is less then zero.");
-		error_if(*idx >= size, "[PLE] bitset>> bitset::find_set: start_bitpos is greater than the bitset size.");		
+		error_if(*idx >= size, "[PLE] bitset>> bitset::find_set: start_bitpos is greater than the bitset size.");
 
 		for (int i = *idx; i < size; i++)
 		{
@@ -505,7 +500,7 @@ namespace PLE::natives
 		}
 		return false;
 	}
-	//native bool:std::bitset_find_notset(bitset:bs[], &start_bitpos);
+	//native bool:bitset_find_notset(bitset:bs[], &start_bitpos);
 	cell AMX_NATIVE_CALL bitset_find_notset(AMX *amx, cell params[])
 	{
 		error_if(!check_params(2), "[PLE] bitset>> bitset::find_notset: expected 2 parameters but found %d parameters.", get_params_count());

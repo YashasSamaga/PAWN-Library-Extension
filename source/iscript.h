@@ -13,14 +13,16 @@ iscript.h
 #define PLE_ISCRIPT_H_INCLUDED
 
 #include "main.h"
+#include <cstdint>
 #include <string>
-#include <cstddef>
 
 namespace PLE
 {
 	namespace IScript
 	{
+		/* these limits are not imposed by PAWN; they are imposed by this plugin */
 		typedef std::int8_t ScriptKey_t;
+		typedef std::int16_t NativeIndex_t;
 		typedef std::int16_t FunctionIndex_t;
 		typedef std::int16_t VariableIndex_t;
 
@@ -28,16 +30,18 @@ namespace PLE
 
 		namespace ScriptIdentifier
 		{
-			const std::string Undefined = "Undefined";
-			const std::string Unsupported = "Unsupported";
+			/* we use std::string so that we can use the '==' operator overload on C-strings */
+			const std::string undefined = "Undefined";
+			const std::string unsupported = "Unsupported";
+
 			constexpr std::size_t max_length = MAX_SYMBOL_LEN;
 		}
 
-		enum INTERFACE_TYPE
+		enum interface_type
 		{
-			INVALID = 0,
-			SUPPORTED,
-			UNSUPPORTED
+			invalid = 0,
+			supported = 1,
+			unsupported = 2
 		};
 
 		struct PLE_HEADER
@@ -82,39 +86,48 @@ namespace PLE
 			cell signature_end;
 		};
 
+		/*
+		**	PAWN structures needn't be aligned to the alignment requirements of the structure in the plugin. 
+		**	However, they will be aligned according to alignment requirements of 'cell'. If our structure's
+		**	alignment requirements is equal to that of 'cell' we don't have to worry about alignment while
+		**	casting pointers (cell* to PLE_HEADER*).
+		*/
+		static_assert(alignof(PLE_HEADER) == alignof(cell));
+
+		/*
+		** The following class identifier ("IScript") uses the prefix 'I' but it isn't an interface as
+		** dictated in common conventions. It is supposed to stand for "I[nterface]Script".
+		*/
 		class IScript
 		{
 		public:
 			AMX *amx;
 
-			IScript() { type = INTERFACE_TYPE::INVALID; }
+			IScript() { type = interface_type::invalid; }
 			~IScript() {}
 
 			void load(AMX *p_amx, ScriptKey_t p_scriptKey); //Initilizes the interface, registers natives, sets public constants
 			void unload(); //Unloads the AMX and frees the interface for another script
-			bool empty() const { return (type == INTERFACE_TYPE::INVALID); }
+			bool empty() const { return (type == interface_type::invalid); }
 
 			ScriptKey_t GetScriptKey() const { return scriptKey; }
 			const std::string& GetScriptIdentifier() const { return scriptIdentifier; }
-			INTERFACE_TYPE GetType() const { return type; }
+			interface_type GetType() const { return type; }
 			PLE_HEADER* GetHeader() const { return ple_header; }
 
 		private:
 			ScriptKey_t scriptKey; //every AMX instance is assigned a unique id
 			std::string scriptIdentifier; //SSO optimization in most cases		
 
-			INTERFACE_TYPE type;
+			interface_type type;
 			PLE_HEADER *ple_header;
-			cell ple_compliant_pubvar_addr;
+			cell startof_header_marker;
+			cell endof_header_marker;
 
-			static constexpr cell INVALID_CBIDX = -1;
-			cell cbidx_OnScriptInit;
-			cell cbidx_OnScriptExit;
-
-			//OnScriptInit is called in every script (except the newly initilized) when a script is loaded
-			void Trigger_OnScriptInit(ScriptKey_t p_scriptKey, const std::string& p_scriptIdentifier) const;
-			//OnScriptExit is called in every script (except the unloaded script) when a script is unloaded
-			void Trigger_OnScriptExit(ScriptKey_t p_scriptKey, const std::string& p_scriptIdentifier) const;
+			//OnScriptLoad is called in every script (except the newly initilized) when a script is loaded
+			void Trigger_OnScriptLoad(ScriptKey_t p_scriptKey, const std::string& p_scriptIdentifier) const;
+			//OnScriptUnload is called in every script (except the unloaded script) when a script is unloaded
+			void Trigger_OnScriptUnload(ScriptKey_t p_scriptKey, const std::string& p_scriptIdentifier) const;
 		};
 
 		extern void AddInterface(AMX *amx); //Creates and initilizes an interface for amx

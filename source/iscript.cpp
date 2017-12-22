@@ -10,6 +10,7 @@ iscript.cpp
 
 *************************************************************************************************************/
 #include "main.h"
+#include "version.h"
 #include "iscript.h"
 
 #include "natives/algorithm.h"
@@ -17,7 +18,7 @@ iscript.cpp
 #include "natives/complex.h"
 #include "natives/ctype.h"
 #include "natives/errno.h"
-#include "natives/file.h"
+#include "natives/fstream.h"
 #include "natives/functional.h"
 #include "natives/isc.h"
 #include "natives/math.h"
@@ -34,7 +35,7 @@ iscript.cpp
 
 namespace PLE
 {
-	static struct { char name[MAX_SYMBOL_LEN]; cell value; } entries[] =
+	static struct { char name[MAX_SYMBOL_LEN]; cell value; } PublicVariablesTable[] =
 	{
 		{ "file_EOF", EOF },
 		{ "file_SEEK_SET", SEEK_SET },
@@ -139,7 +140,7 @@ namespace PLE
 
 	static AMX_NATIVE_INFO NativeFunctionsTable[] =
 	{
-		//interface
+		//system
 		{ "system", natives::system_system },
 		{ "getenv", natives::system_getenv },
 
@@ -200,31 +201,52 @@ namespace PLE
 		{ "strerror", natives::string_strerror },
 
 		//file
-		{ "file_fexists", natives::file_fexists },
-		{ "file_GetFileLocation", natives::file_GetFileLocation },
-		{ "file_GetFileMode", natives::file_GetFileMode },
-		{ "file_remove", natives::file_remove },
-		{ "file_rename", natives::file_rename },
-		{ "file_tmpfile", natives::file_tmpfile },
-		{ "file_tmpname", natives::file_tmpname },
-		{ "file_fclose", natives::file_fclose },
-		{ "file_fflush", natives::file_fflush },
-		{ "file_fopen", natives::file_fopen },
-		{ "file_fgetc", natives::file_fgetc },
-		{ "file_fgets", natives::file_fgets },
-		{ "file_fputc", natives::file_fputc },
-		{ "file_fputs", natives::file_fputs },
-		{ "file_ungetc", natives::file_ungetc },
-		{ "file_fread", natives::file_fread },
-		{ "file_fwrite", natives::file_fwrite },
-		{ "file_fgetpos", natives::file_fgetpos },
-		{ "file_fsetpos", natives::file_fsetpos },
-		{ "file_ftell", natives::file_ftell },
-		{ "file_rewind", natives::file_rewind },
-		{ "file_fseek", natives::file_fseek },
-		{ "file_clearerr", natives::file_clearerr },
-		{ "file_feof", natives::file_feof },
-		{ "file_ferror", natives::file_ferror },
+		{ "file_open", natives::file_open },
+		{ "file_close", natives::file_close },
+		{ "file_IsValidFile", natives::file_IsValidFile },
+		{ "file_getch", natives::file_getch },
+		{ "file_getstr", natives::file_getstr },
+		{ "file_peek", natives::file_peek },
+		{ "file_unget", natives::file_unget },
+		{ "file_putback", natives::file_putback },
+		{ "file_getline", natives::file_getline },
+		{ "file_ignore", natives::file_ignore },
+		{ "file_read", natives::file_read },
+		{ "file_extract_number", natives::file_extract_number },
+		{ "file_extract_float", natives::file_extract_float },
+		{ "file_extract_bool", natives::file_extract_bool },
+		{ "file_extract_string", natives::file_extract_string },
+		{ "file_insert_number", natives::file_insert_number },
+		{ "file_insert_float", natives::file_insert_float },
+		{ "file_insert_bool", natives::file_insert_bool },
+		{ "file_insert_string", natives::file_insert_string },
+		{ "file_gcount", natives::file_gcount },
+		{ "file_tellg", natives::file_tellg },
+		{ "file_seekg", natives::file_seekg },
+		{ "file_sync", natives::file_sync },
+		{ "file_put", natives::file_put },
+		{ "file_write", natives::file_write },
+		{ "file_tellp", natives::file_tellp },
+		{ "file_seekp", natives::file_seekp },
+		{ "file_flush", natives::file_flush },
+		{ "file_good", natives::file_good },
+		{ "file_eof", natives::file_eof },
+		{ "file_fail", natives::file_fail },
+		{ "file_bad", natives::file_bad },
+		{ "file_rdstate", natives::file_rdstate },
+		{ "file_setstate", natives::file_setstate },
+		{ "file_clear", natives::file_clear },
+		{ "file_copyfmt", natives::file_copyfmt },
+		{ "file_fill", natives::file_fill },
+		{ "file_tie", natives::file_tie },
+		{ "file_getflags", natives::file_getflags },
+		{ "file_setflags", natives::file_setflags },
+		{ "file_setf", natives::file_setf },
+		{ "file_unsetf", natives::file_unsetf },
+		{ "file_getprecision", natives::file_getprecision },
+		{ "file_setprecision", natives::file_setprecision },
+		{ "file_getwidth", natives::file_getwidth },
+		{ "file_setwidth", natives::file_setwidth },
 
 		//time
 		{ "now", natives::time_now },
@@ -288,6 +310,7 @@ namespace PLE
 		{ "rotate", natives::algo_rotate },
 		{ "rotate_copy", natives::algo_rotate_copy },
 		{ "shuffle", natives::algo_shuffle },
+		{ "sample", natives::algo_sample },
 		{ "is_partitioned", natives::algo_is_partitioned },
 		{ "partition", natives::algo_partition },
 		{ "stable_partition", natives::algo_stable_partition },
@@ -361,6 +384,12 @@ namespace PLE
 		{ "cacos", natives::complex_cacos },
 		{ "casin", natives::complex_casin },
 		{ "catan", natives::complex_catan },
+		{ "ccosh", natives::complex_ccosh },
+		{ "csinh", natives::complex_csinh },
+		{ "ctanh", natives::complex_ctanh },
+		{ "cacosh", natives::complex_cacosh },
+		{ "casinh", natives::complex_casinh },
+		{ "catanh", natives::complex_catanh },
 		{ "cexp", natives::complex_cexp },
 		{ "clog", natives::complex_clog },
 		{ "clog10", natives::complex_clog10 },
@@ -406,28 +435,25 @@ namespace PLE
 		{
 			amx = p_amx;
 			scriptKey = p_scriptKey;
-			scriptIdentifier = ScriptIdentifier::Unsupported;
+			scriptIdentifier = ScriptIdentifier::unsupported;
 
 			ple_header = nullptr;
-			ple_compliant_pubvar_addr = -1;
-			type = INTERFACE_TYPE::UNSUPPORTED;
+			startof_header_marker = -1;
+			type = interface_type::unsupported;
 
-			if (amx_FindPubVar(amx, "@@@ple_compliant", &ple_compliant_pubvar_addr) == AMX_ERR_NONE)
+			if (amx_FindPubVar(amx, "__ple_header_start", &startof_header_marker) == AMX_ERR_NONE
+				&& amx_FindPubVar(amx, "__ple_header_end", &endof_header_marker) == AMX_ERR_NONE)
 			{
-				AMX_HEADER *amx_hdr = reinterpret_cast<AMX_HEADER*>(amx->base);
-				cell *data_phys_addr, *heap_phys_addr, *possible_hdr_phys_addr;
-				amx_GetAddr(amx, 0, &data_phys_addr);
-				amx_GetAddr(amx, amx_hdr->hea, &heap_phys_addr);
-				amx_GetAddr(amx, ple_compliant_pubvar_addr + BYTES_PER_CELL, &possible_hdr_phys_addr);
-
-				static_assert(sizeof(PLE_HEADER) % sizeof(cell) == 0);
-				if (possible_hdr_phys_addr + sizeof(PLE_HEADER) / sizeof(cell) < heap_phys_addr)
+				if ((startof_header_marker - endof_header_marker) == (sizeof(PLE_HEADER) + sizeof(cell)))
 				{
-					PLE_HEADER *possible_hdr = reinterpret_cast<PLE_HEADER*>(possible_hdr_phys_addr);
-					if (possible_hdr->size == (&possible_hdr->signature_end - &possible_hdr->version + 1) && possible_hdr->signature_end == 0x0408)
+					cell *ple_header_phys_addr;
+					amx_GetAddr(amx, startof_header_marker + sizeof(cell), &ple_header_phys_addr);
+
+					PLE_HEADER *possible_hdr = reinterpret_cast<PLE_HEADER*>(ple_header_phys_addr);
+					if (possible_hdr->size == sizeof(PLE_HEADER) && possible_hdr->signature_end == 0x0408)
 					{
 						ple_header = possible_hdr;
-						type = INTERFACE_TYPE::SUPPORTED;
+						type = interface_type::supported;
 
 						char cstr_scriptidentifier[ScriptIdentifier::max_length];
 						amx_GetString(cstr_scriptidentifier, ple_header->scriptidentifier, 0, ScriptIdentifier::max_length);
@@ -440,7 +466,7 @@ namespace PLE
 						else if (PLE_PLUGIN_VERSION_KEY < ple_header->inc_version)
 							logprintf("[WARNING] PAWN Library Extension: The plugin version does not match the include version in script '%s' (ScriptKey: %d).\nThe script is using a newer version of PLE.", cstr_scriptidentifier, scriptKey);
 
-						if (scriptIdentifier == ScriptIdentifier::Undefined)
+						if (scriptIdentifier == ScriptIdentifier::undefined)
 							logprintf("[NOTICE] PAWN Library Extension: A loaded script (ScriptKey: %d) does not have a script identifier.", scriptKey);
 						else
 						{
@@ -453,7 +479,7 @@ namespace PLE
 								if (intrf.GetScriptIdentifier() == scriptIdentifier)
 									duplicate_count++;
 
-								intrf.Trigger_OnScriptInit(scriptKey, scriptIdentifier);
+								intrf.Trigger_OnScriptLoad(scriptKey, scriptIdentifier);
 							}
 							if (duplicate_count)
 								logprintf("[WARNING] PAWN Library Extension: Script identifier '%s' is being used by %d scripts.", cstr_scriptidentifier, duplicate_count + 1);
@@ -461,18 +487,10 @@ namespace PLE
 					}
 				}
 			}
-			if (this->type != INTERFACE_TYPE::SUPPORTED)
+			if (type != interface_type::supported)
 				logprintf("[NOTICE] PAWN Library Extension: A script (ScriptKey:%d) was loaded which does not have a functional PLE header.", scriptKey);
 
-			//public OnScriptInit(scriptKey, scriptIdentifier[])
-			if (amx_FindPublic(amx, "OnScriptInit", &cbidx_OnScriptInit) != AMX_ERR_NONE)
-				this->cbidx_OnScriptInit = INVALID_CBIDX;
-
-			//public OnScriptExit(scriptKey, scriptIdentifier[])
-			if (amx_FindPublic(amx, "OnScriptExit", &cbidx_OnScriptExit) != AMX_ERR_NONE)
-				this->cbidx_OnScriptExit = INVALID_CBIDX;
-
-			for (auto &&entry : entries)
+			for (auto&& entry : PublicVariablesTable)
 			{
 				cell pubvar_addr;
 				if (amx_FindPubVar(amx, entry.name, &pubvar_addr) == AMX_ERR_NONE)
@@ -486,56 +504,64 @@ namespace PLE
 		}
 		void IScript::unload()
 		{
-			type = INTERFACE_TYPE::INVALID;
-			for (auto &&intrf : IScriptList)
+			type = interface_type::invalid;
+			for (auto&& intrf : IScriptList)
 			{
 				if (intrf.GetScriptKey() == scriptKey) continue;
 				if (intrf.empty()) continue;
 
-				intrf.Trigger_OnScriptExit(scriptKey, scriptIdentifier);
+				intrf.Trigger_OnScriptUnload(scriptKey, scriptIdentifier);
 			}
 		}
 
-		void IScript::Trigger_OnScriptInit(ScriptKey_t scriptKey, const std::string& scriptIdentifier) const
+		void IScript::Trigger_OnScriptLoad(ScriptKey_t scriptKey, const std::string& scriptIdentifier) const
 		{
-			if (cbidx_OnScriptInit == INVALID_CBIDX) return;
+			//public OnScriptLoad(scriptKey, scriptIdentifier[])
+
+			cell cbidx;
+			if (amx_FindPublic(amx, "OnScriptLoad", &cbidx) != AMX_ERR_NONE)
+				return;
 
 			cell addr;
 			amx_PushString(amx, &addr, NULL, scriptIdentifier.c_str(), NULL, NULL);
 			amx_Push(amx, scriptKey);
 
-			amx_Exec(amx, NULL, cbidx_OnScriptInit);
+			amx_Exec(amx, NULL, cbidx);
 			amx_Release(amx, addr);
 		}
-		void IScript::Trigger_OnScriptExit(ScriptKey_t scriptKey, const std::string& scriptIdentifier) const
+		void IScript::Trigger_OnScriptUnload(ScriptKey_t scriptKey, const std::string& scriptIdentifier) const
 		{
-			if (cbidx_OnScriptExit == INVALID_CBIDX) return;
+			//public OnScriptUnload(scriptKey, scriptIdentifier[])
+
+			cell cbidx;
+			if (amx_FindPublic(amx, "OnScriptUnload", &cbidx) != AMX_ERR_NONE)
+				return;
 
 			cell addr;
 			amx_PushString(amx, &addr, NULL, scriptIdentifier.c_str(), NULL, NULL);
 			amx_Push(amx, scriptKey);
 
-			amx_Exec(amx, NULL, cbidx_OnScriptExit);
+			amx_Exec(amx, NULL, cbidx);
 			amx_Release(amx, addr);
 		}
 
 		void AddInterface(AMX *amx)
 		{
 			ScriptKey_t scriptKey = INVALID_SCRIPT_KEY;
-			auto intrf = std::find_if(IScriptList.begin(), IScriptList.end(), [](const IScript& intrf) { return intrf.empty(); }); //find an unused scriptKey
+			auto intrf_iter = std::find_if(IScriptList.begin(), IScriptList.end(), [](const IScript& intrf) { return intrf.empty(); }); //find an unused scriptKey
 
-			if (intrf == IScriptList.end())
+			if (intrf_iter == IScriptList.end())
 			{
 				if (IScriptList.size() == std::numeric_limits<ScriptKey_t>::max())
 					logprintf("[CRITICAL] The number of scripts loaded exceeds the maximum number of simultaneously loaded scripts supported by the plugin. This may cause undefined behaviour.");
 
 				scriptKey = static_cast<ScriptKey_t>(IScriptList.size());
-				IScriptList.push_back(IScript::IScript());
+				IScriptList.emplace_back();
 			}
 			else
-				scriptKey = std::distance(IScriptList.begin(), intrf);
+				scriptKey = std::distance(IScriptList.begin(), intrf_iter);
 
-			IScriptList[scriptKey].load(amx, scriptKey);
+			(*intrf_iter).load(amx, scriptKey);
 		}
 		void RemoveInterface(AMX *amx)
 		{
@@ -545,9 +571,9 @@ namespace PLE
 		}
 		ScriptKey_t FindInterface(AMX *amx)
 		{
-			auto intrf = std::find_if(IScriptList.begin(), IScriptList.end(), [&amx](const IScript& intrf) { return intrf.amx == amx; });
-			if (intrf == IScriptList.end()) return INVALID_SCRIPT_KEY;
-			return intrf->GetScriptKey();
+			auto intrf_iter = std::find_if(IScriptList.begin(), IScriptList.end(), [&amx](const IScript& intrf) { return intrf.amx == amx; });
+			if (intrf_iter == IScriptList.end()) return INVALID_SCRIPT_KEY;
+			return intrf_iter->GetScriptKey();
 		}
 		bool IsValidScript(cell scriptKey)
 		{
@@ -561,7 +587,7 @@ namespace PLE
 	}
 	namespace natives
 	{
-		//native IsValidScript(scriptKey);
+		//native bool:IsValidScript(scriptKey);
 		cell AMX_NATIVE_CALL iscript_IsValidScript(AMX * amx, cell* params)
 		{
 			error_if(!check_params(1), "[PLE] interface>> IsValidScript: expected 1 parameters but found %d parameters.", get_params_count());
@@ -572,20 +598,19 @@ namespace PLE
 		{
 			error_if(!check_params(1), "[PLE] interface>> GetScriptType: expected 1 parameters but found %d parameters.", get_params_count());
 			if (!IScript::IsValidScript(params[1]))
-				return IScript::INTERFACE_TYPE::INVALID;
+				return IScript::interface_type::invalid;
 			return IScript::IScriptList[params[1]].GetType();
 		}
 		//native GetScriptPoolSize();
 		cell AMX_NATIVE_CALL iscript_GetScriptPoolSize(AMX * amx, cell* params)
 		{
 			error_if(!check_params(0), "[PLE] interface>> GetScriptPoolSize: expected 0 parameters but found %d parameters.", get_params_count());
-			return static_cast<cell>(IScript::IScriptList.size());
+			return static_cast<cell>(IScript::IScriptList.size() - 1);
 		}
-		//native GetScriptIdentifierFromKey(scriptKey, dest[], len = sizeof(dest));
+		//native bool:GetScriptIdentifierFromKey(scriptKey, dest[], len = sizeof(dest));
 		cell AMX_NATIVE_CALL iscript_GetScriptIdentifierFromKey(AMX * amx, cell* params)
 		{
 			error_if(!check_params(3), "[PLE] interface>> GetScriptIdentifierFromKey: expected 3 parameters but found %d parameters.", get_params_count());
-
 			if (IScript::IsValidScript(params[1])) return false;
 
 			cell* addr = NULL;
@@ -621,18 +646,17 @@ namespace PLE
 			}
 			return count;
 		}
-		//native GetScriptPLEHeader(scriptKey, _ple_header[PLE_HEADER]); - 
+		//native bool:GetScriptPLEHeader(scriptKey, _ple_header[PLE_HEADER]);
 		cell AMX_NATIVE_CALL iscript_GetScriptPLEHeader(AMX * amx, cell* params)
 		{
 			error_if(!check_params(2), "[PLE] interface>> GetScriptPLEHeader: expected 2 parameters but found %d parameters.", get_params_count());
-
 			if (IScript::IsValidScript(params[1])) return false;
 
 			cell* addr = NULL;
 			amx_GetAddr(amx, params[2], &addr);
 			IScript::IScript &intrf = IScript::IScriptList[params[1]];
 
-			if (intrf.GetType() != IScript::INTERFACE_TYPE::SUPPORTED) return false;
+			if (intrf.GetType() != IScript::interface_type::supported) return false;
 
 			std::memcpy(addr, intrf.GetHeader(), sizeof(IScript::PLE_HEADER));
 			return true;

@@ -10,7 +10,6 @@ complex.cpp
 
 NOTES:
  - proj not implemented
- - hyperbolic trignometric functions not implemented
 
 *************************************************************************************************************/
 #include "main.h"
@@ -20,7 +19,7 @@ NOTES:
 namespace PLE::natives
 {
 	//native Float:cabs(num[complext_t]);
-	cell AMX_NATIVE_CALL complex_cabs(AMX * amx, cell* params)
+	cell AMX_NATIVE_CALL complex_cabs(AMX* amx, cell* params)
 	{
 		error_if(!check_params(1), "[PLE] complex>> complex::abs: expected 1 parameters but found %d parameters.", get_params_count());
 
@@ -30,7 +29,7 @@ namespace PLE::natives
 		return amx_ftoc(result);
 	}
 	//native Float:carg(num[complext_t]);
-	cell AMX_NATIVE_CALL complex_carg(AMX * amx, cell* params)
+	cell AMX_NATIVE_CALL complex_carg(AMX* amx, cell* params)
 	{
 		error_if(!check_params(1), "[PLE] complex>> complex::arg: expected 1 parameters but found %d parameters.", get_params_count());
 
@@ -201,6 +200,127 @@ namespace PLE::natives
 		complex_addr_dest[1] = amx_ftoc(val);
 		return true;
 	}	
+
+	//native ccosh(num[complex_t], result[complex_t]);
+	cell AMX_NATIVE_CALL complex_ccosh(AMX * amx, cell* params)
+	{
+		error_if(!check_params(2), "[PLE] complex>> complex::cosh: expected 2 parameters but found %d parameters.", get_params_count());
+
+		cell *complex_addr_src = NULL;
+		amx_GetAddr(amx, params[1], &complex_addr_src);
+
+		cell *complex_addr_dest = NULL;
+		amx_GetAddr(amx, params[2], &complex_addr_dest);
+
+		std::complex<float> num(amx_ctof(complex_addr_src[0]), amx_ctof(complex_addr_src[1]));
+		std::complex<float> result = std::cosh(num);
+
+		float val = result.real();
+		complex_addr_dest[0] = amx_ftoc(val);
+		val = result.imag();
+		complex_addr_dest[1] = amx_ftoc(val);
+		return true;
+	}
+	//native csinh(num[complex_t], result[complex_t]);
+	cell AMX_NATIVE_CALL complex_csinh(AMX * amx, cell* params)
+	{
+		error_if(!check_params(2), "[PLE] complex>> complex::sinh: expected 2 parameters but found %d parameters.", get_params_count());
+
+		cell *complex_addr_src = NULL;
+		amx_GetAddr(amx, params[1], &complex_addr_src);
+
+		cell *complex_addr_dest = NULL;
+		amx_GetAddr(amx, params[2], &complex_addr_dest);
+
+		std::complex<float> num(amx_ctof(complex_addr_src[0]), amx_ctof(complex_addr_src[1]));
+		std::complex<float> result = std::sinh(num);
+
+		float val = result.real();
+		complex_addr_dest[0] = amx_ftoc(val);
+		val = result.imag();
+		complex_addr_dest[1] = amx_ftoc(val);
+		return true;
+	}
+	//native ctanh(num[complex_t], result[complex_t]);
+	cell AMX_NATIVE_CALL complex_ctanh(AMX * amx, cell* params)
+	{
+		error_if(!check_params(2), "[PLE] complex>> complex::tanh: expected 2 parameters but found %d parameters.", get_params_count());
+
+		cell *complex_addr_src = NULL;
+		amx_GetAddr(amx, params[1], &complex_addr_src);
+
+		cell *complex_addr_dest = NULL;
+		amx_GetAddr(amx, params[2], &complex_addr_dest);
+
+		std::complex<float> num(amx_ctof(complex_addr_src[0]), amx_ctof(complex_addr_src[1]));
+		std::complex<float> result = std::tanh(num);
+
+		float val = result.real();
+		complex_addr_dest[0] = amx_ftoc(val);
+		val = result.imag();
+		complex_addr_dest[1] = amx_ftoc(val);
+		return true;
+	}
+	//native cacosh(num[complex_t], result[complex_t]);
+	cell AMX_NATIVE_CALL complex_cacosh(AMX * amx, cell* params)
+	{
+		error_if(!check_params(2), "[PLE] complex>> complex::acosh: expected 2 parameters but found %d parameters.", get_params_count());
+
+		cell *complex_addr_src = NULL;
+		amx_GetAddr(amx, params[1], &complex_addr_src);
+
+		cell *complex_addr_dest = NULL;
+		amx_GetAddr(amx, params[2], &complex_addr_dest);
+
+		std::complex<float> num(amx_ctof(complex_addr_src[0]), amx_ctof(complex_addr_src[1]));
+		std::complex<float> result = std::acosh(num);
+
+		float val = result.real();
+		complex_addr_dest[0] = amx_ftoc(val);
+		val = result.imag();
+		complex_addr_dest[1] = amx_ftoc(val);
+		return true;
+	}
+	//native casinh(num[complex_t], result[complex_t]);
+	cell AMX_NATIVE_CALL complex_casinh(AMX * amx, cell* params)
+	{
+		error_if(!check_params(2), "[PLE] complex>> complex::asinh: expected 2 parameters but found %d parameters.", get_params_count());
+
+		cell *complex_addr_src = NULL;
+		amx_GetAddr(amx, params[1], &complex_addr_src);
+
+		cell *complex_addr_dest = NULL;
+		amx_GetAddr(amx, params[2], &complex_addr_dest);
+
+		std::complex<float> num(amx_ctof(complex_addr_src[0]), amx_ctof(complex_addr_src[1]));
+		std::complex<float> result = std::asinh(num);
+
+		float val = result.real();
+		complex_addr_dest[0] = amx_ftoc(val);
+		val = result.imag();
+		complex_addr_dest[1] = amx_ftoc(val);
+		return true;
+	}
+	//native catanh(num[complex_t], result[complex_t]);
+	cell AMX_NATIVE_CALL complex_catanh(AMX * amx, cell* params)
+	{
+		error_if(!check_params(2), "[PLE] complex>> complex::atanh: expected 2 parameters but found %d parameters.", get_params_count());
+
+		cell *complex_addr_src = NULL;
+		amx_GetAddr(amx, params[1], &complex_addr_src);
+
+		cell *complex_addr_dest = NULL;
+		amx_GetAddr(amx, params[2], &complex_addr_dest);
+
+		std::complex<float> num(amx_ctof(complex_addr_src[0]), amx_ctof(complex_addr_src[1]));
+		std::complex<float> result = std::atanh(num);
+
+		float val = result.real();
+		complex_addr_dest[0] = amx_ftoc(val);
+		val = result.imag();
+		complex_addr_dest[1] = amx_ftoc(val);
+		return true;
+	}
 
 	//native cexp(num[complex_t], result[complex_t]);
 	cell AMX_NATIVE_CALL complex_cexp(AMX * amx, cell* params)
@@ -423,6 +543,7 @@ namespace PLE::natives
 		cell *complex_addr_num2 = NULL;
 		amx_GetAddr(amx, params[2], &complex_addr_num2);
 
-		return ((complex_addr_num1[0] == complex_addr_num2[0]) && (complex_addr_num1[1] == complex_addr_num2[1]));
+		return ((amx_ctof(complex_addr_num1[0]) == amx_ctof(complex_addr_num2[0])) 
+			 && (amx_ctof(complex_addr_num1[1]) == amx_ctof(complex_addr_num2[1])));
 	}
 }

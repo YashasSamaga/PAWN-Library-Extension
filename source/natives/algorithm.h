@@ -24,6 +24,7 @@ namespace PLE::natives
 	extern cell AMX_NATIVE_CALL algo_any_of(AMX * amx, cell* params);
 	extern cell AMX_NATIVE_CALL algo_none_of(AMX * amx, cell* params);
 	extern cell AMX_NATIVE_CALL algo_for_each(AMX * amx, cell* params);
+	//for_each_n = for_each
 	extern cell AMX_NATIVE_CALL algo_find(AMX * amx, cell* params);
 	extern cell AMX_NATIVE_CALL algo_find_if(AMX * amx, cell* params);
 	extern cell AMX_NATIVE_CALL algo_find_if_not(AMX * amx, cell* params);
@@ -64,7 +65,7 @@ namespace PLE::natives
 	extern cell AMX_NATIVE_CALL algo_rotate(AMX * amx, cell* params);
 	extern cell AMX_NATIVE_CALL algo_rotate_copy(AMX * amx, cell* params);
 	extern cell AMX_NATIVE_CALL algo_shuffle(AMX * amx, cell* params);
-	//sample
+	extern cell AMX_NATIVE_CALL algo_sample(AMX * amx, cell* params);
 
 	extern cell AMX_NATIVE_CALL algo_is_partitioned(AMX * amx, cell* params);
 	extern cell AMX_NATIVE_CALL algo_partition(AMX * amx, cell* params);

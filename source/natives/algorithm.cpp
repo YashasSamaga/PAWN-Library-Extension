@@ -19,19 +19,17 @@ TODO:
 #include "main.h"
 #include "iscript.h"
 #include "utility.h"
-
 #include "algorithm.h"
 #include "functional.h"
-
 #include <algorithm>
 #include <functional>
 #include <vector>
 #include <random>
-/************************************************************************************************************/
+
 namespace PLE
 {
-	std::random_device algo_random_device;
-	std::mt19937 algo_mt19937(algo_random_device());
+	static std::random_device algo_random_device;
+	static std::mt19937 algo_mt19937(algo_random_device());
 
 	namespace natives
 	{
@@ -244,6 +242,7 @@ namespace PLE
 			}
 			return true;
 		}
+		//for_each_n is identical to for_each
 		//native find(range[], numcells, search_value);
 		cell AMX_NATIVE_CALL algo_find(AMX* amx, cell* params)
 		{
@@ -1100,7 +1099,7 @@ namespace PLE
 			std::rotate_copy(start1, middle1, end1, start2);
 			return true;
 		}
-		//native noret:shuffle(range[], end);
+		//native noret:shuffle(range[], numcells);
 		cell AMX_NATIVE_CALL algo_shuffle(AMX* amx, cell* params)
 		{
 			error_if(!check_params(2), "[PLE] algorithm>> shuffle: expected 2 parameters but found %d parameters.", get_params_count());
@@ -1113,7 +1112,20 @@ namespace PLE
 			std::shuffle(start, end, algo_mt19937);
 			return true;
 		}
-		//sample not implemented
+		//native sample(range[], numcells, dest[], count)
+		cell AMX_NATIVE_CALL algo_sample(AMX* amx, cell* params)
+		{
+			error_if(!check_params(4), "[PLE] algorithm>> sample: expected 4 parameters but found %d parameters.", get_params_count());
+
+			cell* start = NULL;
+			amx_GetAddr(amx, params[1], &start);
+			cell* end = start + params[2];
+			error_if(end < start, "[PLE] algorithm>> sample: 'numcells' parameter (%d) below zero", params[2]);
+
+			cell* dest = NULL;
+			amx_GetAddr(amx, params[3], &dest);
+			return std::sample(start, end, dest, params[4], algo_mt19937) - dest;
+		}
 
 		//native bool:is_partitioned(range[], numcells, {func_bool1, func_cell1, _}:func[FTSIZE]);
 		cell AMX_NATIVE_CALL algo_is_partitioned(AMX* amx, cell* params)
