@@ -1,9 +1,6 @@
 /*
 ** PAWN Library Extension (PLE)
 **
-** Character Types
-** Character classification functions
-**
 ** This file is part of PAWN Library Extension.
 **
 **   This library is free software: you can redistribute it and/or modify

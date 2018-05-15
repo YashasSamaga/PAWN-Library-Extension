@@ -1,21 +1,32 @@
-/************************************************************************************************************
-PAWN Library Extension
+/*
+** PAWN Library Extension (PLE)
+**
+** This file is part of PAWN Library Extension.
+**
+**   This library is free software: you can redistribute it and/or modify
+**   it under the terms of the GNU General Public License as published by
+**   the Free Software Foundation, either version 3 of the License, or
+**   (at your option) any later version.
+**
+**   This library is distributed in the hope that it will be useful,
+**   but WITHOUT ANY WARRANTY; without even the implied warranty of
+**   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**   GNU General Public License for more details.
+**
+**   You should have received a copy of the GNU General Public License
+**   along with this library.  If not, see <http://www.gnu.org/licenses/>.
+**
+** Copyright (C) 2016-2018  Yashas Samaga
+*/
 
-main.h
-
-*************************************************************************************************************/
 #ifndef PLE_MAIN_H_INCLUDED
 #define PLE_MAIN_H_INCLUDED
 
 #include <sdk/amx/amx.h>
 #include <sdk/plugincommon.h>
-#include <samplog/PluginLogger.h>
 
 typedef void (*logprintf_t)(char*, ...);
 extern logprintf_t logprintf;
-
-extern samplog::CPluginLogger logger;
-using LogLevel = samplog::LogLevel;
 
 #define MAX_SYMBOL_LEN sNAMEMAX + 1
 

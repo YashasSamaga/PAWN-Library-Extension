@@ -1,50 +1,68 @@
-/************************************************************************************************************
-PAWN Library Extension
+/*
+** PAWN Library Extension (PLE)
+**
+** This file is part of PAWN Library Extension.
+**
+**   This library is free software: you can redistribute it and/or modify
+**   it under the terms of the GNU General Public License as published by
+**   the Free Software Foundation, either version 3 of the License, or
+**   (at your option) any later version.
+**
+**   This library is distributed in the hope that it will be useful,
+**   but WITHOUT ANY WARRANTY; without even the implied warranty of
+**   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**   GNU General Public License for more details.
+**
+**   You should have received a copy of the GNU General Public License
+**   along with this library.  If not, see <http://www.gnu.org/licenses/>.
+**
+** Copyright (C) 2016-2018  Yashas Samaga
+*/
 
-PLE attempts to provide most of the "useful" C++ Libraries in PAWN. The term "useful" here implies that only
-the libraries which have potential uses in PAWN have been ported. In other words, PLE is not an arbitary
-collection of libaries for PAWN.
-
-complex numbers
-complex.h
-
-*************************************************************************************************************/
 #ifndef PLE_COMPLEX_H_INCLUDED
 #define PLE_COMPLEX_H_INCLUDED
 
 #include "main.h"
 #include <complex>
 
-namespace PLE::natives
+namespace PLE::complex
 {
-	extern cell AMX_NATIVE_CALL complex_cabs(AMX * amx, cell* params);
-	extern cell AMX_NATIVE_CALL complex_carg(AMX * amx, cell* params);
-	extern cell AMX_NATIVE_CALL complex_cnorm(AMX * amx, cell* params);
-	extern cell AMX_NATIVE_CALL complex_cconj(AMX * amx, cell* params);
-	extern cell AMX_NATIVE_CALL complex_cpolar(AMX * amx, cell* params);
-	extern cell AMX_NATIVE_CALL complex_ccos(AMX * amx, cell* params);
-	extern cell AMX_NATIVE_CALL complex_csin(AMX * amx, cell* params);
-	extern cell AMX_NATIVE_CALL complex_ctan(AMX * amx, cell* params);
-	extern cell AMX_NATIVE_CALL complex_cacos(AMX * amx, cell* params);
-	extern cell AMX_NATIVE_CALL complex_casin(AMX * amx, cell* params);
-	extern cell AMX_NATIVE_CALL complex_catan(AMX * amx, cell* params);
-	extern cell AMX_NATIVE_CALL complex_ccosh(AMX * amx, cell* params);
-	extern cell AMX_NATIVE_CALL complex_csinh(AMX * amx, cell* params);
-	extern cell AMX_NATIVE_CALL complex_ctanh(AMX * amx, cell* params);
-	extern cell AMX_NATIVE_CALL complex_cacosh(AMX * amx, cell* params);
-	extern cell AMX_NATIVE_CALL complex_casinh(AMX * amx, cell* params);
-	extern cell AMX_NATIVE_CALL complex_catanh(AMX * amx, cell* params);
-	extern cell AMX_NATIVE_CALL complex_cexp(AMX * amx, cell* params);
-	extern cell AMX_NATIVE_CALL complex_clog(AMX * amx, cell* params);
-	extern cell AMX_NATIVE_CALL complex_clog10(AMX * amx, cell* params);
-	extern cell AMX_NATIVE_CALL complex_cpow(AMX * amx, cell* params);
-	extern cell AMX_NATIVE_CALL complex_csqrt(AMX * amx, cell* params);
-	extern cell AMX_NATIVE_CALL complex_cnegate(AMX * amx, cell* params);
-	extern cell AMX_NATIVE_CALL complex_cadd(AMX * amx, cell* params);
-	extern cell AMX_NATIVE_CALL complex_csub(AMX * amx, cell* params);
-	extern cell AMX_NATIVE_CALL complex_cmul(AMX * amx, cell* params);
-	extern cell AMX_NATIVE_CALL complex_cdiv(AMX * amx, cell* params);
-	extern cell AMX_NATIVE_CALL complex_cequal(AMX * amx, cell* params);
-}
+    namespace complex_offsets
+    {
+        constexpr int real = 0;
+        constexpr int imag = 1;
+    }
 
+    namespace natives
+    {
+        extern cell cabs(AMX * amx, cell* params);
+        extern cell carg(AMX * amx, cell* params);
+        extern cell cnorm(AMX * amx, cell* params);
+        extern cell cconj(AMX * amx, cell* params);
+        extern cell cpolar(AMX * amx, cell* params);
+        extern cell ccos(AMX * amx, cell* params);
+        extern cell csin(AMX * amx, cell* params);
+        extern cell ctan(AMX * amx, cell* params);
+        extern cell cacos(AMX * amx, cell* params);
+        extern cell casin(AMX * amx, cell* params);
+        extern cell catan(AMX * amx, cell* params);
+        extern cell ccosh(AMX * amx, cell* params);
+        extern cell csinh(AMX * amx, cell* params);
+        extern cell ctanh(AMX * amx, cell* params);
+        extern cell cacosh(AMX * amx, cell* params);
+        extern cell casinh(AMX * amx, cell* params);
+        extern cell catanh(AMX * amx, cell* params);
+        extern cell cexp(AMX * amx, cell* params);
+        extern cell clog(AMX * amx, cell* params);
+        extern cell clog10(AMX * amx, cell* params);
+        extern cell cpow(AMX * amx, cell* params);
+        extern cell csqrt(AMX * amx, cell* params);
+        extern cell cnegate(AMX * amx, cell* params);
+        extern cell cadd(AMX * amx, cell* params);
+        extern cell csub(AMX * amx, cell* params);
+        extern cell cmul(AMX * amx, cell* params);
+        extern cell cdiv(AMX * amx, cell* params);
+        extern cell cequal(AMX * amx, cell* params);
+    }
+}
 #endif /* PLE_COMPLEX_H_INCLUDED */

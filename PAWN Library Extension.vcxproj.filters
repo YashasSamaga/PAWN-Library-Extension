@@ -20,8 +20,11 @@
     <Filter Include="Source Files\source\natives">
       <UniqueIdentifier>{dfa136aa-fd36-43a7-ba73-786cc148f3cd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\lib\samplog">
-      <UniqueIdentifier>{6128a6b9-4997-4719-8b48-f93526a2f2e2}</UniqueIdentifier>
+    <Filter Include="Source Files\include">
+      <UniqueIdentifier>{109110dd-2ed0-488e-a9f1-c179da652802}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\include\PLE">
+      <UniqueIdentifier>{fbd806b9-ab3d-4439-841f-bae1c9d3a36a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -40,9 +43,6 @@
     <ClCompile Include="source\utility.cpp">
       <Filter>Source Files\source</Filter>
     </ClCompile>
-    <ClCompile Include="source\natives\algorithm.cpp">
-      <Filter>Source Files\source\natives</Filter>
-    </ClCompile>
     <ClCompile Include="source\natives\bitset.cpp">
       <Filter>Source Files\source\natives</Filter>
     </ClCompile>
@@ -55,9 +55,6 @@
     <ClCompile Include="source\natives\errno.cpp">
       <Filter>Source Files\source\natives</Filter>
     </ClCompile>
-    <ClCompile Include="source\natives\file.cpp">
-      <Filter>Source Files\source\natives</Filter>
-    </ClCompile>
     <ClCompile Include="source\natives\functional.cpp">
       <Filter>Source Files\source\natives</Filter>
     </ClCompile>
@@ -67,22 +64,19 @@
     <ClCompile Include="source\natives\math.cpp">
       <Filter>Source Files\source\natives</Filter>
     </ClCompile>
-    <ClCompile Include="source\natives\memory.cpp">
-      <Filter>Source Files\source\natives</Filter>
-    </ClCompile>
-    <ClCompile Include="source\natives\numeric.cpp">
-      <Filter>Source Files\source\natives</Filter>
-    </ClCompile>
-    <ClCompile Include="source\natives\random.cpp">
-      <Filter>Source Files\source\natives</Filter>
-    </ClCompile>
     <ClCompile Include="source\natives\string.cpp">
       <Filter>Source Files\source\natives</Filter>
     </ClCompile>
     <ClCompile Include="source\natives\system.cpp">
       <Filter>Source Files\source\natives</Filter>
     </ClCompile>
-    <ClCompile Include="source\natives\time.cpp">
+    <ClCompile Include="source\natives\fstream.cpp">
+      <Filter>Source Files\source\natives</Filter>
+    </ClCompile>
+    <ClCompile Include="source\natives\chrono.cpp">
+      <Filter>Source Files\source\natives</Filter>
+    </ClCompile>
+    <ClCompile Include="source\natives\algorithm.cpp">
       <Filter>Source Files\source\natives</Filter>
     </ClCompile>
   </ItemGroup>
@@ -123,9 +117,6 @@
     <ClInclude Include="source\natives\errno.h">
       <Filter>Source Files\source\natives</Filter>
     </ClInclude>
-    <ClInclude Include="source\natives\file.h">
-      <Filter>Source Files\source\natives</Filter>
-    </ClInclude>
     <ClInclude Include="source\natives\functional.h">
       <Filter>Source Files\source\natives</Filter>
     </ClInclude>
@@ -133,12 +124,6 @@
       <Filter>Source Files\source\natives</Filter>
     </ClInclude>
     <ClInclude Include="source\natives\math.h">
-      <Filter>Source Files\source\natives</Filter>
-    </ClInclude>
-    <ClInclude Include="source\natives\memory.h">
-      <Filter>Source Files\source\natives</Filter>
-    </ClInclude>
-    <ClInclude Include="source\natives\numeric.h">
       <Filter>Source Files\source\natives</Filter>
     </ClInclude>
     <ClInclude Include="source\natives\random.h">
@@ -150,25 +135,67 @@
     <ClInclude Include="source\natives\system.h">
       <Filter>Source Files\source\natives</Filter>
     </ClInclude>
-    <ClInclude Include="source\natives\time.h">
+    <ClInclude Include="source\version.h">
+      <Filter>Source Files\source</Filter>
+    </ClInclude>
+    <ClInclude Include="source\natives\fstream.h">
       <Filter>Source Files\source\natives</Filter>
     </ClInclude>
-    <ClInclude Include="lib\samplog\DebugInfo.h">
-      <Filter>Source Files\lib\samplog</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\samplog\Logger.h">
-      <Filter>Source Files\lib\samplog</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\samplog\LogLevel.h">
-      <Filter>Source Files\lib\samplog</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\samplog\PluginLogger.h">
-      <Filter>Source Files\lib\samplog</Filter>
+    <ClInclude Include="source\natives\chrono.h">
+      <Filter>Source Files\source\natives</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="exports.def">
       <Filter>Source Files</Filter>
+    </None>
+    <None Include="include\PLE\algorithm.inc">
+      <Filter>Source Files\include\PLE</Filter>
+    </None>
+    <None Include="include\PLE\bitset.inc">
+      <Filter>Source Files\include\PLE</Filter>
+    </None>
+    <None Include="include\PLE\chrono.inc">
+      <Filter>Source Files\include\PLE</Filter>
+    </None>
+    <None Include="include\PLE\complex.inc">
+      <Filter>Source Files\include\PLE</Filter>
+    </None>
+    <None Include="include\PLE\config.inc">
+      <Filter>Source Files\include\PLE</Filter>
+    </None>
+    <None Include="include\PLE\ctype.inc">
+      <Filter>Source Files\include\PLE</Filter>
+    </None>
+    <None Include="include\PLE\errno.inc">
+      <Filter>Source Files\include\PLE</Filter>
+    </None>
+    <None Include="include\PLE\fstream.inc">
+      <Filter>Source Files\include\PLE</Filter>
+    </None>
+    <None Include="include\PLE\functional.inc">
+      <Filter>Source Files\include\PLE</Filter>
+    </None>
+    <None Include="include\PLE\isc.inc">
+      <Filter>Source Files\include\PLE</Filter>
+    </None>
+    <None Include="include\PLE\iscript.inc">
+      <Filter>Source Files\include\PLE</Filter>
+    </None>
+    <None Include="include\PLE\list.inc">
+      <Filter>Source Files\include\PLE</Filter>
+    </None>
+    <None Include="include\PLE\math.inc">
+      <Filter>Source Files\include\PLE</Filter>
+    </None>
+    <None Include="include\PLE\memory.inc">
+      <Filter>Source Files\include\PLE</Filter>
+    </None>
+    <None Include="include\PLE\numeric.inc">
+      <Filter>Source Files\include\PLE</Filter>
+    </None>
+    <None Include="include\PLE\string.inc">
+      <Filter>Source Files\include\PLE</Filter>
     </None>
   </ItemGroup>
 </Project>

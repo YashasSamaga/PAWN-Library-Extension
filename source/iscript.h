@@ -1,14 +1,24 @@
-/************************************************************************************************************
-PAWN Library Extension
+/*
+** PAWN Library Extension (PLE)
+**
+** This file is part of PAWN Library Extension.
+**
+**   This library is free software: you can redistribute it and/or modify
+**   it under the terms of the GNU General Public License as published by
+**   the Free Software Foundation, either version 3 of the License, or
+**   (at your option) any later version.
+**
+**   This library is distributed in the hope that it will be useful,
+**   but WITHOUT ANY WARRANTY; without even the implied warranty of
+**   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**   GNU General Public License for more details.
+**
+**   You should have received a copy of the GNU General Public License
+**   along with this library.  If not, see <http://www.gnu.org/licenses/>.
+**
+** Copyright (C) 2016-2018  Yashas Samaga
+*/
 
-PLE attempts to provide most of the "useful" C++ Libraries in PAWN. The term "useful" here implies that only
-the libraries which have potential uses in PAWN have been ported. In other words, PLE is not an arbitary
-collection of libaries for PAWN.
-
-Interface is a layer between the AMX instance and the plugin itself.
-iscript.h
-
-*************************************************************************************************************/
 #ifndef PLE_ISCRIPT_H_INCLUDED
 #define PLE_ISCRIPT_H_INCLUDED
 
@@ -16,10 +26,8 @@ iscript.h
 #include <cstdint>
 #include <string>
 
-namespace PLE
+namespace PLE::iscript
 {
-	namespace IScript
-	{
 		/* these limits are not imposed by PAWN; they are imposed by this plugin */
 		typedef std::int8_t ScriptKey_t;
 		typedef std::int16_t NativeIndex_t;
@@ -48,7 +56,7 @@ namespace PLE
 		{
 			cell version;
 			cell size;
-			cell inc_version;
+			ucell inc_version;
 			cell reserved4;
 
 			cell flags;
@@ -56,7 +64,7 @@ namespace PLE
 			cell compiler_version;
 			cell reserved8;
 
-			cell dynmem_reserve_size;
+			cell reserved9;
 			cell reserved10;
 			cell reserved11;
 			cell reserved12;
@@ -88,15 +96,15 @@ namespace PLE
 
 		/*
 		**	PAWN structures needn't be aligned to the alignment requirements of the structure in the plugin. 
-		**	However, they will be aligned according to alignment requirements of 'cell'. If our structure's
-		**	alignment requirements is equal to that of 'cell' we don't have to worry about alignment while
-		**	casting pointers (cell* to PLE_HEADER*).
+		**	They will be aligned according to the requirements of 'cell' (since they are made up of cells).
+		**	If our structure's alignment requirements is equal to that of 'cell' we don't have to worry about
+		**	alignment while	casting pointers (cell* to PLE_HEADER*).
 		*/
 		static_assert(alignof(PLE_HEADER) == alignof(cell));
 
 		/*
 		** The following class identifier ("IScript") uses the prefix 'I' but it isn't an interface as
-		** dictated in common conventions. It is supposed to stand for "I[nterface]Script".
+		** dictated by common conventions. It is supposed to stand for "I[nterface]Script".
 		*/
 		class IScript
 		{
@@ -106,8 +114,8 @@ namespace PLE
 			IScript() { type = interface_type::invalid; }
 			~IScript() {}
 
-			void load(AMX *p_amx, ScriptKey_t p_scriptKey); //Initilizes the interface, registers natives, sets public constants
-			void unload(); //Unloads the AMX and frees the interface for another script
+			void load(AMX *p_amx, ScriptKey_t p_scriptKey); //initilizes the interface, registers natives, sets public constants
+			void unload(); //unloads the AMX and frees the interface for another script
 			bool empty() const { return (type == interface_type::invalid); }
 
 			ScriptKey_t GetScriptKey() const { return scriptKey; }
@@ -130,20 +138,20 @@ namespace PLE
 			void Trigger_OnScriptUnload(ScriptKey_t p_scriptKey, const std::string& p_scriptIdentifier) const;
 		};
 
-		extern void AddInterface(AMX *amx); //Creates and initilizes an interface for amx
-		extern void RemoveInterface(AMX *amx); //Deinitilizes and deletes the interface for amx
-		extern ScriptKey_t FindInterface(AMX *amx);	//Returns the scriptKey of the amx's interface
-		extern bool IsValidScript(cell scriptKey); //Check if a scriptKey is valid
-		extern AMX* GetInterfaceAMX(ScriptKey_t scriptKey); //Returns the AMX structure of the interface (validity of scriptKey is not checked)
-	}
+		extern void AddInterface(AMX *amx); //creates and initilizes an interface for amx
+		extern void RemoveInterface(AMX *amx); //deinitilizes and deletes the interface for amx
+		extern ScriptKey_t FindInterface(AMX *amx);	//returns the scriptKey of the amx's interface
+		extern bool IsValidScript(cell scriptKey); //check if a scriptKey is valid
+		extern AMX* GetInterfaceAMX(ScriptKey_t scriptKey); //returns the AMX structure of the interface (validity of scriptKey is not checked)
+
 	namespace natives
 	{
-		extern cell AMX_NATIVE_CALL iscript_IsValidScript(AMX* amx, cell* params);
-		extern cell AMX_NATIVE_CALL iscript_GetScriptType(AMX* amx, cell* params);
-		extern cell AMX_NATIVE_CALL iscript_GetScriptPoolSize(AMX* amx, cell* params);
-		extern cell AMX_NATIVE_CALL iscript_GetScriptIdentifierFromKey(AMX* amx, cell* params);
-		extern cell AMX_NATIVE_CALL iscript_GetScriptKeyFromIdentifier(AMX* amx, cell* params);
-		extern cell AMX_NATIVE_CALL iscript_GetScriptPLEHeader(AMX* amx, cell* params);
+		extern cell AMX_NATIVE_CALL IsValidScript(AMX* amx, cell* params);
+		extern cell AMX_NATIVE_CALL GetScriptType(AMX* amx, cell* params);
+		extern cell AMX_NATIVE_CALL GetScriptPoolSize(AMX* amx, cell* params);
+		extern cell AMX_NATIVE_CALL GetScriptIdentifierFromKey(AMX* amx, cell* params);
+		extern cell AMX_NATIVE_CALL GetScriptKeyFromIdentifier(AMX* amx, cell* params);
+		extern cell AMX_NATIVE_CALL GetScriptPLEHeader(AMX* amx, cell* params);
 	}
 }
 #endif /* PLE_ISCRIPT_H_INCLUDED */

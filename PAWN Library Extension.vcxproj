@@ -23,7 +23,7 @@
     <ProjectGuid>{43CECDC0-3BD5-4E4D-8FC4-68806689C6CF}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>PAWNLibraryExtension</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -74,6 +74,7 @@
     <LinkIncremental>true</LinkIncremental>
     <TargetName>PLE</TargetName>
     <LibraryPath>bin;$(LibraryPath)</LibraryPath>
+    <OutDir>..\..\Server\plugins</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -96,8 +97,8 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;_USRDLL;PAWNLIBRARYEXTENSION_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>E:\SAMP\Plugins\PAWN Library Extension\Plugin\PAWN Library Extension\lib;E:\SAMP\Plugins\PAWN Library Extension\Plugin\PAWN Library Extension\source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;PLUGIN_MAJOR_VERSION=1;PLUGIN_MINOR_VERSION=0;PLUGIN_PATCH_VERSION=0;WIN32;_DEBUG;_WINDOWS;_USRDLL;PAWNLIBRARYEXTENSION_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>E:\Workfiles\SAMP\Plugins\PAWN Library Extension\Plugin\PAWN Library Extension\source;E:\Workfiles\SAMP\Plugins\PAWN Library Extension\Plugin\PAWN Library Extension\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
@@ -112,7 +113,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DEBUG;_WINDOWS;_USRDLL;PAWNLIBRARYEXTENSION_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;PLUGIN_MAJOR_VERSION=1;PLUGIN_MINOR_VERSION=0;PLUGIN_PATCH_VERSION=0;_DEBUG;_WINDOWS;_USRDLL;PAWNLIBRARYEXTENSION_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>E:\SAMP\Plugins\PAWN Library Extension\Plugin\PAWN Library Extension\lib;E:\SAMP\Plugins\PAWN Library Extension\Plugin\PAWN Library Extension\source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
@@ -130,7 +131,7 @@
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;_USRDLL;PAWNLIBRARYEXTENSION_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;PLUGIN_MAJOR_VERSION=1;PLUGIN_MINOR_VERSION=0;PLUGIN_PATCH_VERSION=0;WIN32;NDEBUG;_WINDOWS;_USRDLL;PAWNLIBRARYEXTENSION_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>E:\SAMP\Plugins\PAWN Library Extension\Plugin\PAWN Library Extension\lib;E:\SAMP\Plugins\PAWN Library Extension\Plugin\PAWN Library Extension\source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
@@ -151,7 +152,7 @@
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NDEBUG;_WINDOWS;_USRDLL;PAWNLIBRARYEXTENSION_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;PLUGIN_MAJOR_VERSION=1;PLUGIN_MINOR_VERSION=0;PLUGIN_PATCH_VERSION=0;NDEBUG;_WINDOWS;_USRDLL;PAWNLIBRARYEXTENSION_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>E:\SAMP\Plugins\PAWN Library Extension\Plugin\PAWN Library Extension\lib;E:\SAMP\Plugins\PAWN Library Extension\Plugin\PAWN Library Extension\source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
@@ -174,23 +175,16 @@
     <ClCompile Include="source\natives\complex.cpp" />
     <ClCompile Include="source\natives\ctype.cpp" />
     <ClCompile Include="source\natives\errno.cpp" />
-    <ClCompile Include="source\natives\file.cpp" />
+    <ClCompile Include="source\natives\fstream.cpp" />
     <ClCompile Include="source\natives\functional.cpp" />
     <ClCompile Include="source\natives\isc.cpp" />
     <ClCompile Include="source\natives\math.cpp" />
-    <ClCompile Include="source\natives\memory.cpp" />
-    <ClCompile Include="source\natives\numeric.cpp" />
-    <ClCompile Include="source\natives\random.cpp" />
     <ClCompile Include="source\natives\string.cpp" />
     <ClCompile Include="source\natives\system.cpp" />
-    <ClCompile Include="source\natives\time.cpp" />
+    <ClCompile Include="source\natives\chrono.cpp" />
     <ClCompile Include="source\utility.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="lib\samplog\DebugInfo.h" />
-    <ClInclude Include="lib\samplog\Logger.h" />
-    <ClInclude Include="lib\samplog\LogLevel.h" />
-    <ClInclude Include="lib\samplog\PluginLogger.h" />
     <ClInclude Include="lib\sdk\amx\amx.h" />
     <ClInclude Include="lib\sdk\amx\getch.h" />
     <ClInclude Include="lib\sdk\amx\sclinux.h" />
@@ -202,20 +196,35 @@
     <ClInclude Include="source\natives\complex.h" />
     <ClInclude Include="source\natives\ctype.h" />
     <ClInclude Include="source\natives\errno.h" />
-    <ClInclude Include="source\natives\file.h" />
+    <ClInclude Include="source\natives\fstream.h" />
     <ClInclude Include="source\natives\functional.h" />
     <ClInclude Include="source\natives\isc.h" />
     <ClInclude Include="source\natives\math.h" />
-    <ClInclude Include="source\natives\memory.h" />
-    <ClInclude Include="source\natives\numeric.h" />
     <ClInclude Include="source\natives\random.h" />
     <ClInclude Include="source\natives\string.h" />
     <ClInclude Include="source\natives\system.h" />
-    <ClInclude Include="source\natives\time.h" />
+    <ClInclude Include="source\natives\chrono.h" />
     <ClInclude Include="source\utility.h" />
+    <ClInclude Include="source\version.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="exports.def" />
+    <None Include="include\PLE\algorithm.inc" />
+    <None Include="include\PLE\bitset.inc" />
+    <None Include="include\PLE\chrono.inc" />
+    <None Include="include\PLE\complex.inc" />
+    <None Include="include\PLE\config.inc" />
+    <None Include="include\PLE\ctype.inc" />
+    <None Include="include\PLE\errno.inc" />
+    <None Include="include\PLE\fstream.inc" />
+    <None Include="include\PLE\functional.inc" />
+    <None Include="include\PLE\isc.inc" />
+    <None Include="include\PLE\iscript.inc" />
+    <None Include="include\PLE\list.inc" />
+    <None Include="include\PLE\math.inc" />
+    <None Include="include\PLE\memory.inc" />
+    <None Include="include\PLE\numeric.inc" />
+    <None Include="include\PLE\string.inc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

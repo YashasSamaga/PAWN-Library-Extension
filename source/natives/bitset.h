@@ -1,48 +1,57 @@
-/************************************************************************************************************
-PAWN Library Extension
+/*
+** PAWN Library Extension (PLE)
+**
+** This file is part of PAWN Library Extension.
+**
+**   This library is free software: you can redistribute it and/or modify
+**   it under the terms of the GNU General Public License as published by
+**   the Free Software Foundation, either version 3 of the License, or
+**   (at your option) any later version.
+**
+**   This library is distributed in the hope that it will be useful,
+**   but WITHOUT ANY WARRANTY; without even the implied warranty of
+**   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**   GNU General Public License for more details.
+**
+**   You should have received a copy of the GNU General Public License
+**   along with this library.  If not, see <http://www.gnu.org/licenses/>.
+**
+** Copyright (C) 2016-2018  Yashas Samaga
+*/
 
-PLE attempts to provide most of the "useful" C++ Libraries in PAWN. The term "useful" here implies that only
-the libraries which have potential uses in PAWN have been ported. In other words, PLE is not an arbitary
-collection of libaries for PAWN.
-
-bitset
-bitset.h
-
-*************************************************************************************************************/
-#ifndef PLE_BITSET_H_INCLUDED
-#define PLE_BITSET_H_INCLUDED
+#ifndef PLE_H_INCLUDED
+#define PLE_H_INCLUDED
 
 #include "main.h"
 
-namespace PLE::natives
+namespace PLE::bitset::natives
 {
-	extern cell AMX_NATIVE_CALL bitset_count(AMX *amx, cell params[]);
-	extern cell AMX_NATIVE_CALL bitset_size(AMX *amx, cell params[]);
-	extern cell AMX_NATIVE_CALL bitset_test(AMX *amx, cell params[]);
-	extern cell AMX_NATIVE_CALL bitset_any(AMX *amx, cell params[]);
-	extern cell AMX_NATIVE_CALL bitset_none(AMX *amx, cell params[]);
-	extern cell AMX_NATIVE_CALL bitset_all(AMX *amx, cell params[]);
+	extern cell AMX_NATIVE_CALL test(AMX *amx, cell params[]);
+	extern cell AMX_NATIVE_CALL any(AMX *amx, cell params[]);
+	extern cell AMX_NATIVE_CALL none(AMX *amx, cell params[]);
+	extern cell AMX_NATIVE_CALL all(AMX *amx, cell params[]);
 
-	extern cell AMX_NATIVE_CALL bitset_set(AMX *amx, cell params[]);
-	extern cell AMX_NATIVE_CALL bitset_reset(AMX *amx, cell params[]);
-	extern cell AMX_NATIVE_CALL bitset_flip(AMX *amx, cell params[]);
+    extern cell AMX_NATIVE_CALL count(AMX *amx, cell params[]);
+	extern cell AMX_NATIVE_CALL size(AMX *amx, cell params[]);
 
-	extern cell AMX_NATIVE_CALL bitset_set_all(AMX *amx, cell params[]);
-	extern cell AMX_NATIVE_CALL bitset_reset_all(AMX *amx, cell params[]);
-	extern cell AMX_NATIVE_CALL bitset_flip_all(AMX *amx, cell params[]);
+	extern cell AMX_NATIVE_CALL set(AMX *amx, cell params[]);
+	extern cell AMX_NATIVE_CALL reset(AMX *amx, cell params[]);
+	extern cell AMX_NATIVE_CALL flip(AMX *amx, cell params[]);
+	extern cell AMX_NATIVE_CALL set_all(AMX *amx, cell params[]);
+	extern cell AMX_NATIVE_CALL reset_all(AMX *amx, cell params[]);
+	extern cell AMX_NATIVE_CALL flip_all(AMX *amx, cell params[]);
 
-	extern cell AMX_NATIVE_CALL bitset_tostring(AMX *amx, cell params[]);
+    extern cell AMX_NATIVE_CALL and(AMX *amx, cell params[]);
+	extern cell AMX_NATIVE_CALL or(AMX *amx, cell params[]);
+	extern cell AMX_NATIVE_CALL xor(AMX *amx, cell params[]);
 
-	extern cell AMX_NATIVE_CALL bitset_and(AMX *amx, cell params[]);
-	extern cell AMX_NATIVE_CALL bitset_or(AMX *amx, cell params[]);
-	extern cell AMX_NATIVE_CALL bitset_xor(AMX *amx, cell params[]);
+	extern cell AMX_NATIVE_CALL tostring(AMX *amx, cell params[]);
+	extern cell AMX_NATIVE_CALL equal(AMX *amx, cell params[]);
 
-	extern cell AMX_NATIVE_CALL bitset_equal(AMX *amx, cell params[]);
-
-	extern cell AMX_NATIVE_CALL bitset_foreach_set(AMX *amx, cell params[]);
-	extern cell AMX_NATIVE_CALL bitset_foreach_notset(AMX *amx, cell params[]);
-	extern cell AMX_NATIVE_CALL bitset_find_set(AMX *amx, cell params[]);
-	extern cell AMX_NATIVE_CALL bitset_find_notset(AMX *amx, cell params[]);
+	extern cell AMX_NATIVE_CALL foreach_set(AMX *amx, cell params[]);
+	extern cell AMX_NATIVE_CALL foreach_notset(AMX *amx, cell params[]);
+	extern cell AMX_NATIVE_CALL find_set(AMX *amx, cell params[]);
+	extern cell AMX_NATIVE_CALL find_notset(AMX *amx, cell params[]);
 }
 
-#endif /* PLE_BITSET_H_INCLUDED */
+#endif /* PLE_H_INCLUDED */

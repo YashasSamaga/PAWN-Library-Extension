@@ -1,24 +1,34 @@
-/************************************************************************************************************
-PAWN Library Extension
+/*
+** PAWN Library Extension (PLE)
+**
+** This file is part of PAWN Library Extension.
+**
+**   This library is free software: you can redistribute it and/or modify
+**   it under the terms of the GNU General Public License as published by
+**   the Free Software Foundation, either version 3 of the License, or
+**   (at your option) any later version.
+**
+**   This library is distributed in the hope that it will be useful,
+**   but WITHOUT ANY WARRANTY; without even the implied warranty of
+**   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**   GNU General Public License for more details.
+**
+**   You should have received a copy of the GNU General Public License
+**   along with this library.  If not, see <http://www.gnu.org/licenses/>.
+**
+** Copyright (C) 2016-2018  Yashas Samaga
+*/
 
-PLE attempts to provide most of the "useful" Standard C++ Libraries in PAWN. The term "useful" here implies that only
-the libraries which have potential uses in PAWN have been ported. In other words, PLE is not an arbitary
-collection of C++ libaries for PAWN.
-
-String library
-string.cpp
-
-*************************************************************************************************************/
 #include "main.h"
 #include "string.h"
 
 #include <cstring>
 #include <string>
 /************************************************************************************************************/
-namespace PLE::natives
+namespace PLE::string::natives
 {
 	//native memmove(destination[], const source[], numbytes);
-	cell AMX_NATIVE_CALL string_memmove(AMX * amx, cell* params)
+	cell AMX_NATIVE_CALL memmove(AMX * amx, cell* params)
 	{
 		cell* dest = NULL;
 		cell* source = NULL;
@@ -27,11 +37,11 @@ namespace PLE::natives
 		amx_GetAddr(amx, params[2], &source);
 		size_t numbytes = params[3];
 
-		memmove(dest, source, numbytes*4);
+		std::memmove(dest, source, numbytes);
 		return 0;
 	}
 	//native strcpy(destination[], const source[], size_dest = sizeof(destination));
-	cell AMX_NATIVE_CALL string_strcpy(AMX * amx, cell* params)
+	cell AMX_NATIVE_CALL strcpy(AMX * amx, cell* params)
 	{
 		cell* dest = NULL;
 		cell* source = NULL;
@@ -47,7 +57,7 @@ namespace PLE::natives
 		return 0;
 	}
 	//native strncpy(destination[], const source[], num, size_dest = sizeof(destination), size_src = sizeof(source));
-	cell AMX_NATIVE_CALL string_strncpy(AMX * amx, cell* params)
+	cell AMX_NATIVE_CALL strncpy(AMX * amx, cell* params)
 	{
 		cell* dest = NULL;
 		cell* source = NULL;
@@ -65,7 +75,7 @@ namespace PLE::natives
 		return 0;
 	}
 	//native strncat(destination[], const source[], num, size_dest = sizeof(destination));
-	cell AMX_NATIVE_CALL string_strncat(AMX * amx, cell* params)
+	cell AMX_NATIVE_CALL strncat(AMX * amx, cell* params)
 	{
 		cell* dest = NULL;
 		cell* source = NULL;
@@ -87,7 +97,7 @@ namespace PLE::natives
 		return 0;
 	}
 	//native strncmp(const str1[], const str2[], num);
-	cell AMX_NATIVE_CALL string_strncmp(AMX * amx, cell* params)
+	cell AMX_NATIVE_CALL strncmp(AMX * amx, cell* params)
 	{
 		cell* str1 = NULL;
 		cell* str2 = NULL;
@@ -103,7 +113,7 @@ namespace PLE::natives
 		return 0;
 	}
 	//native memchr(const source[], value, num);
-	cell AMX_NATIVE_CALL string_memchr(AMX * amx, cell* params)
+	cell AMX_NATIVE_CALL memchr(AMX * amx, cell* params)
 	{
 		cell *str = NULL, *start = NULL;
 
@@ -119,7 +129,7 @@ namespace PLE::natives
 		return -1;
 	}
 	//native strchr(const source[], value, idx = 0);
-	cell AMX_NATIVE_CALL string_strchr(AMX * amx, cell* params)
+	cell AMX_NATIVE_CALL strchr(AMX * amx, cell* params)
 	{
 		cell *str = NULL, *start = NULL;
 
@@ -134,7 +144,7 @@ namespace PLE::natives
 		return -1;
 	}
 	//native strrchr(const source[], value, size_src = sizeof(source));
-	cell AMX_NATIVE_CALL string_strrchr(AMX * amx, cell* params)
+	cell AMX_NATIVE_CALL strrchr(AMX * amx, cell* params)
 	{
 		cell *start = NULL, *last_found = NULL;
 		amx_GetAddr(amx, params[1], &start);
@@ -152,7 +162,7 @@ namespace PLE::natives
 		return last_found - start - 1;
 	}
 	//native strcspn(const str1[], const str2[]);
-	cell AMX_NATIVE_CALL string_strcspn(AMX * amx, cell* params)
+	cell AMX_NATIVE_CALL strcspn(AMX * amx, cell* params)
 	{
 		cell *str1 = NULL;
 		cell *str2 = NULL;
@@ -173,7 +183,7 @@ namespace PLE::natives
 		return -1;
 	}
 	//native strpbrk(const str1[], const str2[]);
-	cell AMX_NATIVE_CALL string_strpbrk(AMX * amx, cell* params)
+	cell AMX_NATIVE_CALL strpbrk(AMX * amx, cell* params)
 	{
 		cell *str1 = NULL;
 		cell *str2 = NULL;
@@ -194,7 +204,7 @@ namespace PLE::natives
 		return -1;
 	}
 	//native strspn(const str1[], const str2[]);
-	cell AMX_NATIVE_CALL string_strspn(AMX * amx, cell* params)
+	cell AMX_NATIVE_CALL strspn(AMX * amx, cell* params)
 	{
 		cell *str1 = NULL;
 		cell *str2 = NULL;
@@ -218,7 +228,7 @@ namespace PLE::natives
 		return str1 - start1;
 	}
 	//native strtok(const source[], destination[], &idx, delimiter[], size_dest = sizeof(destination));
-	cell AMX_NATIVE_CALL string_strtok(AMX * amx, cell* params)
+	cell AMX_NATIVE_CALL strtok(AMX * amx, cell* params)
 	{
 		cell *str1 = NULL, *start1 = NULL, *str2 = NULL, *str3 = NULL, *start3 = NULL, *idx = NULL;
 
@@ -269,7 +279,7 @@ namespace PLE::natives
 		return *idx;
 	}
 	//native memset(destination[], value, num);
-	cell AMX_NATIVE_CALL string_memset(AMX * amx, cell* params)
+	cell AMX_NATIVE_CALL memset(AMX * amx, cell* params)
 	{
 		cell *str = NULL;
 		amx_GetAddr(amx, params[1], &str);
@@ -283,7 +293,7 @@ namespace PLE::natives
 		return -1;
 	}
 	//native bool:strreplace(source[], const search[], const replace[], size_src = sizeof(source));
-	cell AMX_NATIVE_CALL string_strreplace(AMX * amx, cell* params)
+	cell AMX_NATIVE_CALL strreplace(AMX * amx, cell* params)
 	{
 		cell *source = NULL, *search = NULL, *replace = NULL, len;
 		bool replaced = false;
@@ -324,7 +334,7 @@ namespace PLE::natives
 		return replaced;
 	}
 	//native strtrim(source[]); //returns the length of the new string
-	cell AMX_NATIVE_CALL string_strtrim(AMX * amx, cell* params)
+	cell AMX_NATIVE_CALL strtrim(AMX * amx, cell* params)
 	{
 		cell *start = NULL, *str = NULL, len;
 		amx_GetAddr(amx, params[1], &start);
@@ -350,7 +360,7 @@ namespace PLE::natives
 		return end - start;
 	}
 	//native strtolower(source[]); //returns length of the string
-	cell AMX_NATIVE_CALL string_strtolower(AMX * amx, cell* params)
+	cell AMX_NATIVE_CALL strtolower(AMX * amx, cell* params)
 	{
 		cell *str = NULL, *start = NULL;		
 
@@ -366,7 +376,7 @@ namespace PLE::natives
 		return str - start;
 	}
 	//native strtoupper(source[]); //returns length of the string
-	cell AMX_NATIVE_CALL string_strtoupper(AMX * amx, cell* params)
+	cell AMX_NATIVE_CALL strtoupper(AMX * amx, cell* params)
 	{
 		cell *str = NULL, *start = NULL;
 
@@ -381,13 +391,54 @@ namespace PLE::natives
 
 		return str - start;
 	}
-	//native strerror(errorid, errormsg[], size_errormsg = sizeof(errormsg));
-	cell AMX_NATIVE_CALL string_strerror(AMX * amx, cell* params)
+	//native strerror(errorid, errormsg[], size_errormsg = sizeof(errormsg)); TODO
+	cell AMX_NATIVE_CALL strerror(AMX * amx, cell* params)
 	{
 		cell *str = NULL;
 
 		amx_GetAddr(amx, params[2], &str);
-		amx_SetString(str, strerror(params[1]), 0, 0, params[3]);
+		amx_SetString(str, std::strerror(params[1]), 0, 0, params[3]);
 		return true;
 	}
+    //native starts_with(const source[], const x[]);
+    cell AMX_NATIVE_CALL starts_with(AMX * amx, cell* params)
+	{
+		cell *source = NULL;
+		amx_GetAddr(amx, params[1], &source);
+
+        cell *x = NULL;
+        amx_GetAddr(amx, params[2], &x);
+
+        if (*x == '\0')
+            return true;
+
+        while (*source == *x) 
+        {
+            if (*x == '\0')
+                return true;
+        }
+        return false;
+	}	
+    //native ends_with(const source[], const x[]);
+    cell AMX_NATIVE_CALL ends_with(AMX * amx, cell* params)
+	{
+		cell *source = NULL;
+		amx_GetAddr(amx, params[1], &source);
+
+        cell *x = NULL;
+        amx_GetAddr(amx, params[2], &x);
+
+        int source_len, x_len;
+        amx_StrLen(source, &source_len);
+        amx_StrLen(source, &x_len);
+
+        if (x_len < source_len)
+            return false;
+
+        for (int i = 1; i <= x_len; i++)
+            if (source[source_len - i] != x[x_len - i])
+                return false;
+
+        return true;
+	}	
 }

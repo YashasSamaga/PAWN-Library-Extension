@@ -1,9 +1,6 @@
 /*
 ** PAWN Library Extension (PLE)
 **
-** File Handling
-** Library for file handling
-**
 ** This file is part of PAWN Library Extension.
 **
 **   This library is free software: you can redistribute it and/or modify
@@ -34,7 +31,7 @@
 ** Every open file stream is assigned a unique number. An invalid file stream is
 ** identified using INVALID_FILE_STREAM.
 */
-#define INVALID_FILE_STREAM __fstream_generic_tag:-1
+#define INVALID_FILE_STREAM _fstream_generic_tag:-1
 
 /*
 ** All file streams which are opened are internally processed as bidirectional
@@ -59,12 +56,12 @@
 ** iofs = ofs; //no warning
 */
 
-stock fstream:operator=(__fstream_generic_tag:file)
+stock fstream:operator=(_fstream_generic_tag:file)
 	return fstream:file;
-stock ifstream:operator=(__fstream_generic_tag:file)
-	return fstream:file;
-stock ofstream:operator=(__fstream_generic_tag:file)
-	return fstream:file;
+stock ifstream:operator=(_fstream_generic_tag:file)
+	return ifstream:file;
+stock ofstream:operator=(_fstream_generic_tag:file)
+	return ofstream:file;
 stock ifstream:operator=(fstream:file)
 	return ifstream:file;
 stock ofstream:operator=(fstream:file)
@@ -121,13 +118,13 @@ enum fmtflags_t
 	fmtflags::uppercase = 0x4000
 }
 
-#define ifs_tags fstream, ifstream, __fstream_generic_tag
-#define ofs_tags fstream, ofstream, __fstream_generic_tag
-#define iofs_tags fstream, ifstream, ofstream, __fstream_generic_tag
+#define ifs_tags fstream, ifstream, _fstream_generic_tag
+#define ofs_tags fstream, ofstream, _fstream_generic_tag
+#define iofs_tags fstream, ifstream, ofstream, _fstream_generic_tag
 
-native __fstream_generic_tag:file_open(const fname[], openmode_t:mode = openmode::in | openmode::out);
+native _fstream_generic_tag:file_open(const fname[], openmode_t:mode = openmode::in | openmode::out);
 native file_close({iofs_tags}:file);
-native bool:file_IsValidFile({iofs_tags}:file);
+native bool:file_is_valid({iofs_tags}:file);
 
 native bool:file_getch({ifs_tags}:file, &ch);
 native bool:file_getstr({ifs_tags}:file, dest[], count, delim = '\n', bool:pack = false);
@@ -183,8 +180,8 @@ native file_setwidth({iofs_tags}:file, width);
 ** if(inFile) { //valid file }
 ** else { //invalid file }
 */
-//TO BE TESTED
-stock bool:operator!(__fstream_generic_tag:file) {
+
+stock bool:operator!(_fstream_generic_tag:file) {
 	return !file_IsValidFile(file);
 }
 stock bool:operator!(fstream:file) {
@@ -196,4 +193,3 @@ stock bool:operator!(ifstream:file) {
 stock bool:operator!(ofstream:file) {
 	return !file_IsValidFile(file);
 }
-//TO BE TESED

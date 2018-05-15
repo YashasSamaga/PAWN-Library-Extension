@@ -1,9 +1,6 @@
 /*
 ** PAWN Library Extension (PLE)
 **
-** Complex
-** Library to manipulate complex numbers
-**
 ** This file is part of PAWN Library Extension.
 **
 **   This library is free software: you can redistribute it and/or modify
@@ -30,14 +27,10 @@
 /* dependencies */
 #include <PLE/config>
 
-#if !defined complex::
-	#define complex:: c
-#endif
-
 enum complex_t
 {
-	Float:real,
-	Float:imag
+	Float:real_part,
+	Float:imag_part
 }
 
 /*
@@ -45,36 +38,36 @@ enum complex_t
 ** i.e: native_func(complex1, complex1) will work as expected even though both
 ** the arguments point to the same memory
 */
-native Float:complex::abs(num[complex_t]);
-native Float:complex::arg(num[complex_t]);
-native Float:complex::norm(num[complex_t]);
-native noret:complex::conj(num[complex_t]);
-native noret:complex::polar(Float:modulus, Float:arg, result[complex_t]);
+native Float:cabs(const num[complex_t]);
+native Float:carg(const num[complex_t]);
+native Float:cnorm(const num[complex_t]);
+native noret:cconj(num[complex_t]);
+native noret:cpolar(Float:modulus, Float:arg, result[complex_t]);
 
-native noret:complex::cos(num[complex_t], result[complex_t]);
-native noret:complex::sin(num[complex_t], result[complex_t]);
-native noret:complex::tan(num[complex_t], result[complex_t]);
-native noret:complex::cosh(num[complex_t], result[complex_t]);
-native noret:complex::sinh(num[complex_t], result[complex_t]);
-native noret:complex::tanh(num[complex_t], result[complex_t]);
+native noret:ccos(const num[complex_t], result[complex_t]);
+native noret:csin(const num[complex_t], result[complex_t]);
+native noret:ctan(const num[complex_t], result[complex_t]);
+native noret:ccosh(const num[complex_t], result[complex_t]);
+native noret:csinh(const num[complex_t], result[complex_t]);
+native noret:ctanh(const num[complex_t], result[complex_t]);
 
-native noret:complex::acos(num[complex_t], result[complex_t]);
-native noret:complex::asin(num[complex_t], result[complex_t]);
-native noret:complex::atan(num[complex_t], result[complex_t]);
-native noret:complex::acosh(num[complex_t], result[complex_t]);
-native noret:complex::asinh(num[complex_t], result[complex_t]);
-native noret:complex::atanh(num[complex_t], result[complex_t]);
+native noret:cacos(const num[complex_t], result[complex_t]);
+native noret:casin(const num[complex_t], result[complex_t]);
+native noret:catan(const num[complex_t], result[complex_t]);
+native noret:cacosh(const num[complex_t], result[complex_t]);
+native noret:casinh(const num[complex_t], result[complex_t]);
+native noret:catanh(const num[complex_t], result[complex_t]);
 
-native noret:complex::exp(num[complex_t], result[complex_t]);
-native noret:complex::log(num[complex_t], result[complex_t]);
-native noret:complex::log10(num[complex_t], result[complex_t]);
-native noret:complex::pow(num[complex_t], power[complex_t], result[complex_t]);
-native noret:complex::sqrt(num[complex_t], result[complex_t]);
+native noret:cexp(const num[complex_t], result[complex_t]);
+native noret:clog(const num[complex_t], result[complex_t]);
+native noret:clog10(const num[complex_t], result[complex_t]);
+native noret:cpow(const num[complex_t], power[complex_t], result[complex_t]);
+native noret:csqrt(const num[complex_t], result[complex_t]);
 
-native noret:complex::negate(num[complex_t]);
-native noret:complex::add(num1[complex_t], num2[complex_t], result[complex_t]);
-native noret:complex::sub(num1[complex_t], num2[complex_t], result[complex_t]);
-native noret:complex::mul(num1[complex_t], num2[complex_t], result[complex_t]);
-native noret:complex::div(num1[complex_t], num2[complex_t], result[complex_t]);
+native noret:cnegate(num[complex_t]);
+native noret:cadd(const num1[complex_t], const num2[complex_t], result[complex_t]);
+native noret:csub(const num1[complex_t], const num2[complex_t], result[complex_t]);
+native noret:cmul(const num1[complex_t], const num2[complex_t], result[complex_t]);
+native noret:cdiv(const num1[complex_t], const num2[complex_t], result[complex_t]);
 
-native bool:complex::equal(num1[complex_t], num2[complex_t]);
+native bool:cequal(const num1[complex_t], const num2[complex_t]);

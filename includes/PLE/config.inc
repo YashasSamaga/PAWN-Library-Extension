@@ -31,7 +31,6 @@
 
 /* dependencies */
 #include <PLE/iscript> //UNDEFINED_SCRIPT_IDENTIFIER, SCRIPT_IDENTIFIER_SIZE, PLE_HEADER_FORMAT
-#include <PLE/memory> //DYNAMIC_MEMORY_SIZE
 
 /* user configuration file */
 #tryinclude "../../include/ple_config.inc"
@@ -66,14 +65,14 @@
 ** __ple_header_start marks the begining of the header and hence, the header
 ** must immediately follow the variable.
 */
-public __ple_header_start;
-stock __fix__ple_header_start = __ple_header_start;
+public _ple_header_start;
+stock _fix__ple_header_start = _ple_header_start;
 
 /* ple header */
-static const __ple_header[PLE_HEADER_FORMAT] =
+static const _ple_header[PLE_HEADER_FORMAT] =
 {
 	0x01,
-	_:PLE_HEADER_FORMAT,
+	(_:PLE_HEADER_FORMAT)*cellbits/charbits,
 	 
 	PLE_INCLUDE_VERSION_KEY,
 	0x00,
@@ -83,7 +82,7 @@ static const __ple_header[PLE_HEADER_FORMAT] =
 	__Pawn,
 	0x00,
 	
-	DYNAMIC_MEMORY_SIZE,
+	0x00,
 	0x00,
 	0x00,
 	0x00,
@@ -116,11 +115,18 @@ static const __ple_header[PLE_HEADER_FORMAT] =
 ** __ple_header_end marks the ending of the header and hence, the header
 ** must immediately preceed the variable.
 */
-public __ple_header_end;
-stock __fix__ple_header_end = __ple_header_end;
+public _ple_header_end;
+stock _fix_ple_header_end = _ple_header_end;
+
+/* fake public (DO NOT USE) */
+forward _ple_fake_public();
+public _ple_fake_public()
+{
+	return _ple_header[PLE_HEADER_SCRIPTKEY];
+}
 
 /* See iscript.inc to learn about script keys */
 stock GetScriptKey()
 {
-	return __ple_header[PLE_HEADER_SCRIPTKEY];
+	return _ple_header[PLE_HEADER_SCRIPTKEY];
 }

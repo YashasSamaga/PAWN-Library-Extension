@@ -1,22 +1,33 @@
-/************************************************************************************************************************
-PAWN Library Extension
+/*
+** PAWN Library Extension (PLE)
+**
+** This file is part of PAWN Library Extension.
+**
+**   This library is free software: you can redistribute it and/or modify
+**   it under the terms of the GNU General Public License as published by
+**   the Free Software Foundation, either version 3 of the License, or
+**   (at your option) any later version.
+**
+**   This library is distributed in the hope that it will be useful,
+**   but WITHOUT ANY WARRANTY; without even the implied warranty of
+**   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**   GNU General Public License for more details.
+**
+**   You should have received a copy of the GNU General Public License
+**   along with this library.  If not, see <http://www.gnu.org/licenses/>.
+**
+** Copyright (C) 2016-2018  Yashas Samaga
+*/
 
-Functions
-functional.inc
-************************************************************************************************************************/
-#if defined _PLE_FUNCTIONAL_INC
+#if defined PLE_FUNCTIONAL_INCLUDED
 	#endinput
-#else
-	#define _PLE_FUNCTIONAL_INC
 #endif
+#define PLE_FUNCTIONAL_INCLUDED
 
-#if !defined _PLE_CONFIG_INC
-	#include <PLE/config>
-#endif
-
+/* dependencies */
+#include <PLE/config>
 #include <PLE/iscript>
 
-/***********************************************************************************************************************/
 /*
 functionID (6 cells)
 byte 	1				bits 0-7 	: type
@@ -32,10 +43,7 @@ byte    21,22,23,24     bind4
 #define FTSIZE 6
 #define function:%0<%1(%2)> %0[FTSIZE]
 
-#define placeholder:: funcobj_ph_
-#define funcobj_ph__1 PLE_@placeholder_tag:0
-#define funcobj_ph__2 PLE_@placeholder_tag:0
-#define funcobj_ph__3 PLE_@placeholder_tag:0
+#define placeholder::hold PLE_@placeholder_tag:0
 
 enum
 {
@@ -52,26 +60,27 @@ enum
 	FUNCTION_FLAG_BIND2 	= 	0x04,
 	FUNCTION_FLAG_BIND3     =   0x08,
 	FUNCTION_FLAG_BIND4     =   0x10,
-	FUNCTION_FLAG_VAARGS 	= 	0x20
 }
-/***********************************************************************************************************************/
-native argArray(arr[]);
-native argReference(&var);
 
-native _make_function(func[FTSIZE], const fname[], argc, type, flags, scriptkey);
+/*
+** make_function is a wrapper for _make_function
+** the purpose of the wrapper is to allow chaining
+*/
+native _make_function(func[FTSIZE], const fname[], argc, type = FUNCTION_ID_TYPE_PUBLIC, flags = 0, scriptKey = INVALID_SCRIPT_KEY);
 stock make_function(func[FTSIZE], const fname[], argc, type = FUNCTION_ID_TYPE_PUBLIC, flags = 0, scriptKey = INVALID_SCRIPT_KEY)
 {
     _make_function(func, fname, argc, type, flags, scriptKey);
     return func;
 }
 
-native invoke_fn(func[FTSIZE], ...);
-/***********************************************************************************************************************/
+/* negator */
 stock not_fn(func[FTSIZE])
 {
 	func[0] ^= FUNCTION_FLAG_NOT;
 	return func;
 }
+
+/* binders */
 stock bind1st(func[FTSIZE], val)
 {
     func[0] |= FUNCTION_FLAG_BIND1;
@@ -90,7 +99,8 @@ stock bind3rd(func[FTSIZE], val)
     func[4] = val;
     return func;
 }
-/*stock bind(func[FTSIZE], {PLE_@placeholder_tag, Float, _}:arg1 = PLE_@placeholder_tag:0, {PLE_@placeholder_tag, Float, _}:arg2 = PLE_@placeholder_tag:0, {PLE_@placeholder_tag, Float, _}:arg3 = PLE_@placeholder_tag:0, const tag_arg1 = tagof(arg1), const tag_arg2 = tagof(arg2), const tag_arg3 = tagof(arg3))
+
+stock bind(func[FTSIZE], {PLE_@placeholder_tag, Float, _}:arg1 = PLE_@placeholder_tag:0, {PLE_@placeholder_tag, Float, _}:arg2 = PLE_@placeholder_tag:0, {PLE_@placeholder_tag, Float, _}:arg3 = PLE_@placeholder_tag:0, const tag_arg1 = tagof(arg1), const tag_arg2 = tagof(arg2), const tag_arg3 = tagof(arg3))
 {
 	if(tag_arg1 == (tagof(PLE_@placeholder_tag:)))
 	    func[0] &= ~FUNCTION_FLAG_BIND1;
@@ -116,8 +126,9 @@ stock bind3rd(func[FTSIZE], val)
         func[4] = _:arg3;
 	}
 	return func;
-}*/
-/************************************************* FUNCTION TEMPLATES **************************************************/
+}
+
+/* Built-in function templates */
 #define functions:: do_func_
 #define fixed_functions:: do_fixed_func_
 
@@ -152,20 +163,21 @@ stock bind3rd(func[FTSIZE], val)
 #define do_func_minusf 				func_cell2:{FUNCTION_ID_TYPE_DEFAULT << 24 | 2 << 16, _func_minusf,			0, 0, 0, 0}
 #define do_func_multipliesf 		func_cell2:{FUNCTION_ID_TYPE_DEFAULT << 24 | 2 << 16, _func_multipliesf,		0, 0, 0, 0}
 #define do_func_dividesf 			func_cell2:{FUNCTION_ID_TYPE_DEFAULT << 24 | 2 << 16, _func_dividesf,			0, 0, 0, 0}
-#define do_func_equal_tof 			func_bool2:{FUNCTION_ID_TYPE_DEFAULT << 24 | 2 << 16, _func_equal_to,			0, 0, 0, 0}
-#define do_func_not_equal_tof 		func_bool2:{FUNCTION_ID_TYPE_DEFAULT << 24 | 2 << 16, _func_not_equal_to,		0, 0, 0, 0}
-#define do_func_greaterf			func_bool2:{FUNCTION_ID_TYPE_DEFAULT << 24 | 2 << 16, _func_greater,			0, 0, 0, 0}
-#define do_func_lessf 				func_bool2:{FUNCTION_ID_TYPE_DEFAULT << 24 | 2 << 16, _func_less,				0, 0, 0, 0}
-#define do_func_greater_equalf 		func_bool2:{FUNCTION_ID_TYPE_DEFAULT << 24 | 2 << 16, _func_greater_equal,	0, 0, 0, 0}
-#define do_func_less_equalf 		func_bool2:{FUNCTION_ID_TYPE_DEFAULT << 24 | 2 << 16, _func_less_equal,		0, 0, 0, 0}
+#define do_func_equal_tof 			func_bool2:{FUNCTION_ID_TYPE_DEFAULT << 24 | 2 << 16, _func_equal_tof,			0, 0, 0, 0}
+#define do_func_not_equal_tof 		func_bool2:{FUNCTION_ID_TYPE_DEFAULT << 24 | 2 << 16, _func_not_equal_tof,		0, 0, 0, 0}
+#define do_func_greaterf			func_bool2:{FUNCTION_ID_TYPE_DEFAULT << 24 | 2 << 16, _func_greaterf,			0, 0, 0, 0}
+#define do_func_lessf 				func_bool2:{FUNCTION_ID_TYPE_DEFAULT << 24 | 2 << 16, _func_lessf,				0, 0, 0, 0}
+#define do_func_greater_equalf 		func_bool2:{FUNCTION_ID_TYPE_DEFAULT << 24 | 2 << 16, _func_greater_equalf,	0, 0, 0, 0}
+#define do_func_less_equalf 		func_bool2:{FUNCTION_ID_TYPE_DEFAULT << 24 | 2 << 16, _func_less_equalf,		0, 0, 0, 0}
 
 // compiler bug fix
 #define do_fixed_func_plus			{FUNCTION_ID_TYPE_DEFAULT << 24 | 2 << 16, _func_plus,			0, 0, 0, 0}
 #define do_fixed_func_minus			{FUNCTION_ID_TYPE_DEFAULT << 24 | 2 << 16, _func_plus,			0, 0, 0, 0}
 #define do_fixed_func_equal_to 		{FUNCTION_ID_TYPE_DEFAULT << 24 | 2 << 16, _func_equal_to,		0, 0, 0, 0}
-#define do_fixed_func_greater 		{FUNCTION_ID_TYPE_DEFAULT << 24 | 2 << 16, _func_greater,			0, 0, 0, 0}
+#define do_fixed_func_greater 		{FUNCTION_ID_TYPE_DEFAULT << 24 | 2 << 16, _func_greater,		0, 0, 0, 0}
 #define do_fixed_func_less 			{FUNCTION_ID_TYPE_DEFAULT << 24 | 2 << 16, _func_less,			0, 0, 0, 0}
 #define do_fixed_func_increment		{FUNCTION_ID_TYPE_DEFAULT << 24 | 2 << 16, _func_increment,		0, 0, 0, 0}
+#define do_fixed_func_multiplies	{FUNCTION_ID_TYPE_DEFAULT << 24 | 2 << 16, _func_multiplies,	0, 0, 0, 0}
 
 enum
 {
@@ -199,5 +211,11 @@ enum
 	_func_plusf,
 	_func_minusf,
 	_func_multipliesf,
-	_func_dividesf
+	_func_dividesf,
+	_func_equal_tof,
+	_func_not_equal_tof,
+	_func_greaterf,
+	_func_lessf,
+	_func_greater_equalf,
+	_func_less_equalf,
 }

@@ -1,23 +1,31 @@
-/************************************************************************************************************
-PAWN Library Extension
+/*
+** PAWN Library Extension (PLE)
+**
+** This file is part of PAWN Library Extension.
+**
+**   This library is free software: you can redistribute it and/or modify
+**   it under the terms of the GNU General Public License as published by
+**   the Free Software Foundation, either version 3 of the License, or
+**   (at your option) any later version.
+**
+**   This library is distributed in the hope that it will be useful,
+**   but WITHOUT ANY WARRANTY; without even the implied warranty of
+**   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**   GNU General Public License for more details.
+**
+**   You should have received a copy of the GNU General Public License
+**   along with this library.  If not, see <http://www.gnu.org/licenses/>.
+**
+** Copyright (C) 2016-2018  Yashas Samaga
+*/
 
-PLE attempts to provide most of the "useful" Standard C++ Libraries in PAWN. The term "useful" here implies that only
-the libraries which have potential uses in PAWN have been ported. In other words, PLE is not an arbitary
-collection of C++ libaries for PAWN.
-
-Interscript communication (ISC)
-isc.cpp
-
-*************************************************************************************************************/
 #include "main.h"
 #include "iscript.h"
 
 #include "isc.h"
 
-namespace PLE
+namespace PLE::isc
 {
-	namespace isc
-	{
 		namespace amx_header_fields
 		{
 			enum
@@ -41,25 +49,20 @@ namespace PLE
 				nametable
 			};
 		}
-		cell ExecuteFunction()
-		{
-
-		}
-	}
 	
 	namespace natives
 	{
 		//native GetAMXHeader(scriptKey, hdr[AMX_HEADER]);
-		cell AMX_NATIVE_CALL isc_GetAMXHeader(AMX * amx, cell *params)
+		cell AMX_NATIVE_CALL GetAMXHeader(AMX * amx, cell *params)
 		{
 			error_if(!check_params(2), "[PLE] isc>> : expected 2 parameters but found %d parameters.", get_params_count());
 
-			if (IScript::IsValidScript(params[1])) return false;
+			if (iscript::IsValidScript(params[1])) return false;
 
 			cell* dest_hdr = NULL;
 			amx_GetAddr(amx, params[2], &dest_hdr);
 
-			AMX_HEADER * src_hdr = (AMX_HEADER *)IScript::GetInterfaceAMX(params[1])->base;
+			AMX_HEADER * src_hdr = (AMX_HEADER *)iscript::GetInterfaceAMX(params[1])->base;
 			dest_hdr[isc::amx_header_fields::size] = src_hdr->size;
 			dest_hdr[isc::amx_header_fields::magic] = src_hdr->magic;
 			dest_hdr[isc::amx_header_fields::file_version] = src_hdr->file_version;
@@ -80,14 +83,14 @@ namespace PLE
 			return true;
 		}
 		//native ReadAMXMemory(scriptKey, address, &val); //address relative to the script's DAT segment
-		cell AMX_NATIVE_CALL isc_ReadAMXMemory(AMX * amx, cell *params)
+		cell AMX_NATIVE_CALL ReadAMXMemory(AMX * amx, cell *params)
 		{
 			error_if(!check_params(3), "[PLE] isc>> ReadAMXMemory: expected 3 parameters but found %d parameters.", get_params_count());
 
-			if (IScript::IsValidScript(params[1])) return false;
+			if (iscript::IsValidScript(params[1])) return false;
 
 			cell* read_addr = NULL;
-			amx_GetAddr(IScript::GetInterfaceAMX(params[1]), params[2], &read_addr);
+			amx_GetAddr(iscript::GetInterfaceAMX(params[1]), params[2], &read_addr);
 
 			cell* dest_addr = NULL;
 			amx_GetAddr(amx, params[3], &dest_addr);
@@ -96,27 +99,27 @@ namespace PLE
 			return true;
 		}
 		//native WriteAMXMemory(scriptKey, address, val); //address relative to the script's DAT segment
-		cell AMX_NATIVE_CALL isc_WriteAMXMemory(AMX * amx, cell *params)
+		cell AMX_NATIVE_CALL WriteAMXMemory(AMX * amx, cell *params)
 		{
 			error_if(!check_params(3), "[PLE] isc>> WriteAMXMemory: expected 3 parameters but found %d parameters.", get_params_count());
 
-			if (IScript::IsValidScript(params[1])) return false;
+			if (iscript::IsValidScript(params[1])) return false;
 
 			cell* dest_addr = NULL;
-			amx_GetAddr(IScript::GetInterfaceAMX(params[1]), params[2], &dest_addr);
+			amx_GetAddr(iscript::GetInterfaceAMX(params[1]), params[2], &dest_addr);
 
 			*dest_addr = params[3];
 			return true;
 		}
 		//native ReadAMXMemoryArray(scriptKey, address, dest[], numcells); //address relative to the script's DAT segment
-		cell AMX_NATIVE_CALL isc_ReadAMXMemoryArray(AMX * amx, cell *params)
+		cell AMX_NATIVE_CALL ReadAMXMemoryArray(AMX * amx, cell *params)
 		{
 			error_if(!check_params(4), "[PLE] isc>> ReadAMXMemoryArray: expected 4 parameters but found %d parameters.", get_params_count());
 
-			if (IScript::IsValidScript(params[1])) return false;
+			if (iscript::IsValidScript(params[1])) return false;
 
 			cell* read_addr = NULL;
-			amx_GetAddr(IScript::GetInterfaceAMX(params[1]), params[2], &read_addr);
+			amx_GetAddr(iscript::GetInterfaceAMX(params[1]), params[2], &read_addr);
 
 			cell* dest_addr = NULL;
 			amx_GetAddr(amx, params[3], &dest_addr);
@@ -127,14 +130,14 @@ namespace PLE
 			return true;
 		}
 		//native WriteAMXMemoryArray(scriptKey, address, src[], numcells); //address relative to the script's DAT segment
-		cell AMX_NATIVE_CALL isc_WriteAMXMemoryArray(AMX * amx, cell *params)
+		cell AMX_NATIVE_CALL WriteAMXMemoryArray(AMX * amx, cell *params)
 		{
 			error_if(!check_params(4), "[PLE] isc>> WriteAMXMemoryArray: expected 4 parameters but found %d parameters.", get_params_count());
 
-			if (IScript::IsValidScript(params[1])) return false;
+			if (iscript::IsValidScript(params[1])) return false;
 
 			cell* dest_addr = NULL;
-			amx_GetAddr(IScript::GetInterfaceAMX(params[1]), params[2], &dest_addr);
+			amx_GetAddr(iscript::GetInterfaceAMX(params[1]), params[2], &dest_addr);
 
 			cell* src_addr = NULL;
 			amx_GetAddr(amx, params[3], &src_addr);
@@ -146,11 +149,11 @@ namespace PLE
 		}
 
 		//native GetExternalFunctionID(scriptKey, const name[], &fid);
-		cell AMX_NATIVE_CALL isc_GetExternalFunctionID(AMX * amx, cell* params)
+		cell AMX_NATIVE_CALL GetExternalFunctionID(AMX * amx, cell* params)
 		{
 			error_if(!check_params(2), "[PLE] isc>> GetExternalFunctionID: expected 2 parameters but found %d parameters.", get_params_count());
 
-			if (IScript::IsValidScript(params[1]))
+			if (iscript::IsValidScript(params[1]))
 				return false;
 
 			cell *name_addr = NULL;
@@ -159,7 +162,7 @@ namespace PLE
 			char name[32];
 			amx_GetString(name, name_addr, 0, sizeof(name));
 
-			int funcidx, amx_error = amx_FindPublic(IScript::GetInterfaceAMX(params[1]), name, &funcidx);
+			int funcidx, amx_error = amx_FindPublic(iscript::GetInterfaceAMX(params[1]), name, &funcidx);
 			if (amx_error == AMX_ERR_NONE)
 			{
 				isc::function id(params[1], funcidx);
@@ -168,12 +171,12 @@ namespace PLE
 			return false;
 		}
 		//native CallExternalFunction(extFuncID, &ret, const format[], ...);
-		cell AMX_NATIVE_CALL isc_CallExternalFunction(AMX * amx, cell* params)
+		cell AMX_NATIVE_CALL CallExternalFunction(AMX * amx, cell* params)
 		{
 			error_if(!check_params_min(3), "[PLE] isc>> CallExternalFunction: expected at least 3 parameters but found %d parameters.", get_params_count());
 			isc::function fid(params[1]);
 
-			AMX * target_amx = IScript::GetInterfaceAMX(fid.GetScriptKey());
+			AMX * target_amx = iscript::GetInterfaceAMX(fid.GetScriptKey());
 			cell release_addr = NULL;
 			int param_count = (params[0] / 4) - 3, len = 0;
 			if (param_count)
@@ -260,7 +263,7 @@ namespace PLE
 			return true;
 		}
 		//native GetExternalFunctionInfo(extFuncID, &scriptKey, &varidx);
-		cell AMX_NATIVE_CALL isc_GetExternalFunctionInfo(AMX * amx, cell* params)
+		cell AMX_NATIVE_CALL GetExternalFunctionInfo(AMX * amx, cell* params)
 		{
 			error_if(!check_params(3), "[PLE] isc>> GetExternalFunctionInfo: expected 3 parameters but found %d parameters.", get_params_count());
 			isc::function fid(params[1]);
@@ -275,10 +278,10 @@ namespace PLE
 		}
 
 		//native GetExternalVariableID(scriptKey, const name[], &vid);
-		cell AMX_NATIVE_CALL isc_GetExternalVariableID(AMX * amx, cell* params)
+		cell AMX_NATIVE_CALL GetExternalVariableID(AMX * amx, cell* params)
 		{
 			error_if(!check_params(2), "[PLE] isc>> GetExternalVariableID: expected 2 parameters but found %d parameters.", get_params_count());
-			if (IScript::IsValidScript(params[1])) return false;
+			if (iscript::IsValidScript(params[1])) return false;
 
 			cell *name_addr = NULL, tmp;
 			amx_GetAddr(amx, params[2], &name_addr);
@@ -286,7 +289,7 @@ namespace PLE
 			char search_pubvar[32], cur_pubvar[32];
 			amx_GetString(search_pubvar, name_addr, 0, sizeof(search_pubvar));
 
-			AMX * target_amx = IScript::GetInterfaceAMX(params[1]);
+			AMX * target_amx = iscript::GetInterfaceAMX(params[1]);
 			int first = 0, last, mid, result;
 			amx_NumPubVars(target_amx, &last);
 			last--;
@@ -310,7 +313,7 @@ namespace PLE
 			return false;
 		}
 		//native GetExternalVariableInfo(extVarID, &scriptKey, &varidx);
-		cell AMX_NATIVE_CALL isc_GetExternalVariableInfo(AMX * amx, cell* params)
+		cell AMX_NATIVE_CALL GetExternalVariableInfo(AMX * amx, cell* params)
 		{
 			error_if(!check_params(2), "[PLE] isc>> GetExternalVariable: expected 2 parameters but found %d parameters.", get_params_count());
 			isc::variable vid(params[1]);
@@ -324,12 +327,12 @@ namespace PLE
 			return true;
 		}
 		//native GetExternalVariable(extVarID, &result);
-		cell AMX_NATIVE_CALL isc_GetExternalVariable(AMX * amx, cell* params)
+		cell AMX_NATIVE_CALL GetExternalVariable(AMX * amx, cell* params)
 		{
 			error_if(!check_params(2), "[PLE] isc>> SetExternalVariable: expected 2 parameters but found %d parameters.", get_params_count());
 			isc::variable vid(params[1]);
 
-			AMX *target_amx = IScript::GetInterfaceAMX(vid.GetScriptKey());
+			AMX *target_amx = iscript::GetInterfaceAMX(vid.GetScriptKey());
 
 			char name[32];
 			cell pubvar_addr;
@@ -345,12 +348,12 @@ namespace PLE
 			return true;
 		}
 		//native SetExternalVariable(extVarID, value);
-		cell AMX_NATIVE_CALL isc_SetExternalVariable(AMX * amx, cell* params)
+		cell AMX_NATIVE_CALL SetExternalVariable(AMX * amx, cell* params)
 		{
 			error_if(!check_params(3), "[PLE] isc>> GetExternalVariableInfo: expected 3 parameters but found %d parameters.", get_params_count());
 			isc::variable vid(params[1]);
 
-			AMX * target_amx = IScript::GetInterfaceAMX(vid.GetScriptKey());
+			AMX * target_amx = iscript::GetInterfaceAMX(vid.GetScriptKey());
 			cell pubvar_addr;
 
 			char name[32];

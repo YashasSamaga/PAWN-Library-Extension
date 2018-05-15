@@ -34,7 +34,7 @@
 ** Scripts which were not compiled for PLE will function normally with PLE.
 ** These kind of scripts will use UNSUPPORTED_SCRIPT_IDENTIFIER as its script
 ** identifier and the scripts which use PLE but do not have a script identifier
-** will use UNDEFINED_SCRIPT_IDENTIFIER.
+** will use UNDEFINED_SCRIPT_IDENTIFIER as their script identifier.
 **
 ** These two script identifiers are reserved for use by the plugin and must not
 ** be used in a script.
@@ -74,7 +74,7 @@ enum PLE_HEADER_FORMAT
 	PLE_HEADER_COMPILER_VERSION,
 	PLE_HEADER_RESERVED8,
 
-	PLE_HEADER_DYNMEM_RESERVE_SIZE,
+	PLE_HEADER_RESERVED9,
 	PLE_HEADER_RESERVED10,
 	PLE_HEADER_RESERVED11,
 	PLE_HEADER_RESERVED12,

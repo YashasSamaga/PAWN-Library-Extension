@@ -1,19 +1,32 @@
-/******************************************************************************************************************
-PAWN Library Extension
+/*
+** PAWN Library Extension (PLE)
+**
+** This file is part of PAWN Library Extension.
+**
+**   This library is free software: you can redistribute it and/or modify
+**   it under the terms of the GNU General Public License as published by
+**   the Free Software Foundation, either version 3 of the License, or
+**   (at your option) any later version.
+**
+**   This library is distributed in the hope that it will be useful,
+**   but WITHOUT ANY WARRANTY; without even the implied warranty of
+**   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**   GNU General Public License for more details.
+**
+**   You should have received a copy of the GNU General Public License
+**   along with this library.  If not, see <http://www.gnu.org/licenses/>.
+**
+** Copyright (C) 2016-2018  Yashas Samaga
+*/
 
-Interscript-Communication
-isc.inc
-******************************************************************************************************************/
-#if defined _PLE_ISC_INC
+#if defined PLE_ISC_INCLUDED
 	#endinput
-#else
-	#define _PLE_ISC_INC
 #endif
+#define PLE_ISC_INCLUDED
 
-#if !defined _PLE_CONFIG_INC
-	#include <PLE\config>
-#endif
-/*****************************************************************************************************************/
+/* dependencies */
+#include <PLE/config>
+
 enum AMX_HEADER
 {
 	AMX_HEADER_SIZE,
@@ -60,7 +73,7 @@ stock const AMX_HEADER_OFFSETS[] =
 	48, //AMX_HEADER_TAGS
 	52 	//AMX_HEADER_NAMETABLE
 };
-/*****************************************************************************************************************/
+
 native GetAMXHeader(scriptKey, hdr[AMX_HEADER]);
 native ReadAMXMemory(scriptKey, address, &val); //address relative to the script's DAT segment
 native WriteAMXMemory(scriptKey, address, val); //address relative to the script's DAT segment

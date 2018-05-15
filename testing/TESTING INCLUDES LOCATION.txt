@@ -1,3 +1,0 @@
-includes/PLE/testing/[library_name]_testing.inc
-
-Call [library_name]_testing(); to conduct the tests.
