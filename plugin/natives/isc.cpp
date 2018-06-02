@@ -24,6 +24,8 @@
 
 #include "isc.h"
 
+#include <cstring>
+
 namespace PLE::isc
 {
 		namespace amx_header_fields
@@ -177,7 +179,7 @@ namespace PLE::isc
 			isc::function fid(params[1]);
 
 			AMX * target_amx = iscript::GetInterfaceAMX(fid.GetScriptKey());
-			cell release_addr = NULL;
+			cell release_addr = 0;
 			int param_count = (params[0] / 4) - 3, len = 0;
 			if (param_count)
 			{
@@ -232,7 +234,8 @@ namespace PLE::isc
 						memcpy(phys_addr, arr_addr, arraysizes[array_count] * 4);
 						amx_Push(target_amx, amx_addr);
 
-						if (release_addr == NULL) release_addr = amx_addr;
+						if (release_addr == 0)
+                            release_addr = amx_addr;
 						break;
 					}
 					case 's':
@@ -248,7 +251,8 @@ namespace PLE::isc
 						memcpy(phys_addr, str, strl * 4);
 						amx_Push(target_amx, amx_addr);
 
-						if (release_addr == NULL) release_addr = amx_addr;
+						if (release_addr == 0)
+                            release_addr = amx_addr;
 						break;
 					}
 					}
@@ -298,7 +302,7 @@ namespace PLE::isc
 				mid = (first + last) / 2;
 
 				amx_GetPubVar(target_amx, mid, cur_pubvar, &tmp);
-				result = strcmp(cur_pubvar, search_pubvar);
+				result = std::strcmp(cur_pubvar, search_pubvar);
 
 				if (result > 0)
 					last = mid - 1;

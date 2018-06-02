@@ -47,7 +47,6 @@ namespace PLE::fstream
 				return INVALID_FILE_HANDLE;
 			}
 			FileList.emplace_back();
-			FileList.back().exceptions(0); //disable exceptions
 		}
         FileList[handle].open(name, openmodes::decode(fmode));
 		return (FileList[handle].is_open() ? handle : INVALID_FILE_HANDLE);

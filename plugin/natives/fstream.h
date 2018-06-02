@@ -43,7 +43,7 @@ namespace PLE::fstream
 
 		static constexpr std::ios::openmode decode(openmode_t pmode)
 		{
-			std::ios::openmode mode(0);
+            std::ios::openmode mode{};
 			if (pmode & openmodes::app)
 				mode |= std::ios::app;
 			if (pmode & openmodes::binary)
@@ -93,7 +93,7 @@ namespace PLE::fstream
 
 		static constexpr std::ios::iostate decode(iostate_t pstate)
 		{
-			std::ios::iostate state(0);
+            std::ios::iostate state{};
 			if (pstate & fstream::iostate::goodbit)
 				state |= std::ios::goodbit;
 			if (pstate & fstream::iostate::badbit)
@@ -107,7 +107,7 @@ namespace PLE::fstream
 
 		static constexpr iostate_t encode(std::ios::iostate pstate)
 		{
-			iostate_t state(0);
+            iostate_t state(0);
 			if (pstate & std::ios::goodbit)
 				state |= fstream::iostate::goodbit;
 			if (pstate & std::ios::badbit)
@@ -145,7 +145,7 @@ namespace PLE::fstream
 
 		static constexpr std::ios::fmtflags decode(fmtflag_t pflags)
 		{
-			std::ios::fmtflags flags(0);
+            std::ios::fmtflags flags{};
 			if (pflags & fstream::fmtflags::dec)
 				flags |= std::ios::dec;
 			if (pflags & fstream::fmtflags::oct)

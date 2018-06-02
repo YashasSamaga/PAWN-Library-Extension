@@ -44,7 +44,7 @@ namespace PLE::functional
 
     namespace function_flags
     {
-        constexpr int not = 0x01;
+        constexpr int not_fn = 0x01;
         constexpr int bind1 = 0x02;
         constexpr int bind2 = 0x04;
         constexpr int bind3 = 0x08;
@@ -147,17 +147,18 @@ namespace PLE::functional
             public functions use `expanded`
             default functions use `findex`
         */
-        union {
-            uint32_t faddress;
-            uint32_t findex;
-            struct expanded_t {
+        struct expanded_t {
                 int16_t funcidx : 16; /* size used in static_assert (1) */
                 int8_t scriptKey : 8; /* size used in static_assert (2) */
                 uint8_t reserved : 8;
-            } expanded;
-            static_assert(sizeof(iscript::FunctionIndex_t) == 2); // (1)
-            static_assert(sizeof(iscript::ScriptKey_t) == 1); // (2)            
-            static_assert(sizeof(expanded_t) == 4);
+        };
+        static_assert(sizeof(iscript::FunctionIndex_t) == 2); // (1)
+        static_assert(sizeof(iscript::ScriptKey_t) == 1); // (2)            
+        static_assert(sizeof(expanded_t) == 4);
+        union {
+            uint32_t faddress;
+            uint32_t findex;
+            expanded_t expanded;            
         };
         static_assert(sizeof(cell) == 4);
 

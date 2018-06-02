@@ -287,7 +287,7 @@ namespace PLE::bitset::natives
 	}
 
 	//native noret:and(bitset:bs1[], bitset:bs2[], bitset:dest[]);
-	cell AMX_NATIVE_CALL and(AMX *amx, cell params[])
+	cell AMX_NATIVE_CALL ov_and(AMX *amx, cell params[])
 	{
 		error_if(!check_params(3), "[PLE] bitset>> bitset::and: expected 3 parameters but found %d parameters.", get_params_count());
 
@@ -314,7 +314,7 @@ namespace PLE::bitset::natives
 		return true;
 	}
 	//native noret:or(bitset : bs1[], bitset:bs2[], bitset:dest[]);
-	cell AMX_NATIVE_CALL or(AMX *amx, cell params[])
+	cell AMX_NATIVE_CALL ov_or(AMX *amx, cell params[])
 	{
 		error_if(!check_params(3), "[PLE] bitset>> bitset::or: expected 3 parameters but found %d parameters.", get_params_count());
 
@@ -341,7 +341,7 @@ namespace PLE::bitset::natives
 		return true;
 	}
 	//native noret:xor(bitset:bs1[], bitset:bs2[], bitset:dest[]);
-	cell AMX_NATIVE_CALL xor(AMX *amx, cell params[])
+	cell AMX_NATIVE_CALL ov_xor(AMX *amx, cell params[])
 	{
 		error_if(!check_params(3), "[PLE] bitset>> bitset::xor: expected 3 parameters but found %d parameters.", get_params_count());
 

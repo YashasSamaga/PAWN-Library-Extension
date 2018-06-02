@@ -25,7 +25,7 @@
 #include <sdk/amx/amx.h>
 #include <sdk/plugincommon.h>
 
-typedef void (*logprintf_t)(char*, ...);
+typedef void (*logprintf_t)(const char*, ...);
 extern logprintf_t logprintf;
 
 #define MAX_SYMBOL_LEN sNAMEMAX + 1

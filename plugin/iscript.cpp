@@ -39,6 +39,7 @@
 #include <algorithm>
 #include <vector>
 #include <cfenv>
+#include <cstring>
 
 namespace PLE::iscript
 {
@@ -439,9 +440,9 @@ namespace PLE::iscript
         { "bitset_reset_all", bitset::natives::reset_all },
         { "bitset_flip_all", bitset::natives::flip_all },
         { "bitset_tostring", bitset::natives::tostring },
-        { "bitset_and", bitset::natives::and },
-        { "bitset_or", bitset::natives:: or },
-        { "bitset_xor", bitset::natives::xor },
+        { "bitset_and", bitset::natives::ov_and },
+        { "bitset_or", bitset::natives::ov_or },
+        { "bitset_xor", bitset::natives::ov_xor },
         { "bitset_equal", bitset::natives::equal },
         { "bitset_foreach_set", bitset::natives::foreach_set },
         { "bitset_foreach_notset", bitset::natives::foreach_notset },
@@ -546,7 +547,7 @@ namespace PLE::iscript
             return;
 
         cell addr;
-        amx_PushString(amx, &addr, NULL, scriptIdentifier.c_str(), NULL, NULL);
+        amx_PushString(amx, &addr, NULL, scriptIdentifier.c_str(), 0, 0);
         amx_Push(amx, scriptKey);
 
         amx_Exec(amx, NULL, cbidx);
@@ -561,7 +562,7 @@ namespace PLE::iscript
             return;
 
         cell addr;
-        amx_PushString(amx, &addr, NULL, scriptIdentifier.c_str(), NULL, NULL);
+        amx_PushString(amx, &addr, NULL, scriptIdentifier.c_str(), 0, 0);
         amx_Push(amx, scriptKey);
 
         amx_Exec(amx, NULL, cbidx);

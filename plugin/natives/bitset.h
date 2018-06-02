@@ -41,9 +41,9 @@ namespace PLE::bitset::natives
 	extern cell AMX_NATIVE_CALL reset_all(AMX *amx, cell params[]);
 	extern cell AMX_NATIVE_CALL flip_all(AMX *amx, cell params[]);
 
-    extern cell AMX_NATIVE_CALL and(AMX *amx, cell params[]);
-	extern cell AMX_NATIVE_CALL or(AMX *amx, cell params[]);
-	extern cell AMX_NATIVE_CALL xor(AMX *amx, cell params[]);
+    extern cell AMX_NATIVE_CALL ov_and(AMX *amx, cell params[]);
+	extern cell AMX_NATIVE_CALL ov_or(AMX *amx, cell params[]);
+	extern cell AMX_NATIVE_CALL ov_xor(AMX *amx, cell params[]);
 
 	extern cell AMX_NATIVE_CALL tostring(AMX *amx, cell params[]);
 	extern cell AMX_NATIVE_CALL equal(AMX *amx, cell params[]);

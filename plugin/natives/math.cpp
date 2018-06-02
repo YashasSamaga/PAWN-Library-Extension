@@ -30,7 +30,7 @@ namespace PLE::math::natives
 	cell AMX_NATIVE_CALL exp(AMX * amx, cell* params)
 	{
 		float num = amx_ctof(params[1]);	
-		num = static_cast<float>(std::expf(num));
+		num = static_cast<float>(std::exp(num));
 		return amx_ftoc(num);
 	}
 	//native Float:frexp(Float:value, &exp);
@@ -41,14 +41,14 @@ namespace PLE::math::natives
 
 		amx_GetAddr(amx, params[2], &addr);
 
-		num = std::frexpf(num, addr);
+		num = std::frexp(num, addr);
 		return amx_ftoc(num);
 	}
 	//native Float:ldexp(Float:value, exp);
 	cell AMX_NATIVE_CALL ldexp(AMX * amx, cell* params)
 	{
 		float num = amx_ctof(params[1]);
-		num = std::ldexpf(num, params[2]);
+		num = std::ldexp(num, params[2]);
 		return amx_ftoc(num);
 	}
 	//native Float:modf(Float:value, &intpart);
@@ -59,7 +59,7 @@ namespace PLE::math::natives
 
 		amx_GetAddr(amx, params[2], &addr);
 
-		num = std::modff(num, &intpart);
+		num = std::modf(num, &intpart);
 
 		*addr = amx_ftoc(intpart);
 		return amx_ftoc(num);
@@ -68,97 +68,97 @@ namespace PLE::math::natives
 	cell AMX_NATIVE_CALL log(AMX * amx, cell* params)
 	{
 		float num = amx_ctof(params[1]);
-		num = std::logf(num);
+		num = std::log(num);
 		return amx_ftoc(num);
 	}
 	//native Float:log10(Float:value);
 	cell AMX_NATIVE_CALL log10(AMX * amx, cell* params)
 	{
 		float num = amx_ctof(params[1]);
-		num = std::log10f(num);
+		num = std::log10(num);
 		return amx_ftoc(num);
 	}
 	//native Float:exp2(Float:value);
 	cell AMX_NATIVE_CALL exp2(AMX * amx, cell* params)
 	{
 		float num = amx_ctof(params[1]);
-		num = std::exp2f(num);
+		num = std::exp2(num);
 		return amx_ftoc(num);
 	}
 	//native Float:expm1(Float:value);
 	cell AMX_NATIVE_CALL expm1(AMX * amx, cell* params)
 	{
 		float num = amx_ctof(params[1]);
-		num = std::expm1f(num);
+		num = std::expm1(num);
 		return amx_ftoc(num);
 	}
 	//native Float:log2(Float:value);
 	cell AMX_NATIVE_CALL log2(AMX * amx, cell* params)
 	{
 		float num = amx_ctof(params[1]);
-		num = std::log2f(num);
+		num = std::log2(num);
 		return amx_ftoc(num);
 	}
 	//native Float:log1p(Float:value);
 	cell AMX_NATIVE_CALL log1p(AMX * amx, cell* params)
 	{
 		float num = amx_ctof(params[1]);
-		num = std::log1pf(num);
+		num = std::log1p(num);
 		return amx_ftoc(num);
 	}
 	//native Float:cbrt(Float:value);
 	cell AMX_NATIVE_CALL cbrt(AMX * amx, cell* params)
 	{
 		float num = amx_ctof(params[1]);
-		num = std::cbrtf(num);
+		num = std::cbrt(num);
 		return amx_ftoc(num);
 	}
 	//native Float:hypot(Float:s1, Float:s2);
 	cell AMX_NATIVE_CALL hypot(AMX * amx, cell* params)
 	{
-		float num = std::hypotf(amx_ctof(params[1]), amx_ctof(params[2]));
+		float num = std::hypot(amx_ctof(params[1]), amx_ctof(params[2]));
 		return amx_ftoc(num);
 	}
 	//native Float:fmod(Float:value, Float:denom);
 	cell AMX_NATIVE_CALL fmod(AMX * amx, cell* params)
 	{
-		float num = std::fmodf(amx_ctof(params[1]), amx_ctof(params[2]));
+		float num = std::fmod(amx_ctof(params[1]), amx_ctof(params[2]));
 		return amx_ftoc(num);
 	}
 	//native Float:remainder(Float:value, Float:denom);
 	cell AMX_NATIVE_CALL remainder(AMX * amx, cell* params)
 	{
-		float num = remainderf(amx_ctof(params[1]), amx_ctof(params[2]));
+		float num = std::remainder(amx_ctof(params[1]), amx_ctof(params[2]));
 		return amx_ftoc(num);
 	}
 	//native Float:copysign(Float:value, Float:sign);
 	cell AMX_NATIVE_CALL copysign(AMX * amx, cell* params)
 	{
-		float num = std::copysignf(amx_ctof(params[1]), amx_ctof(params[2]));
+		float num = std::copysign(amx_ctof(params[1]), amx_ctof(params[2]));
 		return amx_ftoc(num);
 	}
 	//native Float:fdim(Float:x, Float:y);
 	cell AMX_NATIVE_CALL fdim(AMX * amx, cell* params)
 	{
-		float num = std::fdimf(amx_ctof(params[1]), amx_ctof(params[2]));
+		float num = std::fdim(amx_ctof(params[1]), amx_ctof(params[2]));
 		return amx_ftoc(num);
 	}
 	//native Float:fmax(Float:x, Float:y);
 	cell AMX_NATIVE_CALL fmin(AMX * amx, cell* params)
 	{
-		float num = std::fminf(amx_ctof(params[1]), amx_ctof(params[2]));
+		float num = std::fmin(amx_ctof(params[1]), amx_ctof(params[2]));
 		return amx_ftoc(num);
 	}
 	//native Float:fmin(Float:x, Float:y);
 	cell AMX_NATIVE_CALL fmax(AMX * amx, cell* params)
 	{
-		float num = std::fmaxf(amx_ctof(params[1]), amx_ctof(params[2]));
+		float num = std::fmax(amx_ctof(params[1]), amx_ctof(params[2]));
 		return amx_ftoc(num);
 	}
 	//native Float:fma(Float:mul1, Float:mul2, Float:add);
 	cell AMX_NATIVE_CALL fma(AMX * amx, cell* params)
 	{
-		float num = std::fmaf(amx_ctof(params[1]), amx_ctof(params[2]), amx_ctof(params[3]));
+		float num = std::fma(amx_ctof(params[1]), amx_ctof(params[2]), amx_ctof(params[3]));
 		return amx_ftoc(num);
 	}
 	//native Float:fclamp(Float:value, Float:min, Float:max);

@@ -63,7 +63,7 @@ namespace PLE::chrono
         {
             error_if(!check_params(5), "[PLE] chrono>> timespec_add: expected 5 parameters but found %d parameters.", get_params_count());
 
-            using ns_duration = typename std::chrono::nanoseconds;
+            using ns_duration = std::chrono::nanoseconds;
             ns_duration::rep nanoseconds = params[5],
                                           microseconds = params[4],
                                           milliseconds = params[3],
@@ -82,7 +82,7 @@ namespace PLE::chrono
         {
             error_if(!check_params(3), "[PLE] chrono>> timespec_diff: expected 3 parameters but found %d parameters.", get_params_count());
 
-            using ns_duration = typename std::chrono::nanoseconds;
+            using ns_duration = std::chrono::nanoseconds;
             
             cell* ts_start_addr = NULL, *ts_end_addr = NULL, *ts_dest_addr = NULL;
 			amx_GetAddr(amx, params[1], &ts_start_addr);
@@ -101,7 +101,7 @@ namespace PLE::chrono
         {
             error_if(!check_params(2), "[PLE] chrono>> timespec_diff_as_seconds: expected 2 parameters but found %d parameters.", get_params_count());
 
-            using ns_duration = typename std::chrono::nanoseconds;
+            using ns_duration = std::chrono::nanoseconds;
             
             cell* ts_start_addr = NULL, *ts_end_addr = NULL;
 			amx_GetAddr(amx, params[1], &ts_start_addr);
@@ -116,7 +116,7 @@ namespace PLE::chrono
         cell AMX_NATIVE_CALL timespec_diff_as_milliseconds(AMX * amx, cell* params)
         {
             error_if(!check_params(2), "[PLE] chrono>> timespec_diff_as_milliseconds: expected 2 parameters but found %d parameters.", get_params_count());
-            using ns_duration = typename std::chrono::nanoseconds;
+            using ns_duration = std::chrono::nanoseconds;
             
             cell* ts_start_addr = NULL, *ts_end_addr = NULL;
 			amx_GetAddr(amx, params[1], &ts_start_addr);
@@ -132,7 +132,7 @@ namespace PLE::chrono
         {
             error_if(!check_params(2), "[PLE] chrono>> timespec_diff_as_microseconds: expected 2 parameters but found %d parameters.", get_params_count());
 
-            using ns_duration = typename std::chrono::nanoseconds;
+            using ns_duration = std::chrono::nanoseconds;
             
             cell* ts_start_addr = NULL, *ts_end_addr = NULL;
 			amx_GetAddr(amx, params[1], &ts_start_addr);
@@ -148,7 +148,7 @@ namespace PLE::chrono
         {   
             error_if(!check_params(2), "[PLE] chrono>> timespec_diff_as_nanoseconds: expected 2 parameters but found %d parameters.", get_params_count());
 
-            using ns_duration = typename std::chrono::nanoseconds;
+            using ns_duration = std::chrono::nanoseconds;
             cell* ts_start_addr = NULL, *ts_end_addr = NULL;
 			amx_GetAddr(amx, params[1], &ts_start_addr);
             amx_GetAddr(amx, params[2], &ts_end_addr);

@@ -23,6 +23,7 @@
 #include "iscript.h"
 #include "functional.h"
 
+#include <cstring>
 #include <functional>
 #include <vector>
 
@@ -149,7 +150,7 @@ namespace PLE::functional
             break;
         }
         }
-        if (fid.IsFlagSet(function_flags::not))
+        if (fid.IsFlagSet(function_flags::not_fn))
             return !retval;
         return retval;
     }
@@ -315,7 +316,7 @@ namespace PLE::functional
             break;
         }
         }
-        if (fid.IsFlagSet(function_flags::not))
+        if (fid.IsFlagSet(function_flags::not_fn))
             return !retval;
         return retval;
     }
@@ -552,7 +553,7 @@ namespace PLE::functional
             break;
         }
         }
-        if (fid.IsFlagSet(function_flags::not)) return !retval;
+        if (fid.IsFlagSet(function_flags::not_fn)) return !retval;
         return retval;
     }
 
@@ -602,7 +603,7 @@ namespace PLE::functional
                 for (int idx = 0; idx != num; idx++)
                 {
                     func = GETENTRY(hdr, natives, idx);
-                    if (!strcmp(name, GETENTRYNAME(hdr, func)))
+                    if (!std::strcmp(name, GETENTRYNAME(hdr, func)))
                     {
                         functional::function id(argc, static_cast<uint16_t>(params[5]), static_cast<uint32_t>(func->address));
                         id.encode(dest_addr);
